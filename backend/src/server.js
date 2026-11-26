@@ -4,6 +4,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import multer from 'multer';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import db from './db.js';
 import authRoutes from './routes/auth.js';
 import songRoutes from './routes/songs.js';
@@ -22,7 +25,24 @@ if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
 const app = express();
 app.disable('x-powered-by');
 app.set('trust proxy', 1); // detrás de Nginx/Caddy: IP real para el límite de intentos de ingreso
-app.use(helmet({ crossOriginResourcePolicy: { policy: 'same-site' } }));
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'same-site' },
+  contentSecurityPolicy: { directives: {
+    'default-src': ["'self'"],
+    'script-src': ["'self'"],
+    'style-src': ["'self'", "'unsafe-inline'"],
+    'img-src': ["'self'", 'data:', 'blob:'],
+    'media-src': ["'self'", 'blob:'],
+    'frame-src': ["'self'", 'blob:'],
+    'object-src': ["'self'", 'blob:'],
+    'worker-src': ["'self'", 'blob:'],
+    'connect-src': ["'self'"],
+    'font-src': ["'self'", 'data:'],
+    'base-uri': ["'self'"],
+    'form-action': ["'self'"],
+    'frame-ancestors': ["'self'"]
+  } }
+}));
 app.use(cors({ origin: (process.env.APP_ORIGIN || 'http://localhost:5173').split(',') }));
 app.use(express.json({ limit: '5mb' }));
 app.use('/api/auth/login', rateLimit({ windowMs: 15 * 60 * 1000, limit: 50, message: { error: 'Demasiados intentos. Esperá unos minutos.' } }));
@@ -41,6 +61,14 @@ app.use('/api/import', importRoutes);
 app.use('/api/bible', bibleRoutes);
 app.use('/api/live', liveRoutes);
 app.use('/api', (_req, res) => res.status(404).json({ error: 'Ruta no encontrada' }));
+
+// Web compilada (frontend/dist): la sirve la misma API cuando corre como un único proceso Node (panel de hosting).
+const webDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../frontend/dist');
+if (fs.existsSync(path.join(webDir, 'index.html'))) {
+  app.use('/assets', express.static(path.join(webDir, 'assets'), { immutable: true, maxAge: '1y' }));
+  app.use(express.static(webDir, { index: false, maxAge: 0 }));
+  app.use((req, res, next) => (req.method === 'GET' || req.method === 'HEAD') && req.accepts('html') ? res.set('Cache-Control', 'no-cache').sendFile(path.join(webDir, 'index.html')) : next());
+}
 
 app.use((err, _req, res, _next) => {
   if (err instanceof multer.MulterError) {

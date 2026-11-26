@@ -1,0 +1,14 @@
+{
+  "name": "idd-music",
+  "version": "1.0.0",
+  "private": true,
+  "description": "IDD Music · cancionero, proyección y vista de músicos (Iglesia de Dios · Bella Vista)",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "postinstall": "npm --prefix backend ci --omit=dev && npm --prefix frontend ci --include=dev && npm --prefix frontend run build",
+    "build": "npm --prefix frontend run build",
+    "migrate": "node backend/src/migrate.js",
+    "admin": "node backend/src/admin.js",
+    "start": "node backend/src/migrate.js && node backend/src/server.js"
+  }
+}

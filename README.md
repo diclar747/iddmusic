@@ -18,7 +18,9 @@ Aplicación web para el ministerio de alabanza: canciones con letra y acordes, g
 - **Músicos** (menú *Músicos*): la canción que se proyecta **con acordes**, siguiendo en vivo la sección actual, en la tablet o el teléfono de cada músico, o transmitida a un **segundo Chromecast**. Cada músico puede transponer, cambiar el tamaño y mantener la pantalla encendida.
 
 ## Instalar en el servidor (cd.com.py)
-Ver **[docs/DESPLIEGUE.md](docs/DESPLIEGUE.md)**. En resumen:
+**Panel de hosting (Importar de GitHub):** runtime **Node.js 22**, variables `DATABASE_URL`, `JWT_SECRET`, `APP_ORIGIN`, `NIRO_API_KEY`; `npm install` + `npm start`. Detalle en **[docs/DESPLIEGUE.md](docs/DESPLIEGUE.md)**.
+
+**Docker en servidor propio:**
 ```bash
 git clone https://github.com/diclar747/iddmusic.git /opt/iddmusic && cd /opt/iddmusic
 cp .env.example .env && nano .env            # dominio, claves, NIRO_API_KEY

@@ -1,5 +1,26 @@
 # Despliegue en el servidor (cd.com.py)
 
+## Opción rápida: panel de hosting de cd.com.py (Importar de GitHub)
+1. **Runtime:** `Node.js 22 (Debian)`.
+2. **Repositorio:** `diclar747/iddmusic`, rama `main`. **Dónde publicar:** `iddmusic.cd.com.py`.
+3. Si el panel pide comandos: instalación `npm install` · inicio `npm start` (el `package.json` de la raíz instala backend y frontend, compila la web y al iniciar aplica las migraciones y levanta todo en el puerto `PORT`).
+4. **Variables de entorno** (en el panel):
+   | Variable | Valor |
+   |---|---|
+   | `DATABASE_URL` | `postgresql://usuario:clave@host:5432/idd_music` (una base PostgreSQL 14+ vacía) |
+   | `DATABASE_SSL` | `true` solo si la base lo exige |
+   | `JWT_SECRET` | texto aleatorio de 32+ caracteres |
+   | `APP_ORIGIN` | `https://iddmusic.cd.com.py` |
+   | `NIRO_API_KEY` | la key de Niro IA |
+   | `NODE_ENV` | `production` |
+5. Desplegar. Al primer arranque se crean todas las tablas.
+6. Crear el administrador desde la consola/terminal del panel: `npm run admin -- --email admin@cd.com.py --name "Administración IDD"`.
+7. Los archivos subidos se guardan en `backend/storage/uploads`: si el panel borra la carpeta en cada despliegue, configurar ahí un **volumen/almacenamiento persistente**.
+
+---
+
+## Opción completa: Docker en un servidor propio
+
 Todo corre con **Docker**: PostgreSQL, la API y la web. La base de datos se crea sola la primera vez
 (la API aplica `database/schema.sql` + `database/migrations/*.sql` cada vez que arranca, sin repetir nada).
 
