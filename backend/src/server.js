@@ -7,7 +7,9 @@ import multer from 'multer';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import crypto from 'crypto';
 import db from './db.js';
+import { runMigrations } from './lib/migrations.js';
 import authRoutes from './routes/auth.js';
 import songRoutes from './routes/songs.js';
 import groupRoutes from './routes/groups.js';
@@ -17,8 +19,17 @@ import importRoutes from './routes/imports.js';
 import bibleRoutes from './routes/bible.js';
 import liveRoutes from './routes/live.js';
 
-if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
-  console.error('JWT_SECRET falta o es demasiado corto (mínimo 32 caracteres). Revisá backend/.env');
+// Al arrancar: aplica migraciones pendientes y, si no se configuró JWT_SECRET, usa uno generado y guardado en la base.
+try {
+  await runMigrations(db);
+  if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
+    const fresh = crypto.randomBytes(48).toString('base64url');
+    await db.query('INSERT INTO app_settings(key, value) VALUES($1, $2) ON CONFLICT (key) DO NOTHING', ['jwt_secret', fresh]);
+    process.env.JWT_SECRET = (await db.query('SELECT value FROM app_settings WHERE key=$1', ['jwt_secret'])).rows[0].value;
+    console.log('JWT_SECRET: usando el secreto generado y guardado en la base.');
+  }
+} catch (e) {
+  console.error('No se pudo preparar la base de datos:', e.message, '\nRevisá DATABASE_URL (postgresql://usuario:clave@host:5432/base).');
   process.exit(1);
 }
 
