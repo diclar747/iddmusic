@@ -1,0 +1,12 @@
+# Criterios de aceptación
+- Usuario no aprobado no ingresa.
+- Roles se verifican en backend.
+- Búsqueda encuentra título, autor y letra.
+- Canción guarda secciones y acordes como datos estructurados.
+- Transposición conserva letra y modifica correctamente acordes.
+- PDF e imagen asociados a una canción se visualizan con permisos.
+- OCR/OMR nunca publica automáticamente.
+- Repertorio guarda fecha, orden y tonalidad por evento.
+- Solo integrantes del grupo ven contenido privado del grupo.
+- PWA permite consultar recursos descargados y muestra fecha de sincronización.
+- Backups se restauran correctamente en ambiente de prueba.

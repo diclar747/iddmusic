@@ -1,0 +1,7 @@
+# HTTPS automático (Let's Encrypt) para el dominio definido en DOMAIN (.env).
+{$DOMAIN} {
+	encode gzip
+	reverse_proxy web:80 {
+		flush_interval -1
+	}
+}

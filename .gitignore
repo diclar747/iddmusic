@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+backend/.env
+backend/storage/
+storage/
+*.log
+.pgdata/
+CREDENCIALES-LOCAL.txt
+*.local.txt
+backups/
+.claude/settings.local.json

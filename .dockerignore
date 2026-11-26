@@ -1,0 +1,10 @@
+**/node_modules
+**/dist
+.pgdata
+backups
+backend/storage
+backend/.env
+.env
+*.log
+CREDENCIALES-LOCAL.txt
+.claude

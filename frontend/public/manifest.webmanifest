@@ -1,0 +1,9 @@
+{
+  "name": "IDD Music – Iglesia de Dios Bella Vista",
+  "short_name": "IDD Music",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f6f9",
+  "theme_color": "#172b46",
+  "icons": []
+}
