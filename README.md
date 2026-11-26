@@ -6,6 +6,7 @@ Aplicación web para el ministerio de alabanza: canciones con letra y acordes, g
 ## Qué incluye
 - **Grupos colaborativos**: canciones, agenda, integrantes, imágenes y actividad. Todos los integrantes cargan y editan; los líderes administran integrantes.
 - **Canciones**: editor de cifrado (acordes encima de la letra o ChordPro `[G]Santo`), transposición (cifrado americano y latino), adjuntos (PDF, fotos, audio) e historial de versiones.
+- **Importar desde LaCuerda**: pegás la URL de una canción de acordes.lacuerda.net o la buscás por canción/artista; se carga letra + acordes en el editor para corregir y guardar.
 - **Importar**: PDF o fotos → **Niro IA** transcribe letra y acordes (editable antes de guardar). Archivos **.txt / ChordPro** (.cho, .chopro, .crd, .pro) se abren directo, sin IA, de a uno o muchos a la vez.
 - **Agenda y repertorio por evento**: calendario, eventos con orden, tono y quién dirige cada canción.
 - **Proyección** (menú *Proyectar*, o desde una canción o evento):

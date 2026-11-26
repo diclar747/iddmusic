@@ -6,6 +6,7 @@ import { useApi, Field, Busy, useToast, ErrorBox } from '../ui.jsx';
 import { SongFields } from './SongEdit.jsx';
 import { parseChart } from '../lib/chart.js';
 import { SONG_TEXT_ACCEPT, isSongText, readTextFile, songFromText } from '../lib/files.js';
+import LaCuerdaPanel from '../components/LaCuerdaPanel.jsx';
 
 const MAX_PAGES = 8;
 const MAX_SIDE = 2200;
@@ -157,11 +158,20 @@ export default function ImportAI({ groupId }){
   }
 
   const aiOff = status.data && !status.data.ai_enabled;
+  function fromLaCuerda(s){
+    clearAll(); setBulk(null);
+    setMeta({ title: s.title || 'Canción', author: s.author || '', original_key: s.key || '', tempo_bpm: '', time_signature: '', category: '', notes: `Fuente: ${s.source_url}` });
+    setChart(s.chart);
+    toast(`"${s.title}" cargada desde LaCuerda: revisá los acordes y guardala`);
+    setTimeout(() => document.querySelector('.import-layout form')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+  }
+
   return <>
     <header className="page-head">
-      <div><span className="eyebrow"><Sparkles size={12} /> Niro IA</span><h1>Importar música con IA</h1>
-        <p className="muted">Subí el PDF o la foto del cifrado/partitura. La IA transcribe letra y acordes, vos revisás y editás todo antes de guardarlo en el grupo.</p></div>
+      <div><span className="eyebrow"><Sparkles size={12} /> LaCuerda · Niro IA · archivos</span><h1>Importar canciones</h1>
+        <p className="muted">Traé canciones desde LaCuerda, desde un PDF o foto (la IA las transcribe) o desde archivos de texto. Siempre revisás y editás letra y acordes antes de guardarlas en el grupo.</p></div>
     </header>
+    <LaCuerdaPanel onLoad={fromLaCuerda} />
     {aiOff && <div className="banner warn"><AlertTriangle size={18} /> La transcripción con IA no está configurada en el servidor (falta <code>NIRO_API_KEY</code> en <code>backend/.env</code>).</div>}
     <div className={`import-layout ${meta ? 'has-result' : ''}`}>
       <section className="panel">

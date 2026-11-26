@@ -25,7 +25,7 @@ const NAV = [
   ['/groups', 'Mis grupos', Users],
   ['/songs', 'Cancionero', Library],
   ['/agenda', 'Agenda', CalendarDays],
-  ['/import', 'Importar con IA', Sparkles],
+  ['/import', 'Importar canciones', Sparkles],
   ['/present/free', 'Proyectar', MonitorPlay],
   ['/musicos', 'Músicos (acordes)', Guitar]
 ];

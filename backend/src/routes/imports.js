@@ -4,6 +4,7 @@ import { bad } from '../lib/http.js';
 import { memoryUpload } from '../lib/uploads.js';
 import { niroConfigured, niroVisionExtract, parseMusicResponse } from '../lib/niro.js';
 import rateLimit from 'express-rate-limit';
+import { fetchLaCuerda, searchLaCuerda, artistLaCuerda } from '../lib/lacuerda.js';
 
 const r = Router();
 r.use(auth);
@@ -23,5 +24,13 @@ r.post('/transcribe', limiter, memoryUpload.single('file'), async (req, res) => 
   if (!result.chart) throw bad('La IA no encontró texto en el archivo. Probá con una imagen más nítida.');
   res.json({ ...result, raw_text: body.text ?? null, cost: body.cost ?? null, model: body.model ?? null, latency_ms: body.latencyMs ?? (Date.now() - started) });
 });
+
+
+/* ---------- LaCuerda (acordes.lacuerda.net) ---------- */
+const lcLimiter = rateLimit({ windowMs: 60 * 1000, limit: 30, keyGenerator: req => req.user.id, standardHeaders: true, legacyHeaders: false,
+  message: { error: 'Demasiadas búsquedas seguidas en LaCuerda. Esperá un minuto.' } });
+r.get('/lacuerda', lcLimiter, async (req, res) => { res.json(await fetchLaCuerda(String(req.query.url || ''))); });
+r.get('/lacuerda/search', lcLimiter, async (req, res) => { res.json(await searchLaCuerda(req.query.q)); });
+r.get('/lacuerda/artist', lcLimiter, async (req, res) => { res.json(await artistLaCuerda(String(req.query.url || ''))); });
 
 export default r;
