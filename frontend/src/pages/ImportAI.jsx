@@ -160,7 +160,7 @@ export default function ImportAI({ groupId }){
   const aiOff = status.data && !status.data.ai_enabled;
   function fromLaCuerda(s){
     clearAll(); setBulk(null);
-    setMeta({ title: s.title || 'Canción', author: s.author || '', original_key: s.key || '', tempo_bpm: '', time_signature: '', category: '', notes: `Fuente: ${s.source_url}` });
+    setMeta({ title: s.title || 'Canción', author: s.author || '', original_key: s.key || '', tempo_bpm: '', time_signature: '', category: '', notes: '' });
     setChart(s.chart);
     toast(`"${s.title}" cargada desde LaCuerda: revisá los acordes y guardala`);
     setTimeout(() => document.querySelector('.import-layout form')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
@@ -204,7 +204,7 @@ export default function ImportAI({ groupId }){
         <div className="panel-head"><h2>Revisá y editá</h2>{result && <small className="muted">{result.pages} pág. transcriptas{result.cost ? ` · costo ${result.cost.toFixed(4)}` : ''}</small>}</div>
         <div className="banner info"><FileText size={16} /> Se guardará como <b>“Revisar transcripción”</b> y el archivo original quedará adjunto para comparar.</div>
         <SongFields value={meta} onChange={setMeta} chart={chart} onChart={setChart} />
-        <div className="actions"><Busy busy={saving} type="submit"><Save size={16} /> Guardar en el grupo</Busy></div>
+        <div className="actions"><button type="button" className="btn" onClick={() => { if (confirm("¿Descartar esta canción sin guardarla?")) { clearAll(); window.scrollTo({ top: 0, behavior: "smooth" }); } }} disabled={saving}><X size={16} /> Cancelar</button><Busy busy={saving} type="submit"><Save size={16} /> Guardar en el grupo</Busy></div>
       </form>}
     </div>
     <ErrorBox error={groups.error} />
