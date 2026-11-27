@@ -1,0 +1,89 @@
+/* =================== Barra superior, menús, perfil e iglesia =================== */
+.content{min-width:0;display:flex;flex-direction:column;min-height:100vh}
+.topbar{position:sticky;top:0;z-index:25;display:flex;align-items:center;gap:12px;padding:10px clamp(14px,2.5vw,32px);background:#ffffffe8;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.tb-icon{position:relative;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:#fff;color:var(--navy);display:grid;place-items:center;cursor:pointer;flex:none}
+.tb-icon:hover{border-color:var(--gold);color:var(--gold)}
+.tb-icon.dark{background:none;border:0;color:#d5e0ee}.tb-icon.dark:hover{background:#ffffff14;color:#fff}
+.tb-icon .badge{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;padding:0 5px;border-radius:99px;background:#e5484d;color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;border:2px solid #fff}
+.tb-icon.dark .badge{border-color:#14294a}
+.tb-church{display:flex;align-items:center;gap:10px;min-width:0;color:var(--ink);text-decoration:none!important;padding:4px 10px 4px 4px;border-radius:12px}
+.tb-church:hover{background:#f1f4f8}
+.tb-church b{display:block;font-size:15px;white-space:nowrap}.tb-church small{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:46vw}
+.church-avatar{border-radius:50%;object-fit:cover;flex:none;box-shadow:0 0 0 2px #d9a441}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.tb-profile{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;border-radius:99px;padding:4px 10px 4px 4px;cursor:pointer;font:inherit;color:var(--ink)}
+.tb-profile:hover{border-color:var(--gold)}
+.tb-name{font-weight:600;font-size:14px;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.avatar{display:grid;place-items:center;border-radius:50%;background:linear-gradient(145deg,#1d3a5e,#0f2240);color:var(--gold-2);font-weight:800;width:40px;height:40px;flex:none;font-size:14px}
+.avatar.sm{width:32px;height:32px;font-size:12px}
+.avatar.xl{width:84px;height:84px;font-size:28px;box-shadow:0 0 0 3px #d9a441,0 10px 24px #14294533}
+
+/* Menús desplegables */
+.dd{position:relative}
+.dd-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:50;width:280px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 50px #14294533;padding:8px;display:grid;gap:2px;animation:dd-in .15s ease}
+.dd-menu a,.dd-menu>button{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;color:var(--ink);font:inherit;font-size:14.5px;text-decoration:none!important;border:0;background:none;cursor:pointer;width:100%;text-align:left}
+.dd-menu a:hover,.dd-menu>button:hover{background:#f1f4f8}
+.dd-menu a svg,.dd-menu>button svg{color:var(--gold)}
+.dd-menu .install-btn.menu{color:var(--navy);background:#fff8e6;border-color:#d9a44188;margin:4px 0}
+.dd-user{display:flex;align-items:center;gap:10px;padding:8px 10px 12px;border-bottom:1px solid var(--line);margin-bottom:4px;min-width:0}
+.dd-user span:last-child{min-width:0}.dd-user b{display:block}.dd-user small{display:block;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
+.dd-menu.notif{width:min(380px,92vw);max-height:70vh;overflow:auto}
+.dd-head{display:flex;align-items:center;justify-content:space-between;padding:6px 10px 10px;border-bottom:1px solid var(--line);margin-bottom:4px}
+.dd-head .link-btn{font-size:12.5px;display:inline-flex;align-items:center;gap:4px}
+.dd-empty{padding:12px}
+.notif-item{align-items:flex-start!important}
+.notif-item b{display:block;font-size:13.5px;font-weight:600;line-height:1.35}.notif-item small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.notif-item.new{background:#fff8e6}.notif-item.new b{font-weight:700}
+.ni-icon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;flex:none;background:#eef2f8;color:var(--navy)!important}
+.ni-icon.event{background:#e7f6ee;color:#15803d!important}
+.ni-icon svg{color:inherit!important}
+@keyframes dd-in{from{transform:translateY(-6px);opacity:0}}
+
+/* Menú lateral achicado (solo íconos) */
+.layout.collapsed{grid-template-columns:76px 1fr}
+.layout.collapsed .sidebar{padding:16px 10px;align-items:center}
+.layout.collapsed .brand{padding:4px 0 22px}
+.layout.collapsed .brand>span:last-child{display:none}
+.layout.collapsed .sidebar nav a,.layout.collapsed .side-foot a,.layout.collapsed .logout,.layout.collapsed .install-btn{justify-content:center;padding:12px}
+.layout.collapsed .sidebar nav a span,.layout.collapsed .side-foot a span,.layout.collapsed .logout span,.layout.collapsed .install-btn span{display:none}
+.layout{transition:grid-template-columns .2s ease}
+
+/* WhatsApp */
+.wa-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:99px;background:#25d366;color:#fff!important;font-size:13px;font-weight:700;text-decoration:none!important;flex:none}
+.wa-btn:hover{background:#1ebe5b}
+.btn.wa{background:#25d366;border-color:#25d366;color:#fff}.btn.wa:hover{background:#1ebe5b}
+.member .icon-btn{flex:none}
+
+/* Perfil */
+.profile-head{display:flex;align-items:center;gap:20px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;margin-bottom:18px}
+.profile-head h1{font-size:clamp(22px,3vw,30px);margin:4px 0}
+.profile-head>div{flex:1;min-width:220px}
+.role-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.form h2{display:flex;align-items:center;gap:8px}.form h2 svg{color:var(--gold)}
+
+/* Iglesia */
+.ch-hero{position:relative;border-radius:22px;overflow:hidden;background-size:cover;background-position:center;min-height:280px;display:flex;align-items:flex-end;margin-bottom:18px;box-shadow:0 18px 40px #14294529}
+.ch-hero-body{position:relative;display:flex;align-items:flex-end;gap:18px;padding:26px clamp(20px,4vw,40px);color:#fff;flex-wrap:wrap}
+.ch-hero h1{font-size:clamp(28px,4vw,42px);margin:4px 0}.ch-hero p{margin:0;color:#d5e0ee;font-size:16px}.ch-hero em{display:block;margin-top:6px;color:#f0c75e;font-family:Georgia,serif;font-size:17px}
+.ch-hero .eyebrow{color:var(--gold-2)}
+.ch-hero-actions{position:absolute;top:14px;right:14px;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.ch-hero-actions .btn{background:#ffffffe6}.ch-hero-actions .btn.primary{background:var(--navy)}
+.ch-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.ch-grid h2{display:flex;align-items:center;gap:8px;margin-bottom:12px}.ch-grid h2 svg{color:var(--gold)}
+.ch-list{display:grid;gap:10px}
+.ch-card{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:14px;flex-wrap:wrap}
+.ch-card small{display:block;color:var(--muted);font-size:12px}.ch-card b{display:block}.ch-card em{display:block;font-style:normal;color:var(--muted);font-size:13px}
+.ch-ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:var(--gold-2);background:linear-gradient(145deg,#1d3a5e,#0f2240);flex:none}
+.ch-schedule{margin:0;padding-left:18px;line-height:1.9}
+
+@media (max-width:1180px){.tb-name{display:none}}
+@media (max-width:860px){
+  .topbar{display:none}
+  .content{display:block;min-height:0}
+  .ch-grid{grid-template-columns:1fr}
+  .ch-hero{min-height:240px}
+  .ch-hero-actions{position:static;padding:0 16px 16px;justify-content:flex-start}
+  .ch-hero{flex-direction:column;align-items:stretch;justify-content:flex-end}
+  .m-top .dd-menu{position:fixed;left:8px;right:8px;top:calc(60px + env(safe-area-inset-top));width:auto}
+}

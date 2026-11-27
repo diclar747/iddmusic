@@ -3,12 +3,12 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import db from '../db.js';
 import { auth } from '../middleware/auth.js';
-import { bad } from '../lib/http.js';
+import { bad, normPhone } from '../lib/http.js';
 
 const r = Router();
 const USER_SQL = `SELECT u.*, array_remove(array_agg(ro.code),NULL) roles FROM users u
   LEFT JOIN user_roles ur ON ur.user_id=u.id LEFT JOIN roles ro ON ro.id=ur.role_id`;
-const publicUser = u => ({ id: u.id, email: u.email, fullName: u.full_name, roles: u.roles || [] });
+const publicUser = u => ({ id: u.id, email: u.email, fullName: u.full_name, phone: u.phone || null, roles: u.roles || [] });
 
 r.post('/login', async (req, res) => {
   const { email, password } = req.body || {};
@@ -39,8 +39,10 @@ r.post('/change-password', auth, async (req, res) => {
 r.patch('/me', auth, async (req, res) => {
   const name = String(req.body?.full_name || '').trim();
   if (!name) throw bad('El nombre es obligatorio');
-  await db.query('UPDATE users SET full_name=$1, updated_at=now() WHERE id=$2', [name.slice(0, 160), req.user.id]);
-  res.json({ ok: true });
+  const phone = normPhone(req.body?.phone);
+  if (phone !== undefined) await db.query('UPDATE users SET full_name=$1, phone=$2, updated_at=now() WHERE id=$3', [name.slice(0, 160), phone, req.user.id]);
+  else await db.query('UPDATE users SET full_name=$1, updated_at=now() WHERE id=$2', [name.slice(0, 160), req.user.id]);
+  res.json({ ok: true, phone: phone ?? null });
 });
 
 export default r;

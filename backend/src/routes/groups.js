@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import db, { tx } from '../db.js';
 import { auth } from '../middleware/auth.js';
-import { bad, clean, isUuid, notFound } from '../lib/http.js';
+import { bad, clean, isUuid, notFound, normPhone } from '../lib/http.js';
 import { isSuper, requireLeader, requireMember } from '../lib/access.js';
 import { audit } from '../lib/audit.js';
 import { imageUpload, removeStored } from '../lib/uploads.js';
@@ -39,7 +39,7 @@ r.post('/', async (req, res) => {
 r.get('/:id', async (req, res) => {
   const role = await requireMember(req.user, req.params.id);
   const g = await db.query('SELECT * FROM groups WHERE id=$1', [req.params.id]);
-  const members = await db.query(`SELECT u.id, u.full_name, u.email, gm.group_role, gm.joined_at
+  const members = await db.query(`SELECT u.id, u.full_name, u.email, u.phone, gm.group_role, gm.joined_at
     FROM group_members gm JOIN users u ON u.id=gm.user_id WHERE gm.group_id=$1 ORDER BY gm.group_role DESC, u.full_name`, [req.params.id]);
   res.json({ ...g.rows[0], my_role: role, members: members.rows });
 });
@@ -70,6 +70,7 @@ r.post('/:id/members', async (req, res) => {
   const email = clean(req.body?.email, 255)?.toLowerCase();
   const fullName = clean(req.body?.full_name, 160);
   const groupRole = req.body?.group_role === 'leader' ? 'leader' : 'member';
+  const phone = normPhone(req.body?.phone);
   if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw bad('Ingresá un email válido');
   let tempPassword = null;
   let u = await db.query('SELECT id, full_name, status FROM users WHERE lower(email)=$1', [email]);
@@ -78,23 +79,33 @@ r.post('/:id/members', async (req, res) => {
     if (!fullName) throw bad('Ese email no tiene cuenta todavía: indicá también el nombre para crearla');
     tempPassword = 'Idd-' + crypto.randomBytes(4).toString('hex');
     userId = await tx(async c => {
-      const n = await c.query("INSERT INTO users(full_name,email,password_hash,status) VALUES($1,$2,$3,'active') RETURNING id",
-        [fullName, email, await bcrypt.hash(tempPassword, 12)]);
+      const n = await c.query("INSERT INTO users(full_name,email,password_hash,status,phone) VALUES($1,$2,$3,'active',$4) RETURNING id",
+        [fullName, email, await bcrypt.hash(tempPassword, 12), phone || null]);
       await c.query("INSERT INTO user_roles(user_id,role_id) SELECT $1,id FROM roles WHERE code='member'", [n.rows[0].id]);
       return n.rows[0].id;
     });
   }
+  else if (phone) await db.query('UPDATE users SET phone=$1, updated_at=now() WHERE id=$2', [phone, userId]);
   const ins = await db.query('INSERT INTO group_members(group_id,user_id,group_role) VALUES($1,$2,$3) ON CONFLICT DO NOTHING RETURNING user_id', [req.params.id, userId, groupRole]);
   if (!ins.rowCount) throw bad('Esa persona ya es integrante del grupo');
   await audit(req.user, 'member.add', 'user', userId, req.params.id, { email });
-  res.status(201).json({ user_id: userId, email, temp_password: tempPassword });
+  const who = await db.query('SELECT full_name, phone FROM users WHERE id=$1', [userId]);
+  res.status(201).json({ user_id: userId, email, full_name: who.rows[0].full_name, phone: who.rows[0].phone, temp_password: tempPassword });
 });
 
 r.patch('/:id/members/:userId', async (req, res) => {
   await requireLeader(req.user, req.params.id);
-  const role = req.body?.group_role === 'leader' ? 'leader' : 'member';
-  if (role === 'member') await ensureAnotherLeader(req.params.id, req.params.userId);
-  await db.query('UPDATE group_members SET group_role=$1 WHERE group_id=$2 AND user_id=$3', [role, req.params.id, req.params.userId]);
+  if (req.body?.phone !== undefined) {
+    if (!isUuid(req.params.userId)) throw notFound('Integrante no encontrado');
+    const m = await db.query('SELECT 1 FROM group_members WHERE group_id=$1 AND user_id=$2', [req.params.id, req.params.userId]);
+    if (!m.rowCount) throw notFound('Integrante no encontrado');
+    await db.query('UPDATE users SET phone=$1, updated_at=now() WHERE id=$2', [normPhone(req.body.phone), req.params.userId]);
+  }
+  if (req.body?.group_role !== undefined) {
+    const role = req.body.group_role === 'leader' ? 'leader' : 'member';
+    if (role === 'member') await ensureAnotherLeader(req.params.id, req.params.userId);
+    await db.query('UPDATE group_members SET group_role=$1 WHERE group_id=$2 AND user_id=$3', [role, req.params.id, req.params.userId]);
+  }
   res.json({ ok: true });
 });
 

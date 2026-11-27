@@ -18,6 +18,7 @@ import fileRoutes from './routes/files.js';
 import importRoutes from './routes/imports.js';
 import bibleRoutes from './routes/bible.js';
 import liveRoutes from './routes/live.js';
+import { church as churchRoutes, notifications as notificationRoutes } from './routes/church.js';
 
 // Al arrancar: aplica migraciones pendientes y, si no se configuró JWT_SECRET, usa uno generado y guardado en la base.
 try {
@@ -86,6 +87,8 @@ app.use('/api/files', fileRoutes);
 app.use('/api/import', importRoutes);
 app.use('/api/bible', bibleRoutes);
 app.use('/api/live', liveRoutes);
+app.use('/api/church', churchRoutes);
+app.use('/api/notifications', notificationRoutes);
 app.use('/api', (_req, res) => res.status(404).json({ error: 'Ruta no encontrada' }));
 
 // Web compilada (frontend/dist): la sirve la misma API cuando corre como un único proceso Node (panel de hosting).

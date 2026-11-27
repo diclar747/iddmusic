@@ -10,3 +10,19 @@ export const clean = (v, max = 500) => {
   const s = String(v).trim();
   return s ? s.slice(0, max) : null;
 };
+
+/** Normaliza un número de WhatsApp: "0981 123 456" → "+595981123456" (Paraguay por defecto). Vacío → null. */
+export function normPhone(v){
+  if (v === undefined) return undefined;
+  let s = String(v || '').trim();
+  if (!s) return null;
+  const plus = s.startsWith('+') || s.startsWith('00');
+  s = s.replace(/\D/g, '');
+  if (s.startsWith('00')) s = s.slice(2);
+  if (!plus) {
+    if (s.startsWith('0')) s = '595' + s.slice(1);        // 0981123456 → 595981123456
+    else if (s.length === 9 && s.startsWith('9')) s = '595' + s; // 981123456 → 595981123456
+  }
+  if (s.length < 8 || s.length > 15) throw new HttpError(400, 'El número de WhatsApp no parece válido (ej.: 0981 123 456)');
+  return '+' + s;
+}

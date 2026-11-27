@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Music2, CalendarDays, Users, Activity, Plus, Sparkles, Search, Crown, Trash2, Pencil, UserPlus, Image as ImageIcon, LogOut, Copy } from 'lucide-react';
+import { Music2, CalendarDays, Users, Activity, Plus, Sparkles, Search, Crown, Trash2, Pencil, UserPlus, Image as ImageIcon, LogOut, Copy, MessageCircle, Phone } from 'lucide-react';
+import { waLink, fmtPhone } from '../lib/whatsapp.js';
+import { initials } from './Profile.jsx';
 import { api } from '../api.js';
 import { navigate } from '../router.js';
 import { useApi, Spinner, ErrorBox, Empty, Tabs, Modal, Field, Busy, useToast, fmtAgo, isoDate } from '../ui.jsx';
@@ -83,29 +85,44 @@ function Members({ group, leader, user, reload }){
     if (!confirm(self ? '¿Salir de este grupo?' : `¿Quitar a ${m.full_name} del grupo?`)) return;
     try { await api(`/groups/${group.id}/members/${m.id}`, { method: 'DELETE' }); if (self) navigate('/groups'); else reload(); } catch (e) { toast(e.message, 'error'); }
   }
+  async function editPhone(m){
+    const v = prompt(`WhatsApp de ${m.full_name} (ej.: 0981 123 456). Dejalo vacío para quitarlo.`, m.phone ? fmtPhone(m.phone) : '');
+    if (v === null) return;
+    try { await api(`/groups/${group.id}/members/${m.id}`, { method: 'PATCH', body: { phone: v } }); toast('WhatsApp actualizado'); reload(); } catch (e) { toast(e.message, 'error'); }
+  }
+  const accessText = c => `¡Hola ${c.full_name?.split(' ')[0] || ''}! Te sumé al grupo "${group.name}" en IDD Music 🎵\n\nIngresá en: ${location.origin}\nCorreo: ${c.email}${c.temp_password ? `\nContraseña temporal: ${c.temp_password}\n\nDespués podés cambiarla en "Mi perfil".` : '\n(Usá tu contraseña de siempre.)'}\n\nTip: abrilo en el teléfono y tocá "Instalar la app".`;
   return <section className="panel">
     <div className="panel-head"><h2>Integrantes</h2>{leader && <button className="btn primary sm" onClick={() => setAdding(true)}><UserPlus size={15} /> Agregar integrante</button>}</div>
     <p className="muted small">Todos los integrantes pueden cargar, editar e importar canciones y armar los repertorios. Los líderes además administran integrantes y el grupo.</p>
     <div className="members">{group.members.map(m => <div key={m.id} className="member">
-      <span className="avatar">{m.full_name.split(' ').map(x => x[0]).slice(0, 2).join('')}</span>
-      <span className="grow"><b>{m.full_name}{m.id === user.id && ' (vos)'}</b><small>{m.email}</small></span>
+      <span className="avatar">{initials(m.full_name)}</span>
+      <span className="grow"><b>{m.full_name}{m.id === user.id && ' (vos)'}</b><small>{m.phone ? <>{fmtPhone(m.phone)} · </> : null}{m.email}</small></span>
+      {m.phone && m.id !== user.id && <a className="wa-btn" href={waLink(m.phone, `Hola ${m.full_name.split(' ')[0]}! 🎵`)} target="_blank" rel="noreferrer" title="Escribir por WhatsApp"><MessageCircle size={16} /><span>WhatsApp</span></a>}
+      {leader && <button className="icon-btn" title={m.phone ? 'Cambiar WhatsApp' : 'Agregar WhatsApp'} onClick={() => editPhone(m)}><Phone size={15} /></button>}
       {m.group_role === 'leader' ? <span className="pill gold"><Crown size={12} /> Líder</span> : <span className="pill soft">Integrante</span>}
       {leader && m.id !== user.id && <select className="mini" value={m.group_role} onChange={e => setRole(m, e.target.value)}><option value="member">Integrante</option><option value="leader">Líder</option></select>}
       {(leader || m.id === user.id) && <button className="icon-btn danger" title={m.id === user.id ? 'Salir del grupo' : 'Quitar'} onClick={() => remove(m)}>{m.id === user.id ? <LogOut size={16} /> : <Trash2 size={16} />}</button>}
     </div>)}</div>
-    {adding && <AddMember group={group} onClose={() => setAdding(false)} onAdded={r => { setAdding(false); reload(); if (r.temp_password) setCreated(r); else toast('Integrante agregado'); }} />}
-    {created && <Modal title="Cuenta creada" onClose={() => setCreated(null)}>
-      <p>Se creó una cuenta nueva. Compartí estos datos con la persona para que ingrese (puede cambiar la contraseña en su perfil):</p>
-      <div className="cred"><div><small>Correo</small><b>{created.email}</b></div><div><small>Contraseña temporal</small><b>{created.temp_password}</b></div>
-        <button className="btn sm" onClick={() => { navigator.clipboard?.writeText(`IDD Music\nCorreo: ${created.email}\nContraseña: ${created.temp_password}\n${location.origin}`); toast('Copiado'); }}><Copy size={14} /> Copiar</button></div>
-      <p className="muted small">Esta contraseña no se vuelve a mostrar.</p>
+    {adding && <AddMember group={group} onClose={() => setAdding(false)} onAdded={r => { setAdding(false); reload(); if (r.temp_password || r.phone) setCreated(r); else toast('Integrante agregado'); }} />}
+    {created && <Modal title={created.temp_password ? 'Cuenta creada' : 'Integrante agregado'} onClose={() => setCreated(null)}>
+      {created.temp_password
+        ? <p>Se creó la cuenta de <b>{created.full_name}</b>. Enviale el acceso por WhatsApp (o copialo):</p>
+        : <p><b>{created.full_name}</b> ya tenía cuenta y ahora es parte del grupo. Avisale por WhatsApp:</p>}
+      <div className="cred"><div><small>Correo (para ingresar)</small><b>{created.email}</b></div>
+        {created.temp_password && <div><small>Contraseña temporal</small><b>{created.temp_password}</b></div>}
+        {created.phone && <div><small>WhatsApp</small><b>{fmtPhone(created.phone)}</b></div>}</div>
+      <div className="actions">
+        <button className="btn" onClick={() => { navigator.clipboard?.writeText(accessText(created)); toast('Copiado'); }}><Copy size={15} /> Copiar</button>
+        {created.phone && <a className="btn wa" href={waLink(created.phone, accessText(created))} target="_blank" rel="noreferrer"><MessageCircle size={16} /> Enviar por WhatsApp</a>}
+      </div>
+      {created.temp_password && <p className="muted small">Esta contraseña no se vuelve a mostrar.</p>}
     </Modal>}
   </section>;
 }
 
 function AddMember({ group, onClose, onAdded }){
   const toast = useToast();
-  const [f, setF] = useState({ email: '', full_name: '', group_role: 'member' });
+  const [f, setF] = useState({ full_name: '', phone: '', email: '', group_role: 'member' });
   const [busy, setBusy] = useState(false);
   async function save(e){
     e.preventDefault(); setBusy(true);
@@ -113,8 +130,9 @@ function AddMember({ group, onClose, onAdded }){
   }
   return <Modal title="Agregar integrante" onClose={onClose}>
     <form className="form" onSubmit={save}>
-      <Field label="Correo electrónico"><input type="email" value={f.email} onChange={e => setF({ ...f, email: e.target.value })} required /></Field>
-      <Field label="Nombre completo" hint="Necesario solo si la persona todavía no tiene cuenta: se crea con una contraseña temporal."><input value={f.full_name} onChange={e => setF({ ...f, full_name: e.target.value })} /></Field>
+      <Field label="Nombre completo" hint="Si la persona todavía no tiene cuenta, se crea con una contraseña temporal."><input value={f.full_name} onChange={e => setF({ ...f, full_name: e.target.value })} placeholder="Ej.: Ana Benítez" /></Field>
+      <Field label="WhatsApp" hint="Para avisarle y enviarle el acceso por WhatsApp."><input type="tel" inputMode="tel" value={f.phone} onChange={e => setF({ ...f, phone: e.target.value })} placeholder="0981 123 456" /></Field>
+      <Field label="Correo electrónico" hint="Es el usuario para iniciar sesión."><input type="email" value={f.email} onChange={e => setF({ ...f, email: e.target.value })} required placeholder="nombre@gmail.com" /></Field>
       <Field label="Rol en el grupo"><select value={f.group_role} onChange={e => setF({ ...f, group_role: e.target.value })}><option value="member">Integrante (carga y edita música)</option><option value="leader">Líder (además administra el grupo)</option></select></Field>
       <div className="actions"><button type="button" className="btn" onClick={onClose}>Cancelar</button><Busy busy={busy} type="submit">Agregar</Busy></div>
     </form>
