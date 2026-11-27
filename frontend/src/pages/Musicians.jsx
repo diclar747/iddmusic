@@ -35,7 +35,7 @@ export default function Musicians({ groupId: initialGroup, tv: tvParam }){
   useEffect(() => save('idd_mus_chords', chords), [chords]);
   useEffect(() => save('idd_mus_shift', shifts), [shifts]);
   useEffect(() => { if (groupId && !receiver) save('idd_mus_group', groupId); }, [groupId]);
-  useEffect(() => { document.title = 'IDD Music · Músicos'; }, []);
+  useEffect(() => { document.title = 'SION Music · Músicos'; }, []);
 
   // Modo TV (Chromecast): el presentador manda el token y el grupo a seguir.
   useEffect(() => {

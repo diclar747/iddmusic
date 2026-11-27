@@ -19,6 +19,7 @@ import importRoutes from './routes/imports.js';
 import bibleRoutes from './routes/bible.js';
 import liveRoutes from './routes/live.js';
 import { church as churchRoutes, notifications as notificationRoutes } from './routes/church.js';
+import platformRoutes from './routes/platform.js';
 
 // Al arrancar: aplica migraciones pendientes y, si no se configuró JWT_SECRET, usa uno generado y guardado en la base.
 try {
@@ -33,12 +34,12 @@ try {
   const users = await db.query('SELECT count(*)::int n FROM users');
   if (!users.rows[0].n) {
     const email = (process.env.ADMIN_EMAIL || 'admin@cd.com.py').trim().toLowerCase();
-    const password = process.env.ADMIN_PASSWORD || 'Idd-' + crypto.randomBytes(9).toString('base64url');
+    const password = process.env.ADMIN_PASSWORD || 'Sion-' + crypto.randomBytes(6).toString('base64url');
     const bcrypt = (await import('bcryptjs')).default;
-    const id = (await db.query("INSERT INTO users(full_name,email,password_hash,status) VALUES($1,$2,$3,'active') RETURNING id", [process.env.ADMIN_NAME || 'Administración IDD', email, await bcrypt.hash(password, 12)])).rows[0].id;
-    await db.query("INSERT INTO user_roles(user_id,role_id) SELECT $1,id FROM roles WHERE code IN ('super_admin','worship_director') ON CONFLICT DO NOTHING", [id]);
+    const id = (await db.query("INSERT INTO users(full_name,email,password_hash,status) VALUES($1,$2,$3,'active') RETURNING id", [process.env.ADMIN_NAME || 'Administración SION', email, await bcrypt.hash(password, 12)])).rows[0].id;
+    await db.query("INSERT INTO user_roles(user_id,role_id) SELECT $1,id FROM roles WHERE code = 'platform_admin' ON CONFLICT DO NOTHING", [id]);
     console.log('==================================================');
-    console.log(' ADMINISTRADOR CREADO (primer arranque)');
+    console.log(' ADMINISTRADOR DE SION MUSIC CREADO (primer arranque)');
     console.log(`   Usuario:    ${email}`);
     console.log(`   Contraseña: ${process.env.ADMIN_PASSWORD ? '(la de ADMIN_PASSWORD)' : password}`);
     console.log(' Guardala y cambiala desde "Mi perfil".');
@@ -89,6 +90,7 @@ app.use('/api/bible', bibleRoutes);
 app.use('/api/live', liveRoutes);
 app.use('/api/church', churchRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/platform', platformRoutes);
 app.use('/api', (_req, res) => res.status(404).json({ error: 'Ruta no encontrada' }));
 
 // Web compilada (frontend/dist): la sirve la misma API cuando corre como un único proceso Node (panel de hosting).
@@ -113,4 +115,4 @@ app.use((err, _req, res, _next) => {
 });
 
 const port = Number(process.env.PORT || 4000);
-app.listen(port, () => console.log(`IDD Music API escuchando en http://localhost:${port} · IA Niro: ${process.env.NIRO_API_KEY ? 'activa' : 'sin configurar'}`));
+app.listen(port, () => console.log(`SION Music API escuchando en http://localhost:${port} · IA Niro: ${process.env.NIRO_API_KEY ? 'activa' : 'sin configurar'}`));

@@ -12,11 +12,11 @@ function useImage(imageId){
   return url;
 }
 
-/** Logo institucional (llamas) teñido de dorado sobre cualquier fondo, o una imagen propia del grupo. */
-export function Logo({ size, imageId, color = 'linear-gradient(160deg,#f6e2a6,#d6a945 60%,#b58a36)' }){
+/** Logo en el escenario: una imagen propia del grupo, el logo de la iglesia o el de SION Music. */
+export function Logo({ size, imageId, src }){
   const url = useImage(imageId);
-  if (imageId) return <div className="stage-logo custom" style={{ width: size, height: size, backgroundImage: url ? `url(${url})` : 'none' }} />;
-  return <div className="stage-logo" style={{ width: size, height: size }}><div style={{ background: color }} /></div>;
+  const img = imageId ? url : (src || '/icons/sion-mark.png');
+  return <div className="stage-logo custom" style={{ width: size, height: size, backgroundImage: img ? `url(${img})` : 'none' }} />;
 }
 
 /** Imagen proyectada a pantalla completa: se ve entera, con la misma imagen difuminada de fondo. */
@@ -50,7 +50,7 @@ export default function Stage({ slide, theme, settings, black, className = '', a
   return <div className={`stage ${theme.anim ? 'anim' : ''} ${(theme.light && !settings.textColor) || ['#111111', '#1b2a3d'].includes(settings.textColor) ? 'light' : ''} ${className}`} style={{ backgroundColor: isColor ? theme.bg : '#000', backgroundImage: isColor ? 'none' : theme.bg, backgroundSize: theme.anim ? '300% 300%' : 'cover', backgroundPosition: 'center', color: textColor }}>
     {img && <div className="stage-img" style={{ backgroundImage: `url(${img})` }} />}
     {(isStandby ? (theme.overlay ?? 0) : overlay) > 0 && <div className="stage-overlay" style={{ background: `rgba(0,0,0,${isStandby ? theme.overlay : overlay})` }} />}
-    {showLogoBg && <div className="stage-wm"><Logo size="86cqh" imageId={logoImage} /></div>}
+    {showLogoBg && <div className="stage-wm"><Logo size="86cqh" imageId={logoImage} src={settings.churchLogo} /></div>}
     {isImage && !black && <MediaSlide key={slide.imageId} imageId={slide.imageId} />}
     {slide && !black && !isImage && <div key={key} className={`stage-text pos-${isStandby ? 'center' : settings.position} ${animate ? 'fade' : ''}`} style={{ fontFamily: font.css, fontWeight: font.weight }}>
       {slide.kind === 'title' ? <>
@@ -64,12 +64,12 @@ export default function Stage({ slide, theme, settings, black, className = '', a
         <div className="st-lines" style={{ fontSize: `${textSize}cqh` }}>{textLines.map((l, i) => <div key={i}>{l}</div>)}</div>
         {slide.reference && <div className="st-ref" style={{ fontSize: `${size * 0.5}cqh` }}>{slide.reference}</div>}
       </> : isStandby && slide.mode === 'logo' ? <div className="standby">
-        {slide.logo && <Logo size="34cqh" imageId={logoImage} />}
+        {slide.logo && <Logo size="34cqh" imageId={logoImage} src={settings.churchLogo} />}
         {slide.title && <div className="sb-title" style={{ fontSize: `${size * 0.95}cqh` }}>{slide.title}</div>}
         {slide.sub && <div className="sb-sub" style={{ fontSize: `${size * 0.42}cqh` }}>{slide.sub}</div>}
       </div> : null}
     </div>}
-    {showCorner && !black && <div className="stage-corner"><Logo size="11cqh" imageId={logoImage} /></div>}
+    {showCorner && !black && <div className="stage-corner"><Logo size="11cqh" imageId={logoImage} src={settings.churchLogo} /></div>}
     {(black || (isStandby && slide.mode === 'negro')) && <div className="stage-black" />}
   </div>;
 }

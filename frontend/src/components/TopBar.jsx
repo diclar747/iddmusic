@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Bell, Maximize, Minimize, PanelLeftClose, PanelLeftOpen, UserCircle, KeyRound, Church, LogOut, CalendarDays, Music2, ChevronDown, CheckCheck } from 'lucide-react';
+import { Bell, Maximize, Minimize, PanelLeftClose, PanelLeftOpen, UserCircle, KeyRound, Church, LogOut, CalendarDays, Music2, ChevronDown, CheckCheck, Sun, Moon, ShieldCheck } from 'lucide-react';
+import { applyTheme, effectiveMode, setUserMode, APP_NAME } from '../lib/brand.js';
+import { themeById } from '../lib/themes.js';
 import { api, session } from '../api.js';
 import { fmtAgo } from '../ui.jsx';
 import { BrandMark, InstallButton } from './Brand.jsx';
@@ -8,7 +10,8 @@ import { initials } from '../pages/Profile.jsx';
 /* ---------- Datos de la iglesia (compartidos en toda la app) ---------- */
 let churchCache = null;
 const churchSubs = new Set();
-export function setChurch(c){ churchCache = c; churchSubs.forEach(f => f(c)); }
+export function setChurch(c){ churchCache = c; applyTheme(c); churchSubs.forEach(f => f(c)); }
+export const resetChurch = () => { churchCache = null; };
 export function useChurch(){
   const [c, setC] = useState(churchCache);
   useEffect(() => {
@@ -18,12 +21,21 @@ export function useChurch(){
   }, []);
   return c;
 }
-export const churchImage = c => c?.has_image ? `/api/church/image?v=${c.image_version}` : null;
+export const churchLogo = c => c?.logo_src || '';
+export const churchCover = c => c?.cover === 'photo' && c?.cover_src ? `url(${c.cover_src})` : themeById(c?.cover || 'c-0').bg;
 
-/** Foto de la iglesia (o el logo si todavía no hay foto). */
+/** Logo de la iglesia (o el de SION Music si todavía no cargó uno). */
 export function ChurchAvatar({ church, size = 38 }){
-  const img = churchImage(church);
-  return img ? <img className="church-avatar" src={img} alt="" style={{ width: size, height: size }} /> : <BrandMark size={size} />;
+  return <BrandMark size={size} src={churchLogo(church)} />;
+}
+
+/** Modo claro / oscuro / automático (preferencia de cada usuario). */
+export function ModeButton({ dark = false }){
+  const church = useChurch();
+  const [, force] = useState(0);
+  const mode = effectiveMode(church);
+  const next = mode === 'dark' ? 'light' : 'dark';
+  return <button className={`tb-icon ${dark ? 'dark' : ''}`} title={mode === 'dark' ? 'Modo claro' : 'Modo oscuro'} onClick={() => { setUserMode(next); force(n => n + 1); }}>{mode === 'dark' ? <Sun size={18} /> : <Moon size={18} />}</button>;
 }
 
 /** Menú desplegable que se cierra al tocar afuera. */
@@ -85,7 +97,8 @@ export function ProfileMenu({ user }){
       <div className="dd-user"><span className="avatar">{initials(user.fullName)}</span><span><b>{user.fullName}</b><small>{user.email}</small></span></div>
       <a href="#/profile"><UserCircle size={17} /> Mi perfil</a>
       <a href="#/profile/password"><KeyRound size={17} /> Cambiar contraseña</a>
-      <a href="#/iglesia"><Church size={17} /> Datos de la iglesia</a>
+      <a href="#/iglesia"><Church size={17} /> Mi iglesia y apariencia</a>
+      {user.roles?.includes('platform_admin') && <a href="#/admin"><ShieldCheck size={17} /> Panel de SION</a>}
       <InstallButton className="menu" />
       <button onClick={() => session.clear()}><LogOut size={17} /> Salir</button>
     </div>}
@@ -108,9 +121,10 @@ export default function TopBar({ user, collapsed, onToggle }){
     <button className="tb-icon" onClick={onToggle} title={collapsed ? 'Mostrar el menú' : 'Achicar el menú'}>{collapsed ? <PanelLeftOpen size={19} /> : <PanelLeftClose size={19} />}</button>
     <a className="tb-church" href="#/iglesia" title="Datos de la iglesia">
       <ChurchAvatar church={church} size={36} />
-      <span><b>{church?.name || 'Iglesia de Dios'}</b><small>{church?.branch || 'Bella Vista'}{church?.address ? ` · ${church.address}` : ''}</small></span>
+      <span><b>{church?.name || APP_NAME}</b><small>{church?.branch || ''}{church?.address ? `${church?.branch ? ' · ' : ''}${church.address}` : ''}</small></span>
     </a>
     <div className="tb-right">
+      <ModeButton />
       <FullscreenButton />
       <NotificationBell />
       <ProfileMenu user={user} />

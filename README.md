@@ -1,9 +1,10 @@
-# IDD Music · Cancionero y proyección
-**Iglesia de Dios · Bella Vista**
+# SION Music
+*Un lugar de adoración y presencia de Dios*
 
-Aplicación web para el ministerio de alabanza: canciones con letra y acordes, grupos colaborativos, agenda de cultos y ensayos, importación de cifrados con IA (Niro) y **proyección tipo PowerPoint** con Chromecast, vista de músicos con acordes y Biblia.
+Plataforma para iglesias (cada una con su logo, colores, portada y modo claro/oscuro) para el ministerio de alabanza: canciones con letra y acordes, grupos colaborativos, agenda de cultos y ensayos, importación de cifrados con IA (Niro) y **proyección tipo PowerPoint** con Chromecast, vista de músicos con acordes y Biblia.
 
 ## Qué incluye
+- **Varias iglesias** (SION): cada iglesia tiene sus usuarios, grupos, canciones, logo, portada, 9 paletas de colores y modo claro/oscuro/automático. **Panel de SION** (administrador de la plataforma): crear iglesias con su administrador, activar/desactivar, extender el plan 1, 3, 6 o 12 meses, fecha de vencimiento, restablecer acceso y eliminar. Al vencer o desactivarse, sus usuarios no pueden ingresar.
 - **Grupos colaborativos**: canciones, agenda, integrantes, imágenes y actividad. Todos los integrantes cargan y editan; los líderes administran integrantes.
 - **Canciones**: editor de cifrado (acordes encima de la letra o ChordPro `[G]Santo`), transposición (cifrado americano y latino), adjuntos (PDF, fotos, audio) e historial de versiones.
 - **Importar desde LaCuerda**: pegás la URL de una canción de acordes.lacuerda.net o la buscás por canción/artista; se carga letra + acordes en el editor para corregir y guardar.

@@ -3,6 +3,8 @@ import { ArrowLeft, ChevronLeft, ChevronRight, Maximize, Coffee, X, Palette, Typ
 import { api } from '../api.js';
 import { Spinner, ErrorBox, useToast } from '../ui.jsx';
 import Stage from '../components/Stage.jsx';
+import { useChurch, churchLogo } from '../components/TopBar.jsx';
+import { SION_MARK, APP_NAME } from '../lib/brand.js';
 import BiblePanel from '../components/BiblePanel.jsx';
 import OutputPanel, { useCast } from '../components/OutputPanel.jsx';
 import MediaPanel from '../components/MediaPanel.jsx';
@@ -16,7 +18,7 @@ const CHANNEL = 'idd-present';
 const NEXT_KEYS = new Set(['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter', 'n']);
 const PREV_KEYS = new Set(['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace', 'p']);
 const QUICK = [
-  { title: '', lines: ['Bienvenidos'], reference: 'Iglesia de Dios · Bella Vista' },
+  { title: '', lines: ['Bienvenidos'], reference: '@iglesia' },
   { title: '', lines: ['Oremos'], reference: '' },
   { title: '', lines: ['Tiempo de adoración'], reference: '' },
   { title: '', lines: ['Diezmos y ofrendas'], reference: '“Dios ama al dador alegre” · 2 Corintios 9:7' },
@@ -45,7 +47,10 @@ export default function Presenter({ kind, id }){
   const [groupId, setGroupId] = useState(null);
   const [backHref, setBackHref] = useState('#/');
   const [error, setError] = useState(null);
-  const [settings, setSettings] = useState(savedSettings);
+  const [rawSettings, setSettings] = useState(savedSettings);
+  // Valores de la iglesia: logo y nombre para la pantalla de espera (si no se escribieron otros).
+  const church = useChurch();
+  const settings = useMemo(() => ({ ...rawSettings, churchLogo: churchLogo(church) || SION_MARK, standbyTitle: rawSettings.standbyTitle || church?.name || APP_NAME, standbySub: rawSettings.standbySub || church?.branch || '' }), [rawSettings, church]);
   const [index, setIndex] = useState(0);
   const [hold, setHold] = useState(false);          // pantalla de espera activa
   const [override, setOverride] = useState(null);   // { items:[diapositivas], i } texto libre o versículos en vivo
@@ -82,7 +87,7 @@ export default function Presenter({ kind, id }){
   useEffect(() => { if (groupId) setLibGroup(groupId); }, [groupId]);
   const loadImages = useCallback(() => libGroup ? api(`/groups/${libGroup}/backgrounds`).then(d => setUploaded(d.items)).catch(() => {}) : Promise.resolve(), [libGroup]);
   useEffect(() => { loadImages(); }, [loadImages]);
-  useEffect(() => { localStorage.setItem('idd_present', JSON.stringify(settings)); }, [settings]);
+  useEffect(() => { localStorage.setItem('idd_present', JSON.stringify(rawSettings)); }, [rawSettings]);
 
   const slides = useMemo(() => songs ? buildSlides(songs, settings) : [], [songs, settings]);
   const theme = themeById(settings.theme, uploaded);
@@ -314,6 +319,8 @@ function EditPanel({ songs, current, onSave, onClose }){
 
 /* ---------- Texto libre: versículos, avisos, mensajes ---------- */
 function TextPanel({ override, setOverride, theme, settings, onClose }){
+  const church = useChurch();
+  const churchRef = [church?.name, church?.branch].filter(Boolean).join(' · ');
   const [t, setT] = useState({ title: '', body: '', reference: '' });
   const [recent, setRecent] = useState(() => { try { return JSON.parse(localStorage.getItem('idd_texts') || '[]'); } catch { return []; } });
   const slideOf = x => ({ kind: 'text', title: x.title?.trim() || '', lines: (x.body ?? x.lines?.join('\n') ?? '').split('\n'), reference: x.reference?.trim() || '' });
@@ -338,7 +345,7 @@ function TextPanel({ override, setOverride, theme, settings, onClose }){
       <button className="btn gold sm" onClick={() => project(t)} disabled={!t.body.trim()}><Radio size={14} /> Proyectar ahora</button>
     </div>
     <h4>Mensajes rápidos</h4>
-    <div className="quick-msgs">{QUICK.map((q, i) => <button key={i} className="btn ghost-dark sm" onClick={() => project({ ...q, body: q.lines.join('\n') })}>{q.lines[0]}</button>)}</div>
+    <div className="quick-msgs">{QUICK.map((q, i) => <button key={i} className="btn ghost-dark sm" onClick={() => project({ ...q, reference: q.reference === '@iglesia' ? churchRef : q.reference, body: q.lines.join('\n') })}>{q.lines[0]}</button>)}</div>
     {recent.length > 0 && <><h4>Usados recientemente</h4><div className="recent">{recent.map((r, i) => <div key={i} className="recent-item">
       <button onClick={() => project(r)} title="Proyectar">{r.title && <small>{r.title}</small>}{r.body.split('\n')[0]}{r.reference && <small> — {r.reference}</small>}</button>
       <button className="icon-btn dark sm" onClick={() => setT(r)} title="Editar"><PenLine size={13} /></button>
@@ -393,7 +400,7 @@ function StylePanel({ settings, set, reset, theme, uploaded, openMedia, song, on
 
     <h4>Logo</h4>
     <label className="pp-row"><span>Logo</span><select value={settings.logoImage} onChange={e => set({ logoImage: e.target.value })}>
-      <option value="">Llamas · Iglesia de Dios</option>
+      <option value="">Logo de la iglesia</option>
       {uploaded.map(b => <option key={b.id} value={b.id}>Imagen: {b.original_name}</option>)}
     </select></label>
     <label className="pp-check"><input type="checkbox" checked={settings.logoCorner} onChange={e => set({ logoCorner: e.target.checked })} /> Logo chico en la esquina de cada diapositiva</label>
@@ -420,7 +427,7 @@ export function ScreenWindow(){
   const [hint, setHint] = useState(!receiver);
   const [connected, setConnected] = useState(false);
   useEffect(() => {
-    document.title = 'IDD Music · Proyector';
+    document.title = 'SION Music · Proyector';
     if (receiver) { listenAsReceiver(data => { if (data.type === 'state' && data.slide) { setState(data); setConnected(true); } }); return; }
     const ch = new BroadcastChannel(CHANNEL);
     ch.onmessage = ({ data }) => { if (data.type === 'state' && data.slide) { setState(data); setConnected(true); } };

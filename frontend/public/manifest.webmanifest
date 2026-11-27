@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "IDD Music · Iglesia de Dios Bella Vista",
-  "short_name": "IDD Music",
-  "description": "Cancionero con acordes, repertorios, agenda, proyección y vista de músicos de la Iglesia de Dios · Bella Vista.",
+  "name": "SION Music",
+  "short_name": "SION Music",
+  "description": "Un lugar de adoración y presencia de Dios: cancionero con acordes, repertorios, agenda, proyección y vista de músicos para iglesias.",
   "lang": "es",
   "dir": "ltr",
   "start_url": "/#/",

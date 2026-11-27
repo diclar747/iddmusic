@@ -1,75 +1,103 @@
-// Datos de la iglesia (dirección, teléfono, pastor, encargado, foto) y notificaciones de la campanita.
+// Datos y marca de cada iglesia (logo, portada, colores, modo claro/oscuro, contacto) y notificaciones de la campanita.
 import { Router } from 'express';
-import fs from 'fs';
 import path from 'path';
 import db from '../db.js';
 import { auth } from '../middleware/auth.js';
-import { bad, clean, forbidden, normPhone } from '../lib/http.js';
-import { myGroupsSql, isSuper } from '../lib/access.js';
+import { bad, clean, forbidden, normPhone, isUuid } from '../lib/http.js';
+import { myGroupsSql, isSuper, isPlatform } from '../lib/access.js';
 import { imageUpload, uploadDir, removeStored } from '../lib/uploads.js';
 
 export const church = Router();
 export const notifications = Router();
 
-const DEFAULTS = { name: 'Iglesia de Dios', branch: 'Bella Vista', slogan: 'Alabando a Dios con todo nuestro corazón', address: '', city: '', maps_url: '',
-  phone: '', email: '', pastor: '', pastor_phone: '', leader: '', leader_phone: '', schedule: '', website: '', image: null };
-const FIELDS = { name: 120, branch: 120, slogan: 160, address: 200, city: 120, maps_url: 500, email: 160, pastor: 120, leader: 120, schedule: 600, website: 300 };
+const DEFAULTS = { slogan: 'Un lugar de adoración y presencia de Dios', address: '', city: '', maps_url: '', phone: '', email: '', pastor: '', pastor_phone: '',
+  leader: '', leader_phone: '', schedule: '', website: '', logo: null, logo_url: '', cover: 'c-0', cover_image: null, theme: 'azul-dorado', mode: 'light' };
+const FIELDS = { slogan: 160, address: 200, city: 120, maps_url: 500, email: 160, pastor: 120, leader: 120, schedule: 600, website: 300, cover: 40, theme: 40 };
 const PHONES = ['phone', 'pastor_phone', 'leader_phone'];
+const MODES = ['light', 'dark', 'auto'];
 
-async function load(){
-  const q = await db.query("SELECT value FROM app_settings WHERE key='church'");
-  let v = {}; try { v = JSON.parse(q.rows[0]?.value || '{}'); } catch { /* */ }
-  return { ...DEFAULTS, ...v };
+export async function loadChurch(id){
+  if (!id) return null;
+  const q = await db.query('SELECT id, name, branch, status, plan_until::text, settings FROM churches WHERE id=$1', [id]);
+  if (!q.rowCount) return null;
+  const c = q.rows[0];
+  return { id: c.id, name: c.name, branch: c.branch || '', status: c.status, plan_until: c.plan_until, ...DEFAULTS, ...c.settings };
 }
-async function store(v){
-  await db.query("INSERT INTO app_settings(key,value,updated_at) VALUES('church',$1,now()) ON CONFLICT (key) DO UPDATE SET value=EXCLUDED.value, updated_at=now()", [JSON.stringify(v)]);
+async function saveSettings(id, patch){
+  await db.query('UPDATE churches SET settings = settings || $2::jsonb, updated_at=now() WHERE id=$1', [id, JSON.stringify(patch)]);
 }
-const canEdit = user => isSuper(user) || user?.roles?.includes('worship_director') || user?.roles?.includes('music_admin');
-const publicView = c => { const { image, ...rest } = c; return { ...rest, has_image: !!image, image_version: image ? image.slice(0, 8) : null }; };
+const canEdit = user => isSuper(user) || isPlatform(user) || user?.roles?.includes('worship_director');
+/** Lo que ve la app: sin nombres de archivo internos; con las URL públicas del logo y la portada. */
+export const publicChurch = c => {
+  if (!c) return null;
+  const { logo, cover_image, ...rest } = c;
+  const v = s => (s ? s.slice(0, 8) : '');
+  return { ...rest, logo_src: logo ? `/api/church/${c.id}/logo?v=${v(logo)}` : (c.logo_url || ''), cover_src: cover_image ? `/api/church/${c.id}/cover?v=${v(cover_image)}` : '' };
+};
 
-/** Foto de la iglesia: pública (se muestra también en la pantalla de ingreso). */
-church.get('/image', async (_req, res) => {
-  const c = await load();
-  if (!c.image) return res.status(404).json({ error: 'Sin foto' });
-  res.set('Cache-Control', 'public, max-age=300');
-  res.sendFile(path.join(uploadDir, path.basename(c.image)));
-});
-church.get('/public', async (_req, res) => { const c = await load(); res.json({ name: c.name, branch: c.branch, slogan: c.slogan, has_image: !!c.image, image_version: c.image ? c.image.slice(0, 8) : null }); });
+/** Logo y portada: públicos (se usan en la pantalla de inicio, el proyector y el TV). */
+for (const kind of ['logo', 'cover']) {
+  church.get(`/:id/${kind}`, async (req, res) => {
+    if (!isUuid(req.params.id)) return res.status(404).end();
+    const c = await loadChurch(req.params.id);
+    const file = c?.[kind === 'logo' ? 'logo' : 'cover_image'];
+    if (!file) return res.status(404).json({ error: 'Sin imagen' });
+    res.set('Cache-Control', 'public, max-age=86400');
+    res.sendFile(path.join(uploadDir, path.basename(file)));
+  });
+}
 
 church.use(auth);
-church.get('/', async (req, res) => res.json({ ...publicView(await load()), can_edit: canEdit(req.user) }));
+church.get('/', async (req, res) => {
+  const c = await loadChurch(req.user.church_id);
+  if (!c) return res.json({ id: null, name: 'SION Music', branch: '', ...DEFAULTS, logo_src: '', cover_src: '', can_edit: false });
+  res.json({ ...publicChurch(c), can_edit: canEdit(req.user) });
+});
 church.put('/', async (req, res) => {
-  if (!canEdit(req.user)) throw forbidden('Solo la administración puede editar los datos de la iglesia');
-  const c = await load();
+  if (!canEdit(req.user)) throw forbidden('Solo la administración de la iglesia puede editar estos datos');
+  if (!req.user.church_id) throw bad('Tu usuario no pertenece a ninguna iglesia');
   const b = req.body || {};
-  for (const [k, max] of Object.entries(FIELDS)) if (b[k] !== undefined) c[k] = clean(b[k], max) || '';
-  for (const k of PHONES) if (b[k] !== undefined) c[k] = normPhone(b[k]) || '';
-  if (!c.name) throw bad('El nombre de la iglesia es obligatorio');
-  await store(c);
-  res.json({ ...publicView(c), can_edit: true });
+  const patch = {};
+  for (const [k, max] of Object.entries(FIELDS)) if (b[k] !== undefined) patch[k] = clean(b[k], max) || '';
+  for (const k of PHONES) if (b[k] !== undefined) patch[k] = normPhone(b[k]) || '';
+  if (b.mode !== undefined) patch.mode = MODES.includes(b.mode) ? b.mode : 'light';
+  if (b.name !== undefined || b.branch !== undefined) {
+    const name = clean(b.name, 160);
+    if (b.name !== undefined && !name) throw bad('El nombre de la iglesia es obligatorio');
+    await db.query('UPDATE churches SET name=coalesce($2,name), branch=CASE WHEN $3::boolean THEN $4 ELSE branch END, updated_at=now() WHERE id=$1',
+      [req.user.church_id, name, b.branch !== undefined, clean(b.branch, 160)]);
+  }
+  await saveSettings(req.user.church_id, patch);
+  res.json({ ...publicChurch(await loadChurch(req.user.church_id)), can_edit: true });
 });
-church.post('/image', (req, res, next) => {
-  if (!canEdit(req.user)) return next(forbidden('Solo la administración puede cambiar la foto'));
-  imageUpload.single('file')(req, res, async err => {
-    try {
-      if (err) throw err;
-      if (!req.file) throw bad('Subí una imagen JPG, PNG o WEBP');
-      const c = await load();
-      const old = c.image;
-      c.image = req.file.filename;
-      await store(c);
-      if (old && fs.existsSync(path.join(uploadDir, path.basename(old)))) removeStored(old);
-      res.json({ ...publicView(c), can_edit: true });
-    } catch (e) { next(e); }
+for (const kind of ['logo', 'cover']) {
+  const key = kind === 'logo' ? 'logo' : 'cover_image';
+  church.post(`/${kind}`, (req, res, next) => {
+    if (!canEdit(req.user) || !req.user.church_id) return next(forbidden('Solo la administración de la iglesia puede cambiar las imágenes'));
+    imageUpload.single('file')(req, res, async err => {
+      try {
+        if (err) throw err;
+        if (!req.file) throw bad('Subí una imagen JPG, PNG o WEBP');
+        const c = await loadChurch(req.user.church_id);
+        const patch = { [key]: req.file.filename };
+        if (kind === 'cover') patch.cover = 'photo';
+        await saveSettings(c.id, patch);
+        if (c[key]) removeStored(c[key]);
+        res.json({ ...publicChurch(await loadChurch(c.id)), can_edit: true });
+      } catch (e) { next(e); }
+    });
   });
-});
-church.delete('/image', async (req, res) => {
-  if (!canEdit(req.user)) throw forbidden();
-  const c = await load();
-  if (c.image) removeStored(c.image);
-  c.image = null; await store(c);
-  res.json({ ...publicView(c), can_edit: true });
-});
+  church.delete(`/${kind}`, async (req, res) => {
+    if (!canEdit(req.user) || !req.user.church_id) throw forbidden();
+    const c = await loadChurch(req.user.church_id);
+    if (c[key]) removeStored(c[key]);
+    const patch = { [key]: null };
+    if (kind === 'cover' && c.cover === 'photo') patch.cover = 'c-0';
+    if (kind === 'logo') patch.logo_url = '';
+    await saveSettings(c.id, patch);
+    res.json({ ...publicChurch(await loadChurch(c.id)), can_edit: true });
+  });
+}
 
 /* ---------- Notificaciones: novedades de mis grupos y próximos eventos ---------- */
 const ACTIONS = {

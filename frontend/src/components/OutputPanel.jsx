@@ -84,7 +84,7 @@ export default function OutputPanel({ screenOpen, liveGroup, onClose }){
         </div>
         {cast.error && <div className="bible-err">{cast.error}</div>}
         <p className="muted small">Chrome busca los dispositivos de tu red y te muestra la lista: elegí el Chromecast o TV. La transmisión sigue activa aunque cambies de canción o de evento. También funciona desde el menú de Chrome <b>⋮ → Transmitir…</b></p>
-      </> : <p className="muted small"><Info size={13} /> Para transmitir a Chromecast abrí IDD Music en <b>Google Chrome</b> o <b>Microsoft Edge</b> (<code>{location.origin}</code>). Este navegador no tiene la función de transmitir.</p>}
+      </> : <p className="muted small"><Info size={13} /> Para transmitir a Chromecast abrí SION Music en <b>Google Chrome</b> o <b>Microsoft Edge</b> (<code>{location.origin}</code>). Este navegador no tiene la función de transmitir.</p>}
     </section>
 
     <MusiciansOutput liveGroup={liveGroup} />

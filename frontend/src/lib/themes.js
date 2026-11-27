@@ -153,7 +153,7 @@ export const FONTS = {
 export const DEFAULT_SETTINGS = {
   theme: 'amanecer', perSlide: 2, maxChars: 42, size: 1, font: 'moderna', upper: false, label: false, titleSlide: true, position: 'center', overlay: null,
   // Pantalla de espera: se muestra al pausar, entre canciones y al salir de la proyección.
-  standbyMode: 'logo', standbyTheme: 'iglesia', standbyTitle: 'Iglesia de Dios', standbySub: 'Bella Vista', standbyLogo: true,
+  standbyMode: 'logo', standbyTheme: 'iglesia', standbyTitle: '', standbySub: '', standbyLogo: true,
   // Logo: el de la iglesia (llamas) o una imagen propia del grupo (id); opcionalmente en una esquina de cada diapositiva.
   logoImage: '', logoCorner: false,
   // Color del texto ('' = el de la plantilla) y plantilla propia por canción { songId: themeId }.

@@ -6,6 +6,7 @@ import { auth } from '../middleware/auth.js';
 import { bad, clean, isUuid, notFound, normPhone } from '../lib/http.js';
 import { isSuper, requireLeader, requireMember } from '../lib/access.js';
 import { audit } from '../lib/audit.js';
+import { friendlyPassword } from '../lib/passwords.js';
 import { imageUpload, removeStored } from '../lib/uploads.js';
 
 const r = Router();
@@ -18,17 +19,18 @@ r.get('/', async (req, res) => {
       (SELECT count(*)::int FROM songs s WHERE s.group_id=g.id AND s.status<>'archived') song_count,
       (SELECT min(e.event_date)::text FROM setlists e WHERE e.group_id=g.id AND e.event_date>=current_date) next_event_date
     FROM groups g LEFT JOIN group_members mine ON mine.group_id=g.id AND mine.user_id=$1
-    WHERE mine.user_id IS NOT NULL OR $2
-    ORDER BY g.name`, [req.user.id, isSuper(req.user)]);
+    WHERE mine.user_id IS NOT NULL OR ($2 AND g.church_id = $3)
+    ORDER BY g.name`, [req.user.id, isSuper(req.user), req.user.church_id]);
   res.json({ items: q.rows.map(g => ({ ...g, my_role: g.my_role || 'leader' })) });
 });
 
 r.post('/', async (req, res) => {
   const name = clean(req.body?.name, 160);
   if (!name) throw bad('El nombre del grupo es obligatorio');
+  if (!req.user.church_id) throw bad('Tu usuario no pertenece a ninguna iglesia: creá o elegí una iglesia en el panel de SION');
   const g = await tx(async c => {
-    const q = await c.query('INSERT INTO groups(name,description,color,created_by) VALUES($1,$2,$3,$4) RETURNING *',
-      [name, clean(req.body?.description, 2000), clean(req.body?.color, 16), req.user.id]);
+    const q = await c.query('INSERT INTO groups(name,description,color,created_by,church_id) VALUES($1,$2,$3,$4,$5) RETURNING *',
+      [name, clean(req.body?.description, 2000), clean(req.body?.color, 16), req.user.id, req.user.church_id]);
     await c.query("INSERT INTO group_members(group_id,user_id,group_role) VALUES($1,$2,'leader')", [q.rows[0].id, req.user.id]);
     return q.rows[0];
   });
@@ -73,14 +75,18 @@ r.post('/:id/members', async (req, res) => {
   const phone = normPhone(req.body?.phone);
   if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw bad('Ingresá un email válido');
   let tempPassword = null;
-  let u = await db.query('SELECT id, full_name, status FROM users WHERE lower(email)=$1', [email]);
+  const gc = (await db.query('SELECT church_id FROM groups WHERE id=$1', [req.params.id])).rows[0]?.church_id;
+  let u = await db.query('SELECT id, full_name, status, church_id FROM users WHERE lower(email)=$1', [email]);
   let userId = u.rows[0]?.id;
+  if (userId && u.rows[0].church_id && gc && u.rows[0].church_id !== gc) throw bad('Ese correo ya está registrado en otra iglesia');
+  if (userId && !u.rows[0].church_id && gc) await db.query('UPDATE users SET church_id=$1 WHERE id=$2', [gc, userId]);
   if (!userId) {
     if (!fullName) throw bad('Ese email no tiene cuenta todavía: indicá también el nombre para crearla');
-    tempPassword = 'Idd-' + crypto.randomBytes(4).toString('hex');
+    tempPassword = String(req.body?.password || '').trim() || friendlyPassword();
+    if (tempPassword.length < 6) throw bad('La contraseña debe tener al menos 6 caracteres');
     userId = await tx(async c => {
-      const n = await c.query("INSERT INTO users(full_name,email,password_hash,status,phone) VALUES($1,$2,$3,'active',$4) RETURNING id",
-        [fullName, email, await bcrypt.hash(tempPassword, 12), phone || null]);
+      const n = await c.query("INSERT INTO users(full_name,email,password_hash,status,phone,church_id) VALUES($1,$2,$3,'active',$4,$5) RETURNING id",
+        [fullName, email, await bcrypt.hash(tempPassword, 12), phone || null, gc || null]);
       await c.query("INSERT INTO user_roles(user_id,role_id) SELECT $1,id FROM roles WHERE code='member'", [n.rows[0].id]);
       return n.rows[0].id;
     });
@@ -100,6 +106,14 @@ r.patch('/:id/members/:userId', async (req, res) => {
     const m = await db.query('SELECT 1 FROM group_members WHERE group_id=$1 AND user_id=$2', [req.params.id, req.params.userId]);
     if (!m.rowCount) throw notFound('Integrante no encontrado');
     await db.query('UPDATE users SET phone=$1, updated_at=now() WHERE id=$2', [normPhone(req.body.phone), req.params.userId]);
+  }
+  if (req.body?.password !== undefined) {
+    const pw = String(req.body.password || '').trim();
+    if (pw.length < 6) throw bad('La contraseña debe tener al menos 6 caracteres');
+    if (!isUuid(req.params.userId)) throw notFound('Integrante no encontrado');
+    const m = await db.query('SELECT 1 FROM group_members WHERE group_id=$1 AND user_id=$2', [req.params.id, req.params.userId]);
+    if (!m.rowCount) throw notFound('Integrante no encontrado');
+    await db.query('UPDATE users SET password_hash=$1, updated_at=now() WHERE id=$2', [await bcrypt.hash(pw, 12), req.params.userId]);
   }
   if (req.body?.group_role !== undefined) {
     const role = req.body.group_role === 'leader' ? 'leader' : 'member';

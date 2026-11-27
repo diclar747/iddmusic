@@ -24,6 +24,7 @@ export async function api(path, { method = 'GET', body, form, signal } = {}){
   }
   const data = res.status === 204 ? null : await res.json().catch(() => null);
   if (res.status === 401 && path !== '/auth/login') { session.clear(); throw new ApiError(401, 'Tu sesión venció. Ingresá de nuevo.'); }
+  if (res.status === 403 && data?.code === 'church_inactive' && path !== '/auth/login') window.dispatchEvent(new CustomEvent('sion-blocked', { detail: data.error }));
   if (!res.ok) throw new ApiError(res.status, data?.error || `Error ${res.status}`);
   return data;
 }

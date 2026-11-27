@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { CalendarDays, Users, Sparkles, Plus, Music2, MapPin, Clock, ChevronRight, Search, Library, MonitorPlay, Guitar } from 'lucide-react';
 import { navigate } from '../router.js';
-import { themeById } from '../lib/themes.js';
+import { useChurch, churchCover } from '../components/TopBar.jsx';
 import { useApi, Spinner, ErrorBox, Empty, fmtShort, fmtTime, relDay, EVENT_TYPES, isoDate } from '../ui.jsx';
 
 export function EventCard({ e }){
@@ -34,12 +34,13 @@ export default function Home({ user }){
   const groups = useApi('/groups');
   const songs = useApi('/songs?sort=recent');
   const [q, setQ] = useState('');
+  const church = useChurch();
   const first = groups.data?.items?.[0];
   const hour = new Date().getHours();
   const hello = hour < 12 ? 'Buenos días' : hour < 19 ? 'Buenas tardes' : 'Buenas noches';
   const next = events.data?.items?.[0];
   return <>
-    <section className="hero" style={{ backgroundImage: themeById('c-0').bg }}>
+    <section className="hero" style={{ backgroundImage: churchCover(church) }}>
       <div className="hero-shade" />
       <div className="hero-body">
         <span className="eyebrow">{hello}</span>
