@@ -28,6 +28,21 @@ try {
     process.env.JWT_SECRET = (await db.query('SELECT value FROM app_settings WHERE key=$1', ['jwt_secret'])).rows[0].value;
     console.log('JWT_SECRET: usando el secreto generado y guardado en la base.');
   }
+  // Primer arranque sin usuarios: crea el administrador (ADMIN_EMAIL) con una contraseña aleatoria que se muestra UNA vez en los registros.
+  const users = await db.query('SELECT count(*)::int n FROM users');
+  if (!users.rows[0].n) {
+    const email = (process.env.ADMIN_EMAIL || 'admin@cd.com.py').trim().toLowerCase();
+    const password = process.env.ADMIN_PASSWORD || 'Idd-' + crypto.randomBytes(9).toString('base64url');
+    const bcrypt = (await import('bcryptjs')).default;
+    const id = (await db.query("INSERT INTO users(full_name,email,password_hash,status) VALUES($1,$2,$3,'active') RETURNING id", [process.env.ADMIN_NAME || 'Administración IDD', email, await bcrypt.hash(password, 12)])).rows[0].id;
+    await db.query("INSERT INTO user_roles(user_id,role_id) SELECT $1,id FROM roles WHERE code IN ('super_admin','worship_director') ON CONFLICT DO NOTHING", [id]);
+    console.log('==================================================');
+    console.log(' ADMINISTRADOR CREADO (primer arranque)');
+    console.log(`   Usuario:    ${email}`);
+    console.log(`   Contraseña: ${process.env.ADMIN_PASSWORD ? '(la de ADMIN_PASSWORD)' : password}`);
+    console.log(' Guardala y cambiala desde "Mi perfil".');
+    console.log('==================================================');
+  }
 } catch (e) {
   console.error('No se pudo preparar la base de datos:', e.message, '\nRevisá DATABASE_URL (postgresql://usuario:clave@host:5432/base).');
   process.exit(1);

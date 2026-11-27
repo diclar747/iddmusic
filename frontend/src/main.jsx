@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Music2, Users, CalendarDays, Home as HomeIcon, Sparkles, LogOut, Library, UserCircle, MonitorPlay, Guitar } from 'lucide-react';
+import { Users, CalendarDays, Home as HomeIcon, Sparkles, LogOut, Library, UserCircle, MonitorPlay, Guitar, Menu, X } from 'lucide-react';
 import './style.css';
+import './mobile.css';
 import { session } from './api.js';
 import { useRoute, href } from './router.js';
 import { ToastProvider } from './ui.jsx';
@@ -19,16 +20,20 @@ import Profile from './pages/Profile.jsx';
 import Presenter, { ScreenWindow } from './pages/Presenter.jsx';
 import Musicians from './pages/Musicians.jsx';
 import { isCastReceiver } from './lib/cast.js';
+import { hideSplash } from './lib/pwa.js';
+import { BrandMark, InstallButton } from './components/Brand.jsx';
 
 const NAV = [
   ['/', 'Inicio', HomeIcon],
-  ['/groups', 'Mis grupos', Users],
   ['/songs', 'Cancionero', Library],
+  ['/groups', 'Mis grupos', Users],
   ['/agenda', 'Agenda', CalendarDays],
   ['/import', 'Importar canciones', Sparkles],
   ['/present/free', 'Proyectar', MonitorPlay],
   ['/musicos', 'Músicos (acordes)', Guitar]
 ];
+// Menú inferior en el teléfono (el resto queda en "Más").
+const TABS = [['/', 'Inicio', HomeIcon], ['/songs', 'Canciones', Library], ['/groups', 'Grupos', Users], ['/agenda', 'Agenda', CalendarDays]];
 
 function useSession(){
   const [user, setUser] = useState(session.user);
@@ -41,7 +46,7 @@ function Page({ route, user }){
   if (!a) return <Home user={user} />;
   if (a === 'groups' && !b) return <Groups />;
   if (a === 'groups') return <GroupDetail id={b} tab={c || 'songs'} user={user} />;
-  if (a === 'songs' && !b) return <Songs />;
+  if (a === 'songs' && !b) return <Songs initialQ={route.query.q || ''} />;
   if (a === 'songs' && b === 'new') return <SongEdit groupId={route.query.group} />;
   if (a === 'songs' && c === 'edit') return <SongEdit id={b} />;
   if (a === 'songs') return <SongView id={b} query={route.query} />;
@@ -55,23 +60,48 @@ function Page({ route, user }){
 function App(){
   const user = useSession();
   const route = useRoute();
-  useEffect(() => { window.scrollTo(0, 0); }, [route.path]);
+  const [more, setMore] = useState(false);
+  useEffect(() => { window.scrollTo(0, 0); setMore(false); }, [route.path]);
+  useEffect(() => { hideSplash(); }, []);
   if (route.parts[0] === 'screen') return <ScreenWindow />;
   if (route.parts[0] === 'musicos' && isCastReceiver()) return <Musicians tv />;
   if (!user) return <Login />;
   if (route.parts[0] === 'present') return <Presenter kind={route.parts[1]} id={route.parts[2]} query={route.query} />;
   if (route.parts[0] === 'musicos') return <Musicians groupId={route.parts[1]} tv={route.query.tv === '1'} />;
   const active = p => p === '/' ? route.path === '/' : route.path.startsWith(p);
+  const title = NAV.find(([p]) => p !== '/' && active(p))?.[1] || (active('/profile') ? 'Mi perfil' : active('/events') ? 'Evento' : 'IDD Music');
   return <div className="layout">
     <aside className="sidebar">
-      <a className="brand" href="#/"><span className="logo"><Music2 size={22} /></span><span><b>IDD MUSIC</b><small>Iglesia de Dios · Bella Vista</small></span></a>
+      <a className="brand" href="#/"><BrandMark /><span><b>IDD <em>MUSIC</em></b><small>Iglesia de Dios · Bella Vista</small></span></a>
       <nav>{NAV.map(([p, label, Icon]) => <a key={p} href={href(p)} className={active(p) ? 'active' : ''}><Icon size={18} /><span>{label}</span></a>)}</nav>
       <div className="side-foot">
+        <InstallButton />
         <a href="#/profile" className={`me ${active('/profile') ? 'active' : ''}`}><UserCircle size={18} /><span>{user.fullName}</span></a>
         <button className="logout" onClick={() => session.clear()}><LogOut size={18} /><span>Salir</span></button>
       </div>
     </aside>
+
+    {/* Teléfono: barra superior */}
+    <header className="m-top">
+      <a href="#/" className="m-brand"><BrandMark size={34} /><span>{route.path === '/' ? <>IDD <em>MUSIC</em></> : title}</span></a>
+      <a href="#/present/free" className="m-icon" title="Proyectar"><MonitorPlay size={20} /></a>
+      <a href="#/profile" className="m-icon" title="Mi perfil"><UserCircle size={21} /></a>
+    </header>
+
     <main className="main"><Page route={route} user={user} /></main>
+
+    {/* Teléfono: menú inferior */}
+    <nav className="m-tabs">
+      {TABS.map(([p, label, Icon]) => <a key={p} href={href(p)} className={active(p) && !more ? 'on' : ''}><Icon size={21} /><span>{label}</span></a>)}
+      <button className={more ? 'on' : ''} onClick={() => setMore(m => !m)}>{more ? <X size={21} /> : <Menu size={21} />}<span>Más</span></button>
+    </nav>
+    {more && <div className="m-sheet" onClick={() => setMore(false)}><div onClick={e => e.stopPropagation()}>
+      <div className="m-sheet-user"><BrandMark size={44} /><span><b>{user.fullName}</b><small>{user.email}</small></span></div>
+      {NAV.filter(([p]) => !TABS.some(t => t[0] === p)).map(([p, label, Icon]) => <a key={p} href={href(p)}><Icon size={20} /> {label}</a>)}
+      <a href="#/profile"><UserCircle size={20} /> Mi perfil</a>
+      <InstallButton className="sheet" />
+      <button onClick={() => session.clear()}><LogOut size={20} /> Salir</button>
+    </div></div>}
   </div>;
 }
 

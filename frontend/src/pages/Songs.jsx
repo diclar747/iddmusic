@@ -3,8 +3,8 @@ import { Search, Music2 } from 'lucide-react';
 import { useApi, Spinner, ErrorBox, Empty } from '../ui.jsx';
 import { SongRow } from './Home.jsx';
 
-export default function Songs(){
-  const [q, setQ] = useState('');
+export default function Songs({ initialQ = '' }){
+  const [q, setQ] = useState(initialQ);
   const [group, setGroup] = useState('');
   const groups = useApi('/groups');
   const { data, loading, error } = useApi(`/songs?q=${encodeURIComponent(q)}${group ? `&group_id=${group}` : ''}`);

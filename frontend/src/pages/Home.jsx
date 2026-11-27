@@ -1,5 +1,7 @@
-import React from 'react';
-import { CalendarDays, Users, Sparkles, Plus, Music2, MapPin, Clock, ChevronRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { CalendarDays, Users, Sparkles, Plus, Music2, MapPin, Clock, ChevronRight, Search, Library, MonitorPlay, Guitar } from 'lucide-react';
+import { navigate } from '../router.js';
+import { themeById } from '../lib/themes.js';
 import { useApi, Spinner, ErrorBox, Empty, fmtShort, fmtTime, relDay, EVENT_TYPES, isoDate } from '../ui.jsx';
 
 export function EventCard({ e }){
@@ -31,16 +33,31 @@ export default function Home({ user }){
   const events = useApi(`/events?from=${today}`);
   const groups = useApi('/groups');
   const songs = useApi('/songs?sort=recent');
+  const [q, setQ] = useState('');
   const first = groups.data?.items?.[0];
+  const hour = new Date().getHours();
+  const hello = hour < 12 ? 'Buenos días' : hour < 19 ? 'Buenas tardes' : 'Buenas noches';
+  const next = events.data?.items?.[0];
   return <>
-    <header className="page-head">
-      <div><span className="eyebrow">Cancionero digital</span><h1>¡Hola, {user.fullName.split(' ')[0]}!</h1><p className="muted">Organizá tus grupos, ensayos y repertorios en un solo lugar.</p></div>
-    </header>
-    <div className="quick">
-      <a href={first ? `#/songs/new?group=${first.id}` : '#/groups'}><Plus /><b>Nueva canción</b><small>Escribir letra y acordes</small></a>
-      <a href={first ? `#/import?group=${first.id}` : '#/import'}><Sparkles /><b>Importar con IA</b><small>Desde PDF o foto</small></a>
-      <a href="#/agenda"><CalendarDays /><b>Agenda</b><small>Cultos y ensayos</small></a>
-      <a href="#/groups"><Users /><b>Mis grupos</b><small>Integrantes y música</small></a>
+    <section className="hero" style={{ backgroundImage: themeById('c-0').bg }}>
+      <div className="hero-shade" />
+      <div className="hero-body">
+        <span className="eyebrow">{hello}</span>
+        <h1>¡Bienvenido, {user.fullName.split(' ')[0]}!</h1>
+        <p>Que la música nos una en la presencia de Dios.</p>
+        <form className="hero-search" onSubmit={e => { e.preventDefault(); navigate('/songs' + (q.trim() ? '?q=' + encodeURIComponent(q.trim()) : '')); }}>
+          <Search size={18} /><input value={q} onChange={e => setQ(e.target.value)} placeholder="Buscar canciones, autores o una frase…" />
+        </form>
+        {next && <a className="hero-next" href={`#/events/${next.id}`}><CalendarDays size={16} /> Próximo: <b>{next.title}</b> · {relDay(next.event_date) || `${fmtShort(next.event_date).weekday} ${fmtShort(next.event_date).day}`}{next.event_time && ` · ${fmtTime(next.event_time)}`}</a>}
+      </div>
+    </section>
+    <div className="tiles">
+      <a href="#/songs"><span><Library /></span><b>Cancionero</b><small>Letras y acordes</small></a>
+      <a href="#/present/free"><span><MonitorPlay /></span><b>Proyectar</b><small>Letra, Biblia, avisos</small></a>
+      <a href="#/musicos"><span><Guitar /></span><b>Músicos</b><small>Acordes en vivo</small></a>
+      <a href="#/agenda"><span><CalendarDays /></span><b>Agenda</b><small>Cultos y ensayos</small></a>
+      <a href="#/groups"><span><Users /></span><b>Mis grupos</b><small>Integrantes y música</small></a>
+      <a href={first ? `#/import?group=${first.id}` : '#/import'}><span><Sparkles /></span><b>Importar</b><small>LaCuerda, PDF o foto</small></a>
     </div>
     <div className="grid-2">
       <section className="panel">
@@ -50,10 +67,10 @@ export default function Home({ user }){
           : <Empty icon={CalendarDays} title="No hay eventos programados"><a href="#/agenda">Programar uno</a></Empty>)}
       </section>
       <section className="panel">
-        <div className="panel-head"><h2>Actualizadas recientemente</h2><a href="#/songs" className="link">Cancionero</a></div>
+        <div className="panel-head"><h2>Canciones recientes</h2><a href="#/songs" className="link">Ver todas</a></div>
         {songs.loading ? <Spinner /> : <ErrorBox error={songs.error} />}
         {songs.data && (songs.data.items.length ? <div>{songs.data.items.slice(0, 7).map(s => <SongRow key={s.id} s={s} />)}</div>
-          : <Empty icon={Music2} title="Todavía no hay canciones">Creá un grupo y cargá la primera.</Empty>)}
+          : <Empty icon={Music2} title="Todavía no hay canciones">{first ? <a href={`#/songs/new?group=${first.id}`}><Plus size={14} /> Cargar la primera</a> : <a href="#/groups">Creá un grupo para empezar</a>}</Empty>)}
       </section>
     </div>
   </>;
