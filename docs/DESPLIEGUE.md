@@ -2,7 +2,7 @@
 
 ## Opción rápida: panel de hosting de cd.com.py (Importar de GitHub)
 1. **Runtime:** `Node.js 22 (Debian)`.
-2. **Repositorio:** `diclar747/iddmusic`, rama `main`. **Dónde publicar:** `iddmusic.cd.com.py`.
+2. **Repositorio:** `diclar747/iddmusic`, rama `main`. **Dónde publicar:** `sion.cd.com.py`.
 3. Si el panel pide comandos: instalación `npm install` · inicio `npm start` (o archivo de entrada `index.js`). Al arrancar aplica solo las migraciones.
 4. **Variables de entorno** (en el panel):
    | Variable | Valor |
@@ -10,7 +10,7 @@
    | `DATABASE_URL` | `postgresql://usuario:clave@host:5432/idd_music` (una base PostgreSQL 14+ vacía) |
    | `DATABASE_SSL` | `true` solo si la base lo exige |
    | `JWT_SECRET` | opcional: si no está, la app genera uno y lo guarda en la base |
-   | `APP_ORIGIN` | `https://iddmusic.cd.com.py` |
+   | `APP_ORIGIN` | `https://sion.cd.com.py` |
    | `NIRO_API_KEY` | la key de Niro IA |
    | `NODE_ENV` | `production` |
 5. Desplegar. Al primer arranque se crean todas las tablas.
