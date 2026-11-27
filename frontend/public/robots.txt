@@ -1,0 +1,7 @@
+# SION Music
+User-agent: *
+Allow: /inicio
+Allow: /icons/
+Disallow: /api/
+
+Sitemap: https://sion.cd.com.py/sitemap.xml

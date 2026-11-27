@@ -18,15 +18,6 @@
     navLinks.forEach(function(a){ var s = document.querySelector(a.getAttribute('href')); if (s) io.observe(s); });
   }
 
-  /* ---------- Planes: completa el mensaje del formulario ---------- */
-  document.querySelectorAll('[data-plan]').forEach(function(b){
-    b.addEventListener('click', function(){
-      var f = $('askform');
-      if (f && !f.message.value.trim()) f.message.value = 'Me interesa el plan de ' + b.getAttribute('data-plan') + '. ¿Cuál es el precio para nuestra iglesia?';
-      setTimeout(function(){ f && f.name.focus({ preventScroll: true }); }, 600);
-    });
-  });
-
   /* ---------- Solicitar información ---------- */
   var form = $('askform'), msg = $('formmsg'), done = $('askdone');
   if (form) form.addEventListener('submit', function(e){
