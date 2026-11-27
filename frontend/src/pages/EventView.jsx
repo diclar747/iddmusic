@@ -6,6 +6,7 @@ import { useApi, Spinner, ErrorBox, useToast, fmtDate, fmtTime, relDay, EVENT_TY
 import EventForm from '../components/EventForm.jsx';
 import { KEYS, transposeSections, transposeChord, keyDistance } from '../lib/chart.js';
 import ChartView from '../components/ChartView.jsx';
+import ChurchSongbook from '../components/ChurchSongbook.jsx';
 import { useChurch, churchCover } from '../components/TopBar.jsx';
 
 const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -106,8 +107,6 @@ export default function EventView({ id }){
   const [editing, setEditing] = useState(false);
   const e = ev.data;
   const group = useApi(e ? `/groups/${e.group_id}` : null);
-  const library = useApi(e ? '/songs' : null);
-  const [q, setQ] = useState('');
   const [adding, setAdding] = useState(null);
   const [open, setOpen] = useState(null); // id del ítem abierto en el panel
   const church = useChurch();
@@ -124,19 +123,13 @@ export default function EventView({ id }){
   const sort = useSortable(items, reorder);
   const inSet = new Set(items.map(i => i.song_id));
   const titles = new Set(items.map(i => norm(i.title)));
-  const results = useMemo(() => {
-    const all = library.data?.items || [];
-    const mine = all.filter(s => s.group_id === e?.group_id);
-    const list = q ? all.filter(s => norm(`${s.title} ${s.author} ${s.group_name}`).includes(norm(q))) : mine;
-    return [...list].sort((a, b) => (a.group_id === e?.group_id ? 0 : 1) - (b.group_id === e?.group_id ? 0 : 1)).slice(0, 40);
-  }, [library.data, q, e?.group_id]);
 
   if (ev.loading && !e) return <Spinner />;
   if (ev.error) return <ErrorBox error={ev.error} />;
 
   async function addSong(s){
     setAdding(s.id);
-    await call(`/events/${id}/items`, { method: 'POST', body: { song_id: s.id, performance_key: s.original_key } }, s.group_id === e.group_id ? `"${s.title}" agregada` : `"${s.title}" copiada al grupo y agregada`);
+    await call(`/events/${id}/items`, { method: 'POST', body: { song_id: s.id, performance_key: s.original_key } }, (s.group_ids || [s.group_id]).includes(e.group_id) ? `"${s.title}" agregada` : `"${s.title}" copiada al grupo y agregada`);
     setAdding(null);
   }
   const update = (item, patch) => call(`/events/${id}/items/${item.id}`, { method: 'PATCH', body: patch });
@@ -204,16 +197,8 @@ export default function EventView({ id }){
           <a className="btn primary" href={`#/songs/new?${back}`}><FilePlus2 size={16} /> Nueva canción</a>
           <a className="btn" href={`#/import?${back}`}><Sparkles size={16} /> Buscar o importar</a>
         </div>
-        <div className="lc-search"><Search size={16} /><input value={q} onChange={x => setQ(x.target.value)} placeholder="Buscar en el cancionero de la iglesia…" /></div>
-        <div className="ev-results">
-          {library.loading && <Spinner />}
-          {library.data && !results.length && <p className="muted small">{q ? 'No se encontraron canciones. Creala con “Nueva canción” o buscala con “Buscar o importar”.' : 'El grupo todavía no tiene canciones: buscá en el cancionero o creá una nueva.'}</p>}
-          {results.map(s => { const added = inSet.has(s.id) || (s.group_id !== e.group_id && titles.has(norm(s.title))); return <button key={s.id} className={`ev-res ${added ? 'added' : ''}`} disabled={added || adding === s.id} onClick={() => addSong(s)}>
-            <Music2 size={16} /><span className="grow"><b>{s.title}</b><small>{[s.author, s.group_id !== e.group_id && s.group_name].filter(Boolean).join(' · ')}</small></span>
-            {s.original_key && <em>{s.original_key}</em>}
-            {added ? <span className="ev-ok"><Check size={14} /> Agregada</span> : <span className="ev-plus"><Plus size={15} /></span>}
-          </button>; })}
-        </div>
+        <h3 className="ev-sb-title">Cancionero de la iglesia</h3>
+        <ChurchSongbook prefer={e.group_id} refresh={items.length} onPick={addSong} busyId={adding} isAdded={x => inSet.has(x.id) || titles.has(norm(x.title))} />
       </section>
     </div>
     {open && items.some(x => x.id === open) && <SongSheet eventId={id} items={items} index={items.findIndex(x => x.id === open)} onIndex={i => setOpen(items[i].id)} onClose={closeSheet} onKey={(it, k) => update(it, { performance_key: k })} />}

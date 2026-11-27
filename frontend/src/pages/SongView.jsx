@@ -20,6 +20,7 @@ export default function SongView({ id, query }){
   const sections = useMemo(() => transposeSections(song?.lyrics_sections, shift, flat || undefined), [song, shift, flat]);
   if (loading && !song) return <Spinner />;
   if (error) return <ErrorBox error={error} />;
+  const ro = song.my_role === 'viewer';
   const key = song.original_key ? transposeChord(song.original_key, shift, flat || undefined) : null;
 
   async function remove(){
@@ -32,7 +33,7 @@ export default function SongView({ id, query }){
   return <>
     <header className="page-head">
       <div>
-        <a className="crumb" href={`#/groups/${song.group_id}`}>← {song.group_name}</a>
+        <a className="crumb" href={ro ? '#/songs' : `#/groups/${song.group_id}`}>← {ro ? 'Cancionero' : song.group_name}</a>
         <h1>{song.title}</h1>
         <p className="muted">{song.author || 'Autor no indicado'}{song.category && ` · ${song.category}`}</p>
         <div className="meta-pills">
@@ -45,12 +46,13 @@ export default function SongView({ id, query }){
       </div>
       <div className="head-actions">
         <a className="btn primary" href={`#/present/song/${id}${shift ? `?shift=${shift}` : ''}`}><MonitorPlay size={16} /> Proyectar</a>
-        <a className="btn" href={`#/songs/${id}/edit`}><Pencil size={16} /> Editar</a>
+        {!ro && <a className="btn" href={`#/songs/${id}/edit`}><Pencil size={16} /> Editar</a>}
         <button className="icon-btn" title="Historial de versiones" onClick={() => setHistory(true)}><History size={17} /></button>
-        <button className="icon-btn danger" title="Eliminar" onClick={remove}><Trash2 size={17} /></button>
+        {!ro && <button className="icon-btn danger" title="Eliminar" onClick={remove}><Trash2 size={17} /></button>}
       </div>
     </header>
-    {song.status === 'review' && <div className="banner warn"><span>Esta canción se importó con IA. Revisá letra y acordes contra el original y marcala como revisada.</span>
+    {ro && <div className="banner info"><span>Canción del grupo <b>{song.group_name}</b>. La podés ver, transportar y proyectar; para tocarla en un culto de tu grupo, agregala desde el culto y se copia a tu grupo.</span></div>}
+    {!ro && song.status === 'review' && <div className="banner warn"><span>Esta canción se importó con IA. Revisá letra y acordes contra el original y marcala como revisada.</span>
       <a className="btn sm" href={`#/songs/${id}/edit`}>Revisar</a><button className="btn sm primary" onClick={approve}><CheckCircle2 size={15} /> Marcar revisada</button></div>}
     <div className="song-layout">
       <section className="panel sheet">
