@@ -5,7 +5,7 @@ import { api } from '../api.js';
 const isSongUrl = s => /lacuerda\.net\/[a-z0-9_]+\/[a-z0-9_]+(-\d+)?(\.shtml)?\/?$/i.test(s.trim());
 const isArtistUrl = s => /lacuerda\.net\/[a-z0-9_]+\/?$/i.test(s.trim());
 
-/** Buscar en LaCuerda o pegar la dirección de una canción: trae letra y acordes al editor para revisar y guardar. */
+/** Buscar música (por nombre o artista) o pegar la dirección de una canción: trae letra y acordes al editor para revisar y guardar. */
 export default function LaCuerdaPanel({ onLoad }){
   const [q, setQ] = useState('');
   const [busy, setBusy] = useState(false);
@@ -38,11 +38,11 @@ export default function LaCuerdaPanel({ onLoad }){
 
   const songs = res?.items || [];
   return <section className="panel lc-panel">
-    <div className="panel-head"><h2><Music2 size={18} /> Desde LaCuerda</h2><a className="muted small" href="https://acordes.lacuerda.net/" target="_blank" rel="noreferrer">acordes.lacuerda.net ↗</a></div>
-    <p className="muted small">Pegá la dirección de una canción de LaCuerda o buscá por canción o artista. Se carga la letra con los acordes para que la revises, corrijas y la guardes en el grupo.</p>
+    <div className="panel-head"><h2><Search size={18} /> Buscar música</h2></div>
+    <p className="muted small">Escribí el nombre de la canción o del artista. Se carga la letra con los acordes para que la revises, corrijas y la guardes en el grupo.</p>
     <form className="lc-search" onSubmit={submit}>
       {isSongUrl(q) ? <Link2 size={17} /> : <Search size={17} />}
-      <input value={q} onChange={e => setQ(e.target.value)} placeholder="https://acordes.lacuerda.net/… · o: Eres rey de los cielos · Marcos Witt" />
+      <input value={q} onChange={e => setQ(e.target.value)} placeholder="Ej.: Eres rey de los cielos · Marco Barrientos" />
       <button className="btn primary sm" type="submit" disabled={busy || !q.trim()}>{busy || (loading && isSongUrl(q)) ? <Loader2 className="spin" size={15} /> : isSongUrl(q) ? 'Cargar' : 'Buscar'}</button>
     </form>
     {error && <div className="error-box">{error}</div>}

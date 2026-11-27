@@ -18,14 +18,14 @@ async function get(url){
   const t = setTimeout(() => ctrl.abort(), 15000);
   try {
     const res = await fetch(url, { headers: { 'User-Agent': UA, 'Accept-Language': 'es' }, redirect: 'follow', signal: ctrl.signal });
-    if (res.status === 404) throw new HttpError(404, 'LaCuerda no tiene esa página (404). Revisá la dirección.');
-    if (!res.ok) throw new HttpError(502, `LaCuerda respondió ${res.status}. Probá de nuevo en un momento.`);
+    if (res.status === 404) throw new HttpError(404, 'No se encontró esa canción. Probá con otra versión o buscala por nombre.');
+    if (!res.ok) throw new HttpError(502, `El buscador de canciones respondió con un error (${res.status}). Probá de nuevo en un momento.`);
     const buf = Buffer.from(await res.arrayBuffer());
     const cs = /charset=([\w-]+)/i.exec(res.headers.get('content-type') || '')?.[1]?.toLowerCase() || 'utf-8';
     return { html: new TextDecoder(cs === 'iso-8859-1' || cs === 'latin1' ? 'windows-1252' : cs).decode(buf), url: res.url || url };
   } catch (e) {
     if (e instanceof HttpError) throw e;
-    throw new HttpError(502, e.name === 'AbortError' ? 'LaCuerda tardó demasiado en responder.' : 'No se pudo conectar con LaCuerda. ¿Hay internet en el servidor?');
+    throw new HttpError(502, e.name === 'AbortError' ? 'El buscador de canciones tardó demasiado en responder.' : 'No se pudo conectar con el buscador de canciones. ¿Hay internet en el servidor?');
   } finally { clearTimeout(t); }
 }
 

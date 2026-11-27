@@ -162,14 +162,14 @@ export default function ImportAI({ groupId }){
     clearAll(); setBulk(null);
     setMeta({ title: s.title || 'Canción', author: s.author || '', original_key: s.key || '', tempo_bpm: '', time_signature: '', category: '', notes: '' });
     setChart(s.chart);
-    toast(`"${s.title}" cargada desde LaCuerda: revisá los acordes y guardala`);
+    toast(`"${s.title}" cargada: revisá los acordes y guardala`);
     setTimeout(() => document.querySelector('.import-layout form')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
   }
 
   return <>
     <header className="page-head">
-      <div><span className="eyebrow"><Sparkles size={12} /> LaCuerda · Niro IA · archivos</span><h1>Importar canciones</h1>
-        <p className="muted">Traé canciones desde LaCuerda, desde un PDF o foto (la IA las transcribe) o desde archivos de texto. Siempre revisás y editás letra y acordes antes de guardarlas en el grupo.</p></div>
+      <div><span className="eyebrow"><Sparkles size={12} /> Búsqueda · IA · archivos</span><h1>Importar canciones</h1>
+        <p className="muted">Buscá canciones por nombre o artista, o traelas desde un PDF o foto (la IA las transcribe) o desde archivos de texto. Siempre revisás y editás letra y acordes antes de guardarlas en el grupo.</p></div>
     </header>
     <LaCuerdaPanel onLoad={fromLaCuerda} />
     {aiOff && <div className="banner warn"><AlertTriangle size={18} /> La transcripción con IA no está configurada en el servidor (falta <code>NIRO_API_KEY</code> en <code>backend/.env</code>).</div>}

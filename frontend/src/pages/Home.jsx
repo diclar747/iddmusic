@@ -57,7 +57,7 @@ export default function Home({ user }){
       <a href="#/musicos"><span><Guitar /></span><b>Músicos</b><small>Acordes en vivo</small></a>
       <a href="#/agenda"><span><CalendarDays /></span><b>Agenda</b><small>Cultos y ensayos</small></a>
       <a href="#/groups"><span><Users /></span><b>Mis grupos</b><small>Integrantes y música</small></a>
-      <a href={first ? `#/import?group=${first.id}` : '#/import'}><span><Sparkles /></span><b>Importar</b><small>LaCuerda, PDF o foto</small></a>
+      <a href={first ? `#/import?group=${first.id}` : '#/import'}><span><Sparkles /></span><b>Importar</b><small>Buscar, PDF o foto</small></a>
     </div>
     <div className="grid-2">
       <section className="panel">
