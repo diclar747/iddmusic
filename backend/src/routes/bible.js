@@ -32,7 +32,7 @@ async function fetchJson(url){
 }
 
 /** Devuelve [{verse, text}] del capítulo, desde la caché o descargándolo. */
-async function getChapter(versionId, bookId, chapter){
+export async function getChapter(versionId, bookId, chapter){
   const version = VERSIONS.find(v => v.id === versionId);
   if (!version) throw bad('Versión no disponible');
   const cached = await db.query('SELECT verses FROM bible_chapters WHERE version=$1 AND book=$2 AND chapter=$3', [version.id, bookId, chapter]);

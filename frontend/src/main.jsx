@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Users, CalendarDays, Home as HomeIcon, Sparkles, LogOut, Library, UserCircle, MonitorPlay, Guitar, Menu, X, Church as ChurchIcon, KeyRound, ShieldCheck, Lock } from 'lucide-react';
+import { Users, CalendarDays, Home as HomeIcon, Sparkles, LogOut, Library, UserCircle, MonitorPlay, Guitar, Menu, X, Church as ChurchIcon, KeyRound, ShieldCheck, Lock, Sunrise } from 'lucide-react';
 import './style.css';
 import './mobile.css';
 import './chrome.css';
@@ -32,6 +32,9 @@ import { BrandMark, InstallButton } from './components/Brand.jsx';
 import TopBar, { NotificationBell, ModeButton, useChurch, churchLogo, churchFill, resetChurch } from './components/TopBar.jsx';
 import Church from './pages/Church.jsx';
 import Admin from './pages/Admin.jsx';
+import Verse from './pages/Verse.jsx';
+import PushPrompt from './components/PushPrompt.jsx';
+import { syncPush } from './lib/push.js';
 import { applyTheme, cachedBrand, APP_NAME } from './lib/brand.js';
 import { report, installErrorReporting } from './lib/report.js';
 
@@ -69,7 +72,8 @@ const NAV = [
   ['/agenda', 'Agenda', CalendarDays],
   ['/import', 'Importar canciones', Sparkles],
   ['/present/free', 'Proyectar', MonitorPlay],
-  ['/musicos', 'Músicos (acordes)', Guitar]
+  ['/musicos', 'Músicos (acordes)', Guitar],
+  ['/versiculo', 'Versículo del día', Sunrise]
 ];
 // Menú inferior en el teléfono (el resto queda en "Más").
 const TABS = [['/', 'Inicio', HomeIcon], ['/songs', 'Canciones', Library], ['/groups', 'Grupos', Users], ['/agenda', 'Agenda', CalendarDays]];
@@ -98,6 +102,7 @@ function Page({ route, user }){
   if (a === 'profile') return <Profile user={user} section={b} />;
   if (a === 'iglesia') return <Church />;
   if (a === 'admin') return <Admin user={user} />;
+  if (a === 'versiculo') return <Verse />;
   return <div className="panel"><h2>Página no encontrada</h2><a href="#/">Volver al inicio</a></div>;
 }
 
@@ -109,7 +114,7 @@ function App(){
   const church = useChurchIfUser(user);
   useEffect(() => { const f = e => setBlocked(e.detail); window.addEventListener('sion-blocked', f); return () => window.removeEventListener('sion-blocked', f); }, []);
   // Al entrar: datos frescos del usuario (roles, iglesia).
-  useEffect(() => { if (user?.id) api('/auth/me').then(me => session.save(session.token, { ...session.user, ...me })).catch(() => {}); else resetChurch(); }, [user?.id]);
+  useEffect(() => { if (user?.id) api('/auth/me').then(me => session.save(session.token, { ...session.user, ...me })).catch(() => {}); else resetChurch(); if (user?.id) syncPush(); }, [user?.id]);
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem('idd_nav_collapsed') === '1');
   const toggleNav = () => setCollapsed(c => { localStorage.setItem('idd_nav_collapsed', c ? '0' : '1'); return !c; });
   useEffect(() => { window.scrollTo(0, 0); setMore(false); }, [route.path]);
@@ -151,6 +156,7 @@ function App(){
       <TopBar user={user} collapsed={collapsed} onToggle={toggleNav} />
       <main className="main"><Page route={route} user={user} /></main>
     </div>
+    <PushPrompt />
 
     {/* Teléfono: menú inferior */}
     <nav className="m-tabs">

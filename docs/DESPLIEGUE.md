@@ -129,3 +129,9 @@ y luego `npm --prefix backend run admin -- --email ...`.
 | Reiniciar | `docker compose restart` |
 | Entrar a la base | `docker compose exec db psql -U idd_user idd_music` |
 | Borrar TODOS los datos (¡cuidado!) | `docker compose exec api npm run reset-data -- --si-borrar-todo` |
+
+## Versículo del día (notificaciones push)
+- Al entrar a la app se ofrece "¿Querés recibir el versículo del día?". Quien acepta recibe todos los días a las 6:00 (hora de Paraguay) una notificación con 2 versículos elegidos para su usuario (Reina-Valera 1960); al tocarla abre `#/versiculo`.
+- No hace falta configurar nada: las claves VAPID se generan en el primer arranque y quedan guardadas en la base (`app_settings`). Opcional: `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `PUSH_TZ`, `PUSH_HOUR`.
+- Si el servidor estuvo apagado a las 6:00, envía apenas arranca (hasta las 11:00). Se envía una sola vez por día.
+- En iPhone/iPad solo funciona con la app instalada (Compartir → Agregar a inicio), iOS 16.4 o superior.

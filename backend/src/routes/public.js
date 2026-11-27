@@ -13,7 +13,7 @@ r.post('/info-request', limit, async (req, res) => {
   const name = clean(b.name, 120), phone = normPhone(clean(b.phone, 40)), email = clean(b.email, 160);
   if (!name) throw bad('Contanos tu nombre');
   if (!phone && !email) throw bad('Dejanos un WhatsApp o un correo para contactarte');
-  if (email && !/^[^@s]+@[^@s]+.[^@s]+$/.test(email)) throw bad('El correo no parece válido');
+  if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw bad('El correo no parece válido');
   await db.query('INSERT INTO info_requests(name, church, city, phone, email, message) VALUES($1,$2,$3,$4,$5,$6)',
     [name, clean(b.church, 160), clean(b.city, 120), phone, email, clean(b.message, 2000)]);
   console.log(`Nueva solicitud de información: ${name}${b.church ? ' · ' + clean(b.church, 160) : ''}`);

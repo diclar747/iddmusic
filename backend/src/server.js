@@ -21,6 +21,8 @@ import liveRoutes from './routes/live.js';
 import { church as churchRoutes, notifications as notificationRoutes } from './routes/church.js';
 import platformRoutes from './routes/platform.js';
 import publicRoutes from './routes/public.js';
+import pushRoutes from './routes/push.js';
+import { initPush, startDailyPush } from './lib/push.js';
 
 // Al arrancar: aplica migraciones pendientes y, si no se configuró JWT_SECRET, usa uno generado y guardado en la base.
 try {
@@ -61,6 +63,8 @@ try {
       console.log(`Super administrador de SION listo: ${email} (contraseña: la de ADMIN_PASSWORD). Ya podés borrar ADMIN_PASSWORD del panel.`);
     }
   }
+  // Notificaciones push (versículo del día).
+  await initPush();
 } catch (e) {
   console.error('No se pudo preparar la base de datos:', e.message, '\nRevisá DATABASE_URL (postgresql://usuario:clave@host:5432/base).');
   process.exit(1);
@@ -120,6 +124,7 @@ app.use('/api/church', churchRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/platform', platformRoutes);
 app.use('/api/public', publicRoutes);
+app.use('/api/push', pushRoutes);
 app.use('/api', (_req, res) => res.status(404).json({ error: 'Ruta no encontrada' }));
 
 // Web compilada (frontend/dist): la sirve la misma API cuando corre como un único proceso Node (panel de hosting).
@@ -147,4 +152,5 @@ app.use((err, _req, res, _next) => {
 });
 
 const port = Number(process.env.PORT || 4000);
+startDailyPush();
 app.listen(port, () => console.log(`SION Music API escuchando en http://localhost:${port} · IA Niro: ${process.env.NIRO_API_KEY ? 'activa' : 'sin configurar'}`));
