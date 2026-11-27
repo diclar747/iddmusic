@@ -4,7 +4,7 @@ import { api, session } from '../api.js';
 import { Busy } from '../ui.jsx';
 import { BrandMark, InstallButton } from '../components/Brand.jsx';
 import { themeById } from '../lib/themes.js';
-import { APP_TAGLINE, resetTheme } from '../lib/brand.js';
+import { APP_TAGLINE, resetTheme, cachedBrand } from '../lib/brand.js';
 
 export default function Login(){
   const [email, setEmail] = useState('');
@@ -12,6 +12,7 @@ export default function Login(){
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
   useEffect(() => { resetTheme(); }, []);
+  const last = cachedBrand();
   async function login(creds){
     setError(''); setBusy(true);
     try { const d = await api('/auth/login', { method: 'POST', body: creds }); session.save(d.token, d.user); window.location.hash = '/'; }
@@ -21,8 +22,8 @@ export default function Login(){
   return <div className="login-wrap" style={{ backgroundImage: themeById('c-0').bg }}>
     <div className="login-shade" />
     <div className="login-hero">
-      <BrandMark size={112} />
-      <div className="brand-title">SION <em>Music</em></div>
+      <img className="login-logo" src="/icons/sion-logo.png" alt="SION Music" />
+      {last?.name && <div className="login-church"><BrandMark size={34} src={last.logo_src} /><span><b>{last.name}</b>{last.branch && <small>{last.branch}</small>}</span></div>}
       <p className="sub">Cancionero, proyección y alabanza para tu iglesia</p>
       <p className="slogan">{APP_TAGLINE}</p>
     </div>

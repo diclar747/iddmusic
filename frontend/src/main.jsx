@@ -35,7 +35,8 @@ import { applyTheme, cachedBrand, APP_NAME } from './lib/brand.js';
   applyTheme(b);
   const sp = document.getElementById('splash');
   if (b && sp && session.token) {
-    if (b.logo_src) sp.querySelector('img')?.setAttribute('src', b.logo_src);
+    const img = sp.querySelector('img');
+    if (b.logo_src && img) { img.setAttribute('src', b.logo_src); img.classList.add('church'); }
     const h = sp.querySelector('h1'); if (h) h.textContent = b.name || APP_NAME;
     const p = sp.querySelector('p'); if (p) p.textContent = b.branch || '';
   }

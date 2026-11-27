@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, ChevronLeft, ChevronRight, Maximize, Coffee, X, Palette, Type, PenLine, MessageSquareText, Save, Radio, Trash2, BookOpen, Cast, Image as ImageIcon, FolderOpen, Upload } from 'lucide-react';
+import { ArrowLeft, ChevronLeft, ChevronRight, Maximize, Coffee, X, Palette, Type, PenLine, MessageSquareText, Save, Radio, Trash2, BookOpen, Cast, Image as ImageIcon, FolderOpen, Upload, ArrowUp, ArrowDown, ListMusic } from 'lucide-react';
+import SongPicker from '../components/SongPicker.jsx';
 import { api } from '../api.js';
 import { Spinner, ErrorBox, useToast } from '../ui.jsx';
 import Stage from '../components/Stage.jsx';
@@ -159,7 +160,10 @@ export default function Presenter({ kind, id }){
     channel.current?.postMessage(stateMsg.current);
     castSend(stateMsg.current); // Chromecast / TV
   }, [JSON.stringify(live.slide), live.theme, settings]);
-  useEffect(() => { listRef.current?.querySelector('.on')?.scrollIntoView({ block: 'nearest' }); }, [index]);
+  useEffect(() => { listRef.current?.querySelector('.sl.on')?.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, [index]);
+  // Después de reordenar o quitar canciones, seguir en la misma canción.
+  const focusSong = useRef(null);
+  useEffect(() => { if (focusSong.current == null || !songs) return; const si = songs.findIndex(x => x.id === focusSong.current); focusSong.current = null; const st = slides.findIndex(x => x.song === si); setIndex(st >= 0 ? st : 0); }, [slides]);
 
   // ---- Músicos: repertorio con acordes y posición en vivo (tablets, teléfonos y segundo Chromecast) ----
   const liveGroup = groupId || groups[0]?.id || null;
@@ -214,6 +218,17 @@ export default function Presenter({ kind, id }){
     if (!songId) return;
     try { const s = await api(`/songs/${songId}`); setSongs(list => [...list, s]); toast(`"${s.title}" agregada a esta proyección`); } catch (e) { toast(e.message, 'error'); }
   }
+  function moveSong(si, d){
+    const j = si + d; if (j < 0 || j >= songs.length) return;
+    focusSong.current = songs[cur?.song ?? 0]?.id;
+    setSongs(list => { const a = [...list]; [a[si], a[j]] = [a[j], a[si]]; return a; });
+  }
+  function removeSong(si){
+    if (!confirm(`¿Quitar "${songs[si].title}" de esta proyección? (No se borra del cancionero)`)) return;
+    const keep = cur?.song === si ? songs[si + 1]?.id || songs[si - 1]?.id : songs[cur?.song ?? 0]?.id;
+    focusSong.current = keep ?? null;
+    setSongs(list => list.filter((_, k) => k !== si));
+  }
   async function openFiles(list){
     const files = [...list];
     const texts = files.filter(isSongText);
@@ -244,25 +259,30 @@ export default function Presenter({ kind, id }){
       </div>
     </header>
     <div className={`present-body ${panel ? 'with-panel' : ''}`}>
-      <aside className="slide-list" ref={listRef}>
-        {!songs.length && <p className="muted small sl-empty">Sin canciones todavía. Usá <b>Biblia</b>, <b>Texto libre</b> o <b>Imágenes</b>, o agregá una canción.</p>}
-        {songStarts.map(([s, start]) => <div key={start} className="sl-song">
-          <div className="sl-song-title">{s.songTitle}{songs[s.song]?.local && <span className="sl-local">temporal · <button className="link-btn" onClick={() => keepSong(s.song).catch(e => toast(e.message, 'error'))}>guardar en el grupo</button></span>}</div>
-          {slides.map((sl, i) => sl.song === s.song && <button key={i} className={`sl ${i === index ? 'on' : ''} ${i === index && live.what !== 'cancion' ? 'dim' : ''} k-${sl.kind}`} onClick={() => { setIndex(i); setHold(false); setOverride(null); }}>
-            <span className="sl-n">{i + 1}</span>
-            <span className="sl-t">{sl.kind === 'title' ? <i>Portada: {sl.title}</i> : sl.kind === 'blank' ? <i>— pantalla de espera —</i> : <>{sl.label && <small>{sl.label}</small>}{sl.lines.join(' / ')}</>}</span>
-          </button>)}
-        </div>)}
-        <div className="add-row">
-          <select className="add-live" value="" onFocus={() => !allSongs && api('/songs').then(d => setAllSongs(d.items)).catch(() => setAllSongs([]))} onChange={e => addSong(e.target.value)}>
-            <option value="">+ Agregar canción del cancionero…</option>
-            {allSongs?.map(s => <option key={s.id} value={s.id}>{s.title}{s.group_name ? ` · ${s.group_name}` : ''}</option>)}
-          </select>
-          <label className="add-file" title="Archivos .txt o ChordPro (.cho, .chopro, .crd, .pro)"
-            onDragOver={e => e.preventDefault()} onDrop={e => { e.preventDefault(); openFiles(e.dataTransfer.files); }}>
-            <FolderOpen size={15} /> Abrir de la computadora…
-            <input ref={fileRef} type="file" hidden multiple accept={SONG_TEXT_ACCEPT} onChange={e => { openFiles(e.target.files); e.target.value = ''; }} />
-          </label>
+      <aside className="setlist">
+        <div className="set-head">
+          <div className="set-title"><ListMusic size={16} /><b>Repertorio</b><small>{songs.length} {songs.length === 1 ? 'canción' : 'canciones'}</small></div>
+          <SongPicker onPick={addSong} onFiles={openFiles} accept={SONG_TEXT_ACCEPT} inSet={songs.map(x => x.id)} />
+          {songs.length > 0 && <div className="set-songs">{songs.map((song, si) => { const start = slides.findIndex(x => x.song === si); const isCur = cur?.song === si; return <div key={song.id + si} className={`set-song ${isCur ? 'on' : ''}`}>
+            <button className="ss-main" onClick={() => { if (start >= 0) { setIndex(start); setHold(false); setOverride(null); } }} title="Ir a esta canción">
+              <span className="ss-n">{si + 1}</span><span className="ss-t">{song.title}{song.local && <em> · temporal</em>}</span>{isCur && <Radio size={13} className="ss-live" />}
+            </button>
+            <span className="ss-acts">
+              <button title="Subir" disabled={si === 0} onClick={() => moveSong(si, -1)}><ArrowUp size={13} /></button>
+              <button title="Bajar" disabled={si === songs.length - 1} onClick={() => moveSong(si, 1)}><ArrowDown size={13} /></button>
+              <button title="Quitar de esta proyección" onClick={() => removeSong(si)}><X size={13} /></button>
+            </span>
+          </div>; })}</div>}
+        </div>
+        <div className="set-slides" ref={listRef}>
+          {!songs.length && <p className="sl-empty">Sin canciones todavía. Tocá <b>Agregar canción</b>, o usá <b>Biblia</b>, <b>Texto libre</b> o <b>Imágenes</b>.</p>}
+          {songStarts.map(([sl0, start]) => <div key={start} className="sl-song">
+            <div className="sl-song-title"><span>{sl0.songTitle}</span>{songs[sl0.song]?.local && <span className="sl-local"><button className="link-btn" onClick={() => keepSong(sl0.song).catch(e => toast(e.message, 'error'))}>guardar en el grupo</button></span>}</div>
+            {slides.map((sl, i) => sl.song === sl0.song && <button key={i} className={`sl ${i === index ? 'on' : ''} ${i === index && live.what !== 'cancion' ? 'dim' : ''} k-${sl.kind}`} onClick={() => { setIndex(i); setHold(false); setOverride(null); }}>
+              <span className="sl-n">{i + 1}</span>
+              <span className="sl-t">{sl.kind === 'title' ? <i>Portada: {sl.title}</i> : sl.kind === 'blank' ? <i>— pantalla de espera —</i> : <>{sl.label && <small>{sl.label}</small>}{sl.lines.join(' / ')}</>}</span>
+            </button>)}
+          </div>)}
         </div>
       </aside>
       <main className="present-main">

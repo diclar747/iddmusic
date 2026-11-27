@@ -19,6 +19,9 @@
     #splash{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;align-content:center;gap:6px;text-align:center;color:#fff;
       background:radial-gradient(ellipse at 50% 35%,#2a5689 0%,#14294a 45%,#070f1d 100%);font-family:'Segoe UI',system-ui,Arial,sans-serif;transition:opacity .5s ease,visibility .5s}
     #splash.out{opacity:0;visibility:hidden}
+    #splash .logo-full{width:min(260px,62vw);height:auto;filter:drop-shadow(0 10px 30px #0008);animation:sp-in .9s cubic-bezier(.2,.8,.2,1)}
+    #splash .logo-full.church{width:132px;height:132px;border-radius:50%;object-fit:contain;padding:18px;background:radial-gradient(circle at 50% 40%,#21436e,#0d1d33);box-shadow:0 0 0 4px #d9a441,0 0 60px #f0c75e55}
+    #splash h1:empty{display:none}
     #splash .ring{width:132px;height:132px;border-radius:50%;display:grid;place-items:center;position:relative;
       background:radial-gradient(circle at 50% 40%,#21436e,#0d1d33);box-shadow:0 0 0 4px #d9a441,0 0 60px #f0c75e55,0 20px 50px #0008;animation:sp-in .9s cubic-bezier(.2,.8,.2,1)}
     #splash .ring img{width:58%;filter:drop-shadow(0 4px 10px #0007);animation:sp-flame 2.4s ease-in-out infinite}
@@ -36,8 +39,8 @@
 </head>
 <body>
   <div id="splash" aria-hidden="true">
-    <div class="ring"><img src="/icons/sion-mark.png" alt="" /></div>
-    <h1>SION <span>Music</span></h1>
+    <img class="logo-full" src="/icons/sion-logo.png" alt="SION Music" />
+    <h1></h1>
     <p>Cancionero y proyección para tu iglesia</p>
     <em>Un lugar de adoración y presencia de Dios</em>
     <div class="bar"></div>

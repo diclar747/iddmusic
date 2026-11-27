@@ -87,3 +87,66 @@
   .ch-hero{flex-direction:column;align-items:stretch;justify-content:flex-end}
   .m-top .dd-menu{position:fixed;left:8px;right:8px;top:calc(60px + env(safe-area-inset-top));width:auto}
 }
+
+/* =================== Proyección: repertorio y diapositivas =================== */
+.present-body{grid-template-columns:310px minmax(0,1fr) auto}
+.present-body.with-panel{grid-template-columns:310px minmax(0,1fr) auto}
+.setlist{display:flex;flex-direction:column;min-height:0;height:calc(100vh - 60px);border-right:1px solid #ffffff14;background:linear-gradient(180deg,#0f1a2b,#0c1522)}
+.set-head{padding:12px 12px 10px;border-bottom:1px solid #ffffff12;display:grid;gap:10px;flex:none}
+.set-title{display:flex;align-items:center;gap:8px;color:#e6ecf4}
+.set-title svg{color:var(--gold-2)}.set-title small{margin-left:auto;color:#8fa0b6;font-size:12px}
+.set-songs{display:grid;gap:4px;max-height:34vh;overflow:auto;padding-right:2px}
+.set-song{display:flex;align-items:center;gap:4px;border-radius:10px;background:#ffffff08;border:1px solid #ffffff10;transition:background .15s,border-color .15s}
+.set-song:hover{background:#ffffff10}
+.set-song.on{background:linear-gradient(90deg,color-mix(in srgb,var(--gold) 28%,transparent),#ffffff08);border-color:color-mix(in srgb,var(--gold) 60%,transparent)}
+.ss-main{flex:1;min-width:0;display:flex;align-items:center;gap:8px;padding:8px 6px 8px 8px;background:none;border:0;color:#e6ecf4;font:inherit;font-size:13.5px;text-align:left;cursor:pointer}
+.ss-n{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;background:#ffffff14;color:#cfd8e4;font-size:11.5px;font-weight:700;flex:none}
+.set-song.on .ss-n{background:var(--gold);color:#1b1404}
+.ss-t{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.ss-t em{font-style:normal;color:#f2c14e;font-weight:400;font-size:11.5px}
+.ss-live{color:#3ecf8e;flex:none}
+.ss-acts{display:flex;gap:1px;padding-right:4px;opacity:.35;transition:opacity .15s}
+.set-song:hover .ss-acts,.set-song.on .ss-acts{opacity:1}
+.ss-acts button{width:24px;height:24px;border-radius:6px;border:0;background:none;color:#cfd8e4;display:grid;place-items:center;cursor:pointer}
+.ss-acts button:hover:not(:disabled){background:#ffffff1a;color:#fff}.ss-acts button:disabled{opacity:.3;cursor:default}
+.set-slides{flex:1;min-height:0;overflow:auto;padding:6px 10px 30px;scroll-behavior:smooth}
+.set-slides .sl-song-title{position:sticky;top:0;z-index:1;display:flex;align-items:center;gap:6px;justify-content:space-between;background:#0d1724f2;backdrop-filter:blur(6px);margin:0 -10px;padding:10px 14px 8px;border-bottom:1px solid #ffffff0d}
+.set-slides .sl-song-title span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.set-slides .sl{margin:3px 0;padding:9px 10px;border-radius:10px;border:1px solid transparent;transition:background .12s,border-color .12s}
+.set-slides .sl:hover{background:#ffffff0d;border-color:#ffffff12}
+.set-slides .sl.on{background:var(--gold);color:#1b1404;box-shadow:0 6px 18px color-mix(in srgb,var(--gold) 35%,transparent)}
+.set-slides .sl.on small{color:#1b1404}
+.sl-empty{padding:14px 6px;color:#8fa0b6;font-size:13px;line-height:1.5}
+
+/* Selector de canciones */
+.sp-picker{position:relative}
+.sp-add{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px dashed color-mix(in srgb,var(--gold-2) 60%,transparent);background:color-mix(in srgb,var(--gold) 14%,transparent);color:var(--gold-2);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.sp-add:hover,.sp-add.on{background:color-mix(in srgb,var(--gold) 26%,transparent);border-style:solid}
+.sp-menu{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;background:#16233a;border:1px solid #2c3d58;border-radius:14px;box-shadow:0 20px 50px #000a;overflow:hidden;animation:dd-in .15s ease}
+.sp-search{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid #ffffff12;color:#8fa0b6}
+.sp-search input{flex:1;background:none;border:0;outline:0;color:#fff;font:inherit;font-size:14px;min-width:0}
+.sp-list{max-height:46vh;overflow:auto;padding:4px}
+.sp-list button{width:100%;display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;border:0;background:none;color:#e6ecf4;font:inherit;text-align:left;cursor:pointer}
+.sp-list button:hover{background:#ffffff12}
+.sp-list button svg{color:var(--gold-2);flex:none}
+.sp-list b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sp-list small{display:block;color:#8fa0b6;font-size:11.5px}
+.sp-list em{font-style:normal;color:#ffb27a;font-weight:700;font-size:12px}
+.sp-list i{font-style:normal;font-size:10.5px;color:#3ecf8e;white-space:nowrap}
+.sp-list button.added{opacity:.75}
+.sp-empty{padding:14px;color:#8fa0b6;font-size:13px;display:flex;gap:8px;align-items:center}
+.sp-file{width:100%;display:flex;align-items:center;gap:8px;padding:11px 14px;border:0;border-top:1px solid #ffffff12;background:#ffffff06;color:#cfd8e4;font:inherit;font-size:13px;cursor:pointer}
+.sp-file:hover{background:#ffffff12;color:#fff}
+
+/* Barras de desplazamiento finas en la proyección */
+.present-wrap *{scrollbar-width:thin;scrollbar-color:#3a4a63 transparent}
+.present-wrap ::-webkit-scrollbar{width:8px;height:8px}
+.present-wrap ::-webkit-scrollbar-track{background:transparent}
+.present-wrap ::-webkit-scrollbar-thumb{background:#3a4a63;border-radius:8px;border:2px solid transparent;background-clip:padding-box}
+.present-wrap ::-webkit-scrollbar-thumb:hover{background:#56688a;background-clip:padding-box}
+
+@media (max-width:1100px){
+  .present-body,.present-body.with-panel{grid-template-columns:1fr}
+  .setlist{height:auto;max-height:none;border-right:0;border-bottom:1px solid #ffffff14}
+  .set-songs{max-height:180px}
+  .set-slides{max-height:260px}
+}
