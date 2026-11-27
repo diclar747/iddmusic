@@ -52,6 +52,11 @@ try {
 
 const app = express();
 app.disable('x-powered-by');
+// Dirección anterior: si REDIRECT_TO está definido (ej. https://sion.cd.com.py), todo se redirige ahí.
+if (process.env.REDIRECT_TO) {
+  const target = process.env.REDIRECT_TO.replace(/\/+$/, '');
+  app.use((req, res) => res.redirect(301, target + req.originalUrl));
+}
 app.set('trust proxy', 1); // detrás de Nginx/Caddy: IP real para el límite de intentos de ingreso
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'same-site' },
