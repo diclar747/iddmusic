@@ -1,10 +1,12 @@
-import React, { useMemo, useRef, useState } from 'react';
-import { Pencil, Trash2, MonitorPlay, MapPin, Clock, X, Plus, Music2, ExternalLink, GripVertical, Search, Sparkles, FilePlus2, Users, Guitar, Check } from 'lucide-react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Pencil, Trash2, MonitorPlay, MapPin, Clock, X, Plus, Music2, ExternalLink, GripVertical, Search, Sparkles, FilePlus2, Users, Guitar, Check, ChevronLeft, ChevronRight, Minus } from 'lucide-react';
 import { api } from '../api.js';
 import { navigate } from '../router.js';
 import { useApi, Spinner, ErrorBox, useToast, fmtDate, fmtTime, relDay, EVENT_TYPES } from '../ui.jsx';
 import EventForm from '../components/EventForm.jsx';
-import { KEYS } from '../lib/chart.js';
+import { KEYS, transposeSections, transposeChord, keyDistance } from '../lib/chart.js';
+import ChartView from '../components/ChartView.jsx';
+import { useChurch, churchCover } from '../components/TopBar.jsx';
 
 const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
@@ -45,6 +47,59 @@ function useSortable(items, onDrop){
   return { listRef, start, drag, view };
 }
 
+/** Panel de una canción del repertorio: vista previa en el tono del culto, proyectar desde ahí, editar o abrir. */
+function SongSheet({ eventId, items, index, onIndex, onClose, onKey }){
+  const it = items[index];
+  const song = useApi(it ? `/songs/${it.song_id}` : null);
+  const s = song.data?.id === it?.song_id ? song.data : null;
+  const [shift, setShift] = useState(0);
+  const [chords, setChords] = useState(true);
+  useEffect(() => { setShift(s && it.performance_key && s.original_key ? keyDistance(s.original_key, it.performance_key) : 0); }, [s?.id, it?.performance_key]);
+  useEffect(() => {
+    const k = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', k);
+    const prev = document.body.style.overflow; document.body.style.overflow = 'hidden';
+    return () => { window.removeEventListener('keydown', k); document.body.style.overflow = prev; };
+  }, [onClose]);
+  const sections = useMemo(() => transposeSections(s?.lyrics_sections, shift), [s, shift]);
+  if (!it) return null;
+  const key = s?.original_key ? transposeChord(s.original_key, shift) : it.performance_key;
+  const keyQ = key ? `?key=${encodeURIComponent(key)}` : '';
+  return <>
+    <div className="song-sheet-back" onClick={onClose} />
+    <aside className="song-sheet" role="dialog" aria-label={it.title}>
+      <div className="ss-head">
+        <button className="icon-btn ss-close" onClick={onClose} aria-label="Cerrar"><X size={18} /></button>
+        <div className="ss-top"><span className="rep-pos">{index + 1}</span><span><h2>{it.title}</h2><small>{it.author || 'Autor no indicado'}{key && ` · Tono ${key}`}</small></span></div>
+        <div className="ss-nav">
+          <button disabled={index === 0} onClick={() => onIndex(index - 1)}><ChevronLeft size={15} /> Anterior</button>
+          <button disabled={index === items.length - 1} onClick={() => onIndex(index + 1)}>Siguiente <ChevronRight size={15} /></button>
+        </div>
+      </div>
+      <div className="ss-actions">
+        <a className="btn gold wide" href={`#/present/event/${eventId}?song=${it.song_id}`}><MonitorPlay size={17} /> Proyectar desde esta canción</a>
+        <a className="btn" href={`#/songs/${it.song_id}/edit?event=${eventId}`}><Pencil size={16} /> Editar letra y acordes</a>
+        <a className="btn" href={`#/songs/${it.song_id}${keyQ}`}><ExternalLink size={16} /> Abrir canción</a>
+      </div>
+      <div className="ss-tools">
+        <div className="tgroup"><span className="tlabel">Tono</span>
+          <button onClick={() => setShift(x => Math.max(-11, x - 1))} title="Bajar medio tono"><Minus size={15} /></button>
+          <b className="tval">{key || (shift > 0 ? `+${shift}` : shift)}</b>
+          <button onClick={() => setShift(x => Math.min(11, x + 1))} title="Subir medio tono"><Plus size={15} /></button>
+        </div>
+        <div className="tgroup">
+          <button className={chords ? 'on txt' : 'txt'} onClick={() => setChords(true)}>Letra + acordes</button>
+          <button className={!chords ? 'on txt' : 'txt'} onClick={() => setChords(false)}>Solo letra</button>
+        </div>
+        {key && key !== (it.performance_key || s?.original_key) && <button className="btn sm gold ss-save" onClick={() => onKey(it, key)}><Check size={14} /> Usar {key} en este culto</button>}
+      </div>
+      <div className="ss-body">
+        {song.loading && !s ? <Spinner /> : song.error ? <ErrorBox error={song.error} /> : s && <ChartView sections={sections} showChords={chords} fontSize={16} />}
+      </div>
+    </aside>
+  </>;
+}
+
 export default function EventView({ id }){
   const toast = useToast();
   const ev = useApi(`/events/${id}`);
@@ -54,6 +109,9 @@ export default function EventView({ id }){
   const library = useApi(e ? '/songs' : null);
   const [q, setQ] = useState('');
   const [adding, setAdding] = useState(null);
+  const [open, setOpen] = useState(null); // id del ítem abierto en el panel
+  const church = useChurch();
+  const closeSheet = useCallback(() => setOpen(null), []);
 
   const call = async (path, opts, msg) => { try { const r = await api(path, opts); if (msg) toast(msg); ev.reload(); return r; } catch (err) { toast(err.message, 'error'); } };
   const items = e?.items || [];
@@ -89,7 +147,7 @@ export default function EventView({ id }){
   const back = `event=${id}&group=${e.group_id}`;
 
   return <>
-    <header className="page-head">
+    <header className="page-head cover" style={{ '--cover': churchCover(church) }}>
       <div>
         <a className="crumb" href="#/agenda">← Agenda</a>
         <h1>{e.title}</h1>
@@ -118,11 +176,11 @@ export default function EventView({ id }){
     <div className="ev-layout">
       <section className="panel">
         <div className="panel-head"><h2>Repertorio</h2><small className="muted">{items.length} {items.length === 1 ? 'canción' : 'canciones'}{items.length > 1 && ' · arrastrá ⋮⋮ para ordenar'}</small></div>
-        {items.length ? <ol className="rep-list" ref={sort.listRef}>{sort.view.map(({ it, i }, pos) => <li key={it.id} className={`rep-item ${sort.drag?.from === i ? 'dragging' : ''}`}>
+        {items.length ? <ol className="rep-list" ref={sort.listRef}>{sort.view.map(({ it, i }, pos) => <li key={it.id} className={`rep-item ${sort.drag?.from === i ? 'dragging' : ''} ${open === it.id ? 'open' : ''}`} onClick={x => { if (!x.target.closest('button,a,input,select,label,textarea')) setOpen(it.id); }} title="Tocá para ver, proyectar o editar">
           <button className="rep-grip" onPointerDown={x => sort.start(i, x)} title="Arrastrar para ordenar" aria-label="Arrastrar para ordenar"><GripVertical size={18} /></button>
           <span className="rep-pos">{pos + 1}</span>
           <span className="rep-main">
-            <a href={`#/songs/${it.song_id}${it.performance_key ? `?key=${encodeURIComponent(it.performance_key)}` : ''}`} className="rep-title">{it.title} <ExternalLink size={13} /></a>
+            <button type="button" className="rep-title" onClick={() => setOpen(it.id)}>{it.title}</button>
             <small>{it.author || 'Autor no indicado'}{it.song_status === 'review' && ' · ⚠ revisar transcripción'}</small>
             <input className="inline-note" defaultValue={it.notes || ''} placeholder="Nota (ej.: entra solo el piano)…" onBlur={x => x.target.value !== (it.notes || '') && update(it, { notes: x.target.value })} />
           </span>
@@ -153,11 +211,12 @@ export default function EventView({ id }){
           {results.map(s => { const added = inSet.has(s.id) || (s.group_id !== e.group_id && titles.has(norm(s.title))); return <button key={s.id} className={`ev-res ${added ? 'added' : ''}`} disabled={added || adding === s.id} onClick={() => addSong(s)}>
             <Music2 size={16} /><span className="grow"><b>{s.title}</b><small>{[s.author, s.group_id !== e.group_id && s.group_name].filter(Boolean).join(' · ')}</small></span>
             {s.original_key && <em>{s.original_key}</em>}
-            {added ? <span className="ev-ok"><Check size={14} /> En el repertorio</span> : <span className="ev-plus"><Plus size={15} /></span>}
+            {added ? <span className="ev-ok"><Check size={14} /> Agregada</span> : <span className="ev-plus"><Plus size={15} /></span>}
           </button>; })}
         </div>
       </section>
     </div>
+    {open && items.some(x => x.id === open) && <SongSheet eventId={id} items={items} index={items.findIndex(x => x.id === open)} onIndex={i => setOpen(items[i].id)} onClose={closeSheet} onKey={(it, k) => update(it, { performance_key: k })} />}
     {editing && <EventForm event={e} onClose={() => setEditing(false)} onSaved={() => { setEditing(false); ev.reload(); }} />}
   </>;
 }

@@ -41,7 +41,7 @@ function buildSlides(songs, s){
 const standbySlide = s => ({ kind: 'standby', mode: s.standbyMode, title: s.standbyTitle, sub: s.standbySub, logo: s.standbyLogo });
 const standbyThemeOf = (s, theme, uploaded) => s.standbyTheme === 'same' ? theme : themeById(s.standbyTheme, uploaded);
 
-export default function Presenter({ kind, id }){
+export default function Presenter({ kind, id, query }){
   const toast = useToast();
   const [songs, setSongs] = useState(null);
   const [title, setTitle] = useState('');
@@ -76,6 +76,7 @@ export default function Presenter({ kind, id }){
         } else if (kind === 'event') {
           const ev = await api(`/events/${id}`);
           const list = await Promise.all(ev.items.map(it => api(`/songs/${it.song_id}`)));
+          if (query?.song) focusSong.current = query.song;
           setSongs(list); setTitle(ev.title); setGroupId(ev.group_id); setBackHref(`#/events/${id}`);
         } else {
           const s = await api(`/songs/${id}`);
@@ -163,7 +164,7 @@ export default function Presenter({ kind, id }){
   useEffect(() => { listRef.current?.querySelector('.sl.on')?.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, [index]);
   // Después de reordenar o quitar canciones, seguir en la misma canción.
   const focusSong = useRef(null);
-  useEffect(() => { if (focusSong.current == null || !songs) return; const si = songs.findIndex(x => x.id === focusSong.current); focusSong.current = null; const st = slides.findIndex(x => x.song === si); setIndex(st >= 0 ? st : 0); }, [slides]);
+  useEffect(() => { if (focusSong.current == null || !songs) return; const si = songs.findIndex(x => String(x.id) === String(focusSong.current)); focusSong.current = null; const st = slides.findIndex(x => x.song === si); setIndex(st >= 0 ? st : 0); }, [slides]);
 
   // ---- Músicos: repertorio con acordes y posición en vivo (tablets, teléfonos y segundo Chromecast) ----
   const liveGroup = groupId || groups[0]?.id || null;

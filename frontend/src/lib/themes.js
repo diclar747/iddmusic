@@ -34,7 +34,30 @@ function clouds(seed, n, color, yMax = 500){
 }
 const lg = (id, stops, vertical = true) => `<linearGradient id='${id}' x1='0' y1='0' x2='${vertical ? 0 : 1}' y2='${vertical ? 1 : 0}'>${stops.map(([o, c, op = 1]) => `<stop offset='${o}' stop-color='${c}' stop-opacity='${op}'/>`).join('')}</linearGradient>`;
 
+function crowd(seed, baseY, n, color, scale = 1){
+  const r = rng(seed); let s = '';
+  for (let i = 0; i < n; i++) {
+    const x = Math.round((i / n) * 1680 - 40 + r() * 30), k = scale * (0.85 + r() * 0.3), y = baseY + r() * 26;
+    const head = 17 * k, sh = 34 * k, up = r();
+    s += `<circle cx='${x}' cy='${Math.round(y - 70 * k)}' r='${head.toFixed(1)}' fill='${color}'/>`;
+    s += `<path d='M${x - sh} ${y} Q${x - sh} ${y - 48 * k} ${x} ${y - 50 * k} Q${x + sh} ${y - 48 * k} ${x + sh} ${y} Z' fill='${color}'/>`;
+    if (up > 0.35) {
+      const a = 0.25 + r() * 0.35, len = 95 * k;
+      const lx = x - sh * 0.75, rx = x + sh * 0.75, yy = y - 40 * k;
+      s += `<path d='M${lx} ${yy} L${Math.round(lx - len * a)} ${Math.round(yy - len)}' stroke='${color}' stroke-width='${(11 * k).toFixed(1)}' stroke-linecap='round'/>`;
+      if (up > 0.55) s += `<path d='M${rx} ${yy} L${Math.round(rx + len * a)} ${Math.round(yy - len)}' stroke='${color}' stroke-width='${(11 * k).toFixed(1)}' stroke-linecap='round'/>`;
+    }
+  }
+  return s + `<rect x='0' y='${baseY + 20}' width='1600' height='${900 - baseY}' fill='${color}'/>`;
+}
+
 const SCENES = {
+  adoracion: svg(`<defs>${lg('s', [[0, '#0b1430'], [0.5, '#24245a'], [0.8, '#a2526b'], [1, '#f2a65a']])}<radialGradient id='l' cx='.5' cy='.75' r='.6'><stop offset='0' stop-color='#ffd88a' stop-opacity='.95'/><stop offset='.45' stop-color='#f59e4b' stop-opacity='.35'/><stop offset='1' stop-color='#f59e4b' stop-opacity='0'/></radialGradient><filter id='bb'><feGaussianBlur stdDeviation='10'/></filter></defs>
+    <rect width='1600' height='900' fill='url(#s)'/>${stars(70, 5, 300)}
+    <g opacity='.22' filter='url(#bb)' fill='#ffe2a8'>${[-520, -260, 0, 260, 520].map(dx => `<path d='M800 640 L${800 + dx * 2.4 - 70} -40 L${800 + dx * 2.4 + 70} -40 Z'/>`).join('')}</g>
+    <rect width='1600' height='900' fill='url(#l)'/>
+    <path d='M790 300 h20 v70 h48 v20 h-48 v130 h-20 v-130 h-48 v-20 h48 z' fill='#ffe9bd' opacity='.85'/>
+    ${crowd(61, 760, 15, '#1a1230', 1.05)}${crowd(67, 850, 11, '#07060f', 1.45)}`),
   amanecer: svg(`<defs>${lg('s', [[0, '#2b1055'], [0.45, '#d5486b'], [0.75, '#f7a35c'], [1, '#ffd89b']])}<radialGradient id='sun'><stop offset='0' stop-color='#fff6d5'/><stop offset='.55' stop-color='#ffd27a' stop-opacity='.9'/><stop offset='1' stop-color='#ffb347' stop-opacity='0'/></radialGradient></defs>
     <rect width='1600' height='900' fill='url(#s)'/><circle cx='800' cy='590' r='240' fill='url(#sun)'/>
     ${ridge(7, 600, 220, 120, '#7a2f5e', 0.8)}${ridge(11, 700, 150, 90, '#4d2150')}${ridge(23, 800, 90, 70, '#26122f')}`),
@@ -77,6 +100,7 @@ export const THEMES = [
   { id: 'iglesia', name: 'Azul y dorado', group: 'Iglesia', bg: 'radial-gradient(ellipse at 50% 120%,#2b4a72 0%,#142a45 55%,#0b1828 100%)', color: '#f2d58c', overlay: 0 },
   { id: 'negro', name: 'Negro', group: 'Minimalista', bg: '#000', color: '#fff', overlay: 0 },
   { id: 'blanco', name: 'Claro', group: 'Minimalista', bg: 'linear-gradient(180deg,#fbf8f1,#efe9dc)', color: '#1b2a3d', overlay: 0, light: true },
+  { id: 'adoracion', name: 'Adoración', group: 'Naturaleza', bg: SCENES.adoracion, color: '#fff', overlay: 0.3 },
   { id: 'amanecer', name: 'Amanecer en la montaña', group: 'Naturaleza', bg: SCENES.amanecer, color: '#fff', overlay: 0.28 },
   { id: 'lago', name: 'Lago sereno', group: 'Naturaleza', bg: SCENES.lago, color: '#fff', overlay: 0.38 },
   { id: 'estrellas', name: 'Noche estrellada', group: 'Naturaleza', bg: SCENES.estrellas, color: '#fff', overlay: 0.1 },

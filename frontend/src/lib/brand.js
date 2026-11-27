@@ -18,7 +18,7 @@ export const PALETTES = [
 export const paletteById = id => PALETTES.find(p => p.id === id) || PALETTES[0];
 
 /** Portadas para el inicio (escenas de la biblioteca de fondos) o la foto propia de la iglesia. */
-export const COVERS = ['c-0', 'c-1', 'c-2', 'c-3', 'amanecer', 'montanas', 'estrellas', 'lago', 'campo', 'oceano', 'b-0', 'r-1', 'w-0', 'p-0'];
+export const COVERS = ['adoracion', 'c-0', 'c-1', 'c-2', 'c-3', 'amanecer', 'montanas', 'estrellas', 'lago', 'campo', 'oceano', 'b-0', 'r-1', 'w-0', 'p-0'];
 
 const MODE_KEY = 'sion_mode';        // preferencia del usuario: 'light' | 'dark' | 'auto' | '' (= la de la iglesia)
 const BRAND_KEY = 'sion_brand';      // última marca vista (para pintar la pantalla de inicio antes de cargar)

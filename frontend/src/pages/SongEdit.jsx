@@ -75,12 +75,13 @@ export default function SongEdit({ id, groupId, eventId }){
       const s = id ? await api(`/songs/${id}`, { method: 'PATCH', body }) : await api('/songs', { method: 'POST', body: { ...body, group_id: meta.group_id } });
       toast('Canción guardada');
       if (!id && await finishForEvent(eventId, { ...s, title: s.title || meta.title }, toast)) return;
+      if (id && eventId) { navigate(`/events/${eventId}`); return; }
       navigate(`/songs/${s.id}`);
     } catch (err) { toast(err.message, 'error'); } finally { setBusy(false); }
   }
   return <form onSubmit={save}>
     <header className="page-head">
-      <div><a className="crumb" href={id ? `#/songs/${id}` : `#/groups/${meta.group_id}`}>← Volver</a><h1>{id ? 'Editar canción' : 'Nueva canción'}</h1>
+      <div><a className="crumb" href={eventId ? `#/events/${eventId}` : id ? `#/songs/${id}` : `#/groups/${meta.group_id}`}>← {eventId ? 'Volver al culto' : 'Volver'}</a><h1>{id ? 'Editar canción' : 'Nueva canción'}</h1>
         {id && <p className="muted">Cada vez que guardás se conserva la versión anterior en el historial.</p>}</div>
       <div className="head-actions">
         {!id && <a className="btn" href={`#/import?group=${meta.group_id}`}><Sparkles size={16} /> Importar desde PDF/foto</a>}

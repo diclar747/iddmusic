@@ -3,7 +3,7 @@
 // - /assets/ (archivos con hash): caché permanente.
 // - Íconos e imágenes públicas: caché y se actualizan en segundo plano.
 // - /api/: nunca se guarda (datos siempre frescos y privados).
-const VERSION = 'sion-v4';
+const VERSION = 'sion-v5';
 const SHELL = ['/', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png', '/icons/sion-logo.png', '/icons/sion-mark.png'];
 
 self.addEventListener('install', e => {

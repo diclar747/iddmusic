@@ -1,0 +1,161 @@
+/* =====================================================================
+   SION Music · sistema visual (azul profundo + dorado, tarjetas suaves,
+   encabezados oscuros con arte, acciones doradas). Se carga al final.
+   ===================================================================== */
+:root{
+  --font-body:'Inter Variable',Inter,'Segoe UI',system-ui,Arial,sans-serif;
+  --font-head:Montserrat,'Inter Variable','Segoe UI',system-ui,sans-serif;
+  --radius:18px;
+  --bg:#eef2f8;
+  --line:#e3e8f0;
+  --grad-navy:linear-gradient(135deg,var(--navy-2) 0%,var(--navy) 45%,var(--navy-dark) 100%);
+  --grad-gold:linear-gradient(135deg,var(--gold-2) 0%,color-mix(in srgb,var(--gold-2) 45%,var(--gold)) 55%,var(--gold) 100%);
+  --on-gold:#1b1405;
+  --shadow-1:0 1px 2px #1429450d,0 4px 14px #1429450f;
+  --shadow-2:0 2px 6px #14294512,0 16px 36px #14294524;
+  --shadow-gold:0 6px 18px color-mix(in srgb,var(--gold) 45%,transparent);
+  font-family:var(--font-body);
+}
+:root[data-mode=dark]{--bg:#0a111e;--line:#223049;--shadow-1:0 1px 2px #0006,0 6px 18px #0005;--shadow-2:0 4px 10px #0007,0 18px 40px #0008}
+body{font-family:var(--font-body);background:
+  radial-gradient(1200px 420px at 70% -120px,color-mix(in srgb,var(--gold-2) 14%,transparent),transparent 70%),
+  radial-gradient(900px 380px at 0% -80px,color-mix(in srgb,var(--navy-2) 12%,transparent),transparent 70%),var(--bg);
+  background-attachment:fixed}
+h1,h2,h3,.brand b,.tb-church b,.m-brand,.login-hero .brand-title{font-family:var(--font-head);letter-spacing:-.2px}
+h1{font-weight:800}h2{font-weight:700}h3{font-weight:700}
+input,select,textarea,button{font-family:inherit}
+
+/* ---------- Menú lateral ---------- */
+.sidebar{background:
+  radial-gradient(260px 220px at 0% 0%,color-mix(in srgb,var(--gold) 22%,transparent),transparent 70%),
+  radial-gradient(300px 300px at 100% 100%,color-mix(in srgb,var(--navy-2) 80%,transparent),transparent 70%),
+  linear-gradient(180deg,var(--navy) 0%,var(--navy-dark) 100%);
+  box-shadow:inset -1px 0 0 #ffffff10}
+.sidebar nav a,.side-foot a,.logout{position:relative;font-weight:500;transition:background .15s,color .15s}
+.sidebar nav a svg{opacity:.85}
+.sidebar nav a:hover,.side-foot a:hover,.logout:hover{background:#ffffff12}
+.sidebar nav a.active,.side-foot a.active{background:linear-gradient(90deg,color-mix(in srgb,var(--gold) 26%,transparent),#ffffff08);color:var(--gold-2);font-weight:600}
+.sidebar nav a.active::before{content:'';position:absolute;left:-14px;top:9px;bottom:9px;width:4px;border-radius:0 4px 4px 0;background:var(--grad-gold)}
+.sidebar nav a.active svg{opacity:1}
+
+/* ---------- Barra superior ---------- */
+.topbar{background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:saturate(1.4) blur(14px);box-shadow:0 1px 0 var(--line)}
+.tb-icon,.tb-profile{border-radius:14px;box-shadow:var(--shadow-1)}
+
+/* ---------- Encabezado de cada página: banda oscura con arte dorado ---------- */
+.page-head{position:relative;overflow:hidden;align-items:center;padding:22px clamp(18px,3vw,30px);border-radius:24px;color:#fff;
+  background:url(/art/head-art.svg) right -20px bottom -8px/min(520px,48%) auto no-repeat,
+    radial-gradient(520px 260px at 92% 0%,color-mix(in srgb,var(--gold) 30%,transparent),transparent 70%),var(--grad-navy);
+  box-shadow:var(--shadow-2)}
+.page-head.cover{background:linear-gradient(90deg,var(--navy-dark) 0%,color-mix(in srgb,var(--navy-dark) 88%,transparent) 42%,color-mix(in srgb,var(--navy-dark) 30%,transparent) 100%),var(--cover) center 62%/cover no-repeat}
+.page-head>div:first-child{position:relative;min-width:0}
+.page-head h1{color:#fff;text-shadow:0 2px 14px #0004}
+.page-head p,.page-head .muted{color:#cbd7e8}
+.page-head p{max-width:min(640px,62vw)}
+.page-head .crumb{color:var(--gold-2);font-weight:600}
+.page-head .eyebrow{color:var(--gold-2)}
+.page-head .pill.soft{background:#ffffff1a;color:#eef3fa;border:1px solid #ffffff22}
+.page-head .pill.key-pill{background:var(--grad-gold);color:var(--on-gold)}.page-head .pill.key-pill small{color:#4a3a12}
+.page-head .pill.t-culto,.page-head .pill.t-ensayo,.page-head .pill.t-evento,.page-head .pill.t-otro{background:var(--grad-gold);color:var(--on-gold)}
+.page-head .head-actions{position:relative}
+.page-head.page-head .btn.btn:not(.primary):not(.gold):not(.wa):not(.danger-solid):not(.ok){background:#ffffff14;border-color:#ffffff30;color:#fff;backdrop-filter:blur(6px)}
+.page-head.page-head .btn.btn:not(.primary):not(.gold):not(.wa):not(.danger-solid):not(.ok):hover{background:#ffffff26}
+.page-head.page-head .btn.primary,.page-head.page-head .btn.gold{background:var(--grad-gold);border-color:transparent;color:var(--on-gold);box-shadow:var(--shadow-gold)}
+.page-head.page-head .btn.primary:hover,.page-head.page-head .btn.gold:hover{filter:brightness(1.06)}
+.page-head.page-head .icon-btn.icon-btn{background:#ffffff14;border-color:#ffffff30;color:#fff}
+.page-head.page-head .icon-btn.icon-btn:hover{background:#ffffff26}
+.page-head.page-head .icon-btn.danger:hover{background:#e5484d;border-color:#e5484d;color:#fff}
+.group-head .dot{box-shadow:0 0 0 4px #ffffff22}
+
+/* ---------- Botones ---------- */
+.btn{border-radius:12px;font-weight:600;transition:background .15s,border-color .15s,box-shadow .15s,transform .1s,filter .15s}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--grad-navy);border-color:transparent;box-shadow:0 4px 12px color-mix(in srgb,var(--navy) 30%,transparent)}
+.btn.primary:hover{background:var(--grad-navy);filter:brightness(1.15)}
+.btn.gold{background:var(--grad-gold);border-color:transparent;color:var(--on-gold);box-shadow:var(--shadow-gold)}
+.btn.gold:hover{background:var(--grad-gold);filter:brightness(1.06)}
+:root[data-mode=dark] .btn.primary{background:var(--grad-gold);color:var(--on-gold);box-shadow:var(--shadow-gold)}
+.icon-btn{border-radius:12px}
+.chip,.tgroup button{border-radius:9px}
+.tgroup button.on,.chip.on{background:var(--grad-navy)}
+
+/* ---------- Tarjetas y paneles ---------- */
+.panel{border-radius:22px;border-color:transparent;box-shadow:var(--shadow-1)}
+:root[data-mode=dark] .panel{border-color:var(--line)}
+.panel-head h2,.panel-head h3{display:flex;align-items:center;gap:8px}
+.event-card,.song-row,.group-card,.church-row,.admin-stats div,.rep-item,.ev-res,.ev-group,.profile-head{transition:box-shadow .18s,transform .18s,border-color .18s,background .18s}
+.event-card{border-radius:16px;border-color:var(--line)}
+.event-card:hover{transform:translateY(-1px);box-shadow:var(--shadow-1)}
+.song-row{border-radius:12px;padding-left:8px;padding-right:8px}
+.song-icon{border-radius:13px;background:linear-gradient(145deg,var(--navy-2),var(--navy-dark));color:var(--gold-2)}
+.key{background:var(--soft-gold);color:color-mix(in srgb,var(--gold) 70%,#000)}
+:root[data-mode=dark] .key{color:var(--gold-2)}
+.group-card{border-radius:20px;border-color:transparent;box-shadow:var(--shadow-1)}
+.group-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-2)}
+.gc-band{height:6px}
+.datebox{border-radius:14px}
+.tabs button.active{color:var(--ink)}
+.tabs button.active svg{color:var(--gold)}
+.modal{border-radius:22px;overflow:hidden}
+.modal header{background:var(--grad-navy);color:#fff;border:0}
+.modal header h3{color:#fff}
+.modal header .icon-btn{background:#ffffff14;color:#fff}
+.toast{border-radius:14px;background:var(--grad-navy);box-shadow:var(--shadow-2)}
+.searchbar,.lc-search{border-radius:14px}
+.field input,.field select,.field textarea{border-radius:12px}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 22%,transparent)}
+.empty{border-radius:18px}
+
+/* ---------- Inicio ---------- */
+.hero{border-radius:26px;min-height:290px;box-shadow:var(--shadow-2)}
+.hero h1{font-size:clamp(28px,4.2vw,42px);text-shadow:0 3px 18px #0006}
+.hero-search{border-radius:16px}
+.tiles a{background:linear-gradient(160deg,var(--navy-2) 0%,var(--navy-dark) 100%);border:1px solid #ffffff10;color:#fff;box-shadow:var(--shadow-1);position:relative;overflow:hidden}
+.tiles a::after{content:'';position:absolute;inset:auto -30% -60% auto;width:120px;height:120px;border-radius:50%;background:radial-gradient(color-mix(in srgb,var(--gold-2) 30%,transparent),transparent 70%);pointer-events:none}
+.tiles a:hover{box-shadow:var(--shadow-2)}
+.tiles a b{font-family:var(--font-head);font-weight:700}
+.tiles small{color:#b9c6d8}
+.tiles span{background:#ffffff12;border:1px solid #ffffff1c;color:var(--gold-2);box-shadow:none}
+
+/* ---------- Teléfono: barra inferior con acento dorado ---------- */
+@media (max-width:860px){
+  .m-tabs .on{color:var(--ink)}
+  .m-tabs .on svg{color:var(--gold);filter:drop-shadow(0 2px 6px color-mix(in srgb,var(--gold) 50%,transparent))}
+  .page-head{border-radius:20px;padding:18px 16px;background-size:min(420px,95%) auto,auto,auto}
+  .page-head.cover{background-size:cover}
+  .page-head .head-actions{width:100%}
+  .page-head p{max-width:none}
+  .hero{border-radius:20px;min-height:230px}
+}
+
+/* =================== Culto: canción del repertorio (panel lateral) =================== */
+.rep-item{cursor:pointer}
+.rep-item.open{border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 22%,transparent)}
+.rep-title{border:0;background:none;padding:0;font:inherit;font-weight:700;cursor:pointer;text-align:left}
+.rep-title:hover{color:color-mix(in srgb,var(--gold) 75%,var(--ink))}
+.rep-open{color:var(--muted);display:none}
+.song-sheet-back{position:fixed;inset:0;z-index:60;background:#0a1628a0;backdrop-filter:blur(2px);animation:fadein .15s}
+.song-sheet{position:fixed;top:0;right:0;bottom:0;z-index:61;width:min(560px,100%);background:var(--card);color:var(--ink);display:flex;flex-direction:column;box-shadow:-20px 0 60px #0a162855;animation:sheet-in .22s cubic-bezier(.2,.8,.2,1)}
+@keyframes sheet-in{from{transform:translateX(40px);opacity:0}}
+.ss-head{position:relative;padding:18px 18px 16px;color:#fff;background:radial-gradient(400px 200px at 100% 0%,color-mix(in srgb,var(--gold) 35%,transparent),transparent 70%),var(--grad-navy)}
+.ss-head .ss-close{position:absolute;top:14px;right:14px;background:#ffffff14;border-color:#ffffff30;color:#fff}
+.ss-top{display:flex;gap:12px;align-items:center;padding-right:46px}
+.ss-top .rep-pos{background:var(--grad-gold);color:var(--on-gold);flex:none}
+.ss-head h2{color:#fff;font-size:22px}
+.ss-head small{color:#cbd7e8}
+.ss-nav{display:flex;gap:6px;margin-top:12px}
+.ss-nav button{background:#ffffff14;border:1px solid #ffffff26;color:#fff;border-radius:10px;padding:6px 10px;font:inherit;font-size:13px;display:inline-flex;align-items:center;gap:4px;cursor:pointer}
+.ss-nav button:disabled{opacity:.35;cursor:default}
+.ss-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.ss-actions .btn{justify-content:flex-start}
+.ss-actions .btn.wide{grid-column:1/-1;justify-content:center;padding:12px}
+.ss-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 18px;border-bottom:1px solid var(--line)}
+.ss-tools .tgroup{flex:none}
+.ss-save{font-size:12.5px}
+.ss-body{flex:1;overflow:auto;padding:18px 20px 28px;overscroll-behavior:contain}
+.ss-body .chart{font-size:16px}
+@media (max-width:700px){
+  .song-sheet{top:auto;height:92vh;width:100%;border-radius:22px 22px 0 0;animation:sheet-up .25s cubic-bezier(.2,.8,.2,1)}
+  .ss-head{border-radius:22px 22px 0 0}
+  .ss-actions{padding:12px 14px}.ss-tools{padding:10px 14px}.ss-body{padding:14px 16px calc(24px + env(safe-area-inset-bottom))}
+}

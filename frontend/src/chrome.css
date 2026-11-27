@@ -174,7 +174,7 @@
 .ev-add{position:sticky;top:76px}
 .ev-add h2{display:flex;align-items:center;gap:8px}
 .ev-add-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
-.ev-results{display:grid;gap:6px;margin-top:10px;max-height:52vh;overflow:auto;padding-right:2px}
+.ev-results{display:grid;gap:6px;margin-top:10px;max-height:52vh;overflow-y:auto;overflow-x:hidden;padding-right:2px}
 .ev-res{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
 .ev-res:hover:not(:disabled){border-color:var(--gold);background:var(--soft-gold)}
 .ev-res>svg{color:var(--gold);flex:none}
