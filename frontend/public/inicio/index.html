@@ -2,127 +2,397 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#06122c">
-<meta name="description" content="SION Music: organiza canciones, letras, acordes y repertorios para tu iglesia.">
-<title>SION Music | La música de tu iglesia</title>
+<meta name="theme-color" content="#081436">
+<meta name="description" content="SION Music: toda la música de tu iglesia en un solo lugar. Canciones, letras, acordes, partituras, repertorios y proyección.">
+<title>SION Music | Toda la música de tu iglesia, en un solo lugar</title>
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" type="image/png" href="/icons/icon-192.png">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="SION Music">
-<meta property="og:title" content="SION Music | La música de tu iglesia"><meta property="og:description" content="Canciones, letras, acordes, repertorios y proyección para tu iglesia, en un solo lugar."><meta property="og:image" content="/inicio/img/foto-1.webp">
-<link rel="preload" href="/inicio/fonts/dm-sans-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/inicio/fonts/manrope-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<meta property="og:title" content="SION Music | Toda la música de tu iglesia, en un solo lugar">
+<meta property="og:description" content="Canciones, letras, acordes, partituras, repertorios y proyección para tu iglesia.">
+<meta property="og:image" content="/inicio/img/hero.webp">
+<link rel="preload" href="/inicio/fonts/roboto-condensed-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/inicio/fonts/kaushan-script-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/inicio/img/hero.webp" as="image">
 <script src="/inicio/landing.js" defer></script>
 <style>
-@font-face{font-family:'DM Sans';font-style:normal;font-display:swap;font-weight:100 1000;src:url(/inicio/fonts/dm-sans-latin-wght-normal.woff2) format('woff2')}
-@font-face{font-family:Manrope;font-style:normal;font-display:swap;font-weight:200 800;src:url(/inicio/fonts/manrope-latin-wght-normal.woff2) format('woff2')}
-:root{--navy:#06122c;--navy2:#0b1d43;--blue:#102e68;--gold:#f6c536;--gold2:#ffe28a;--white:#fff;--muted:#b8c5df;--line:rgba(255,255,255,.13);--green:#19bd68}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--navy);color:var(--white);font-family:'DM Sans',sans-serif;line-height:1.65}a{color:inherit;text-decoration:none}.wrap{width:min(1160px,calc(100% - 42px));margin:auto}
-header{position:sticky;top:0;z-index:20;background:rgba(4,14,36,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
-nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:24px}.brand{display:flex;align-items:center;gap:11px;font:800 23px Manrope;letter-spacing:.06em}.logo{width:45px;height:45px;border-radius:14px;display:grid;place-items:center;color:var(--gold);font-size:27px;border:1px solid #d9b23c;background:linear-gradient(145deg,#183b72,#07132e);box-shadow:0 0 24px #f6c53620}.brand em{display:block;font:italic 15px Manrope;color:var(--gold);letter-spacing:.02em;margin-top:-8px}.links{display:flex;gap:25px;font-size:13px;color:#d6def0}.links a:hover{color:var(--gold)}.navbtn,.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 19px;border-radius:999px;font-weight:800;font-size:13px;transition:.2s}.navbtn,.goldbtn{background:linear-gradient(135deg,#ffe68d,#efb91e);color:#09152f;box-shadow:0 8px 25px #f6c53625}.btn:hover,.navbtn:hover{transform:translateY(-2px)}.menubtn{display:none;background:none;border:0;color:white;font-size:25px}
-.hero{min-height:670px;position:relative;display:flex;align-items:center;overflow:hidden;background:linear-gradient(90deg,#06122c 0%,rgba(6,18,44,.97) 33%,rgba(6,18,44,.68) 56%,rgba(6,18,44,.18) 100%),url('/inicio/img/foto-1.webp') right center/auto 100% no-repeat}
-.hero:after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 78% 48%,#2874e633,transparent 38%),linear-gradient(0deg,#06122c,transparent 25%);pointer-events:none}.hero .wrap{position:relative;z-index:1}.hero-copy{max-width:650px;padding:95px 0 110px}.eyebrow{display:inline-flex;align-items:center;gap:10px;color:var(--gold2);font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase}.eyebrow:before{content:"";width:27px;height:2px;background:var(--gold)}h1,h2,h3{font-family:Manrope;line-height:1.13;margin:0}h1{font-size:clamp(46px,6.2vw,78px);letter-spacing:-.055em;margin:20px 0}.shine{color:var(--gold)}.hero p{color:#d0daec;font-size:17px;max-width:550px;line-height:1.8}.actions{display:flex;gap:13px;flex-wrap:wrap;margin-top:29px}.outline{border:1px solid #ffffff66;background:#ffffff0b;color:#fff}.trust{display:flex;gap:20px;flex-wrap:wrap;color:#c1cce0;font-size:12px;margin-top:36px}.trust span:before{content:"✦";color:var(--gold);margin-right:8px}
-section{padding:92px 0}.head{text-align:center;max-width:730px;margin:0 auto 46px}.head .eyebrow{justify-content:center}.head h2{font-size:clamp(31px,4vw,49px);letter-spacing:-.04em;margin:16px 0}.head p{color:var(--muted);font-size:15px}.features{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.feature{padding:26px;border:1px solid var(--line);border-radius:19px;background:linear-gradient(145deg,#102a53,#0a1b3c);box-shadow:0 12px 35px #0002;transition:.25s}.feature:hover{transform:translateY(-5px);border-color:#f6c53688}.ico{width:49px;height:49px;border-radius:15px;background:#f6c53618;color:var(--gold);display:grid;place-items:center;font-size:25px;margin-bottom:18px}.feature h3{font-size:18px;margin-bottom:9px}.feature p{color:var(--muted);font-size:13px;margin:0}
-.story{background:linear-gradient(120deg,#0a1b3b,#0c2450);border-block:1px solid var(--line)}.split{display:grid;grid-template-columns:1fr 1fr;gap:55px;align-items:center}.visual{position:relative}.visual img{width:100%;display:block;border-radius:24px;border:1px solid #ffffff2b;box-shadow:0 25px 65px #0007}.floatnote{position:absolute;bottom:-18px;left:20px;background:#071833;border:1px solid #f6c53688;border-radius:15px;padding:13px 18px;box-shadow:0 12px 30px #0006}.floatnote b{display:block;color:var(--gold);font:700 17px Manrope}.floatnote small{color:var(--muted)}.copy h2{font-size:clamp(32px,4vw,47px);margin:15px 0}.copy>p{color:var(--muted)}.ticks{list-style:none;padding:0;margin:24px 0}.ticks li{margin:13px 0;color:#e1e9f7;font-size:14px}.ticks li:before{content:"✓";display:inline-grid;place-items:center;background:#f6c536;color:#08152f;border-radius:50%;width:20px;height:20px;font-weight:900;margin-right:11px}
-.devices{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:center}.deviceimg{width:100%;border-radius:22px;border:1px solid var(--line);box-shadow:0 20px 55px #0006}.devicecard{padding:25px;border:1px solid var(--line);border-radius:20px;background:#0c2042}.devicecard h3{font-size:22px;margin-bottom:12px}.devicecard p{color:var(--muted);font-size:14px}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.chips span{padding:7px 11px;border-radius:20px;background:#f6c53615;color:var(--gold2);font-size:11px;border:1px solid #f6c53635}
-.audience{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}.aud{position:relative;min-height:250px;overflow:hidden;border-radius:18px;border:1px solid var(--line);background:#10244a}.aud img{width:100%;height:100%;position:absolute;inset:0;object-fit:cover;opacity:.72;transition:.4s}.aud:hover img{transform:scale(1.06);opacity:.9}.aud:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#06122c 3%,transparent 85%)}.aud div{position:absolute;z-index:1;bottom:18px;left:17px;right:12px}.aud h3{font-size:16px}.aud p{font-size:11px;color:#d4def0;margin:5px 0 0}
-.cta{text-align:center;background:radial-gradient(ellipse at 50% 0,#1d4c87 0%,#0b1d40 52%,#06122c 100%);border-block:1px solid #f6c53644;padding:82px 0}.cta h2{font-size:clamp(32px,4vw,49px);max-width:760px;margin:16px auto}.cta p{color:var(--muted);max-width:650px;margin:auto}.cta .actions{justify-content:center}
-footer{padding:28px 0;color:#98a9c5;font-size:12px}.foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}.foot strong{color:white;letter-spacing:.12em}.foot .copy{text-align:center;line-height:1.6}@media(min-width:601px){.foot{padding-right:78px}}.wa{position:fixed;right:22px;bottom:22px;z-index:50;width:62px;height:62px;border-radius:50%;display:grid;place-items:center;background:#19bd68;color:white;border:3px solid white;box-shadow:0 10px 30px #0008;transition:.2s}.wa:hover{transform:scale(1.08)}.wa svg{width:30px;height:30px;fill:currentColor}
-@media(max-width:850px){.links{display:none}.menubtn{display:block}.navbtn{margin-left:auto}.hero{background-position:65% center;min-height:630px}.features{grid-template-columns:repeat(2,1fr)}.audience{grid-template-columns:repeat(2,1fr)}.split{gap:32px}}
-@media(max-width:600px){.wrap{width:calc(100% - 32px)}nav{height:68px}.brand{font-size:19px}.logo{width:39px;height:39px}.navbtn{font-size:10px;padding:10px 12px}.hero{min-height:690px;background:linear-gradient(90deg,rgba(6,18,44,.97),rgba(6,18,44,.78)),url('/inicio/img/foto-1.webp') 60% center/cover no-repeat}.hero-copy{padding:85px 0}h1{font-size:49px}.hero p{font-size:15px}section{padding:70px 0}.features{grid-template-columns:1fr}.split,.devices{grid-template-columns:1fr;gap:34px}.visual img{max-height:330px;object-fit:cover}.audience{grid-template-columns:1fr 1fr;gap:10px}.aud{min-height:200px}.aud h3{font-size:14px}.foot{display:block}.foot>div{margin:9px 0}.wa{width:56px;height:56px;right:15px;bottom:15px}}
+@font-face{font-family:'Roboto Condensed';font-style:normal;font-display:swap;font-weight:100 900;src:url(/inicio/fonts/roboto-condensed-latin-wght-normal.woff2) format('woff2')}
+@font-face{font-family:'Kaushan Script';font-style:normal;font-display:swap;font-weight:400;src:url(/inicio/fonts/kaushan-script-latin-400-normal.woff2) format('woff2')}
+:root{--bg:#081436;--bg2:#0c1d52;--card:#0f2563;--card2:#0a1a4a;--line:rgba(120,160,255,.22);--gold:#f7c531;--gold2:#ffe07a;--muted:#b9c6e6;--white:#fff;--green:#22c55e}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:#fff;font:400 17px/1.55 'Roboto Condensed',Arial Narrow,sans-serif}
+a{color:inherit;text-decoration:none}img{max-width:100%;display:block}
+.wrap{width:min(1180px,calc(100% - 40px));margin:auto}
+[hidden]{display:none!important}section[id]{scroll-margin-top:76px}
+h1,h2,h3{margin:0;line-height:1.08;font-weight:800}
+.gold{color:var(--gold)}.script{font-family:'Kaushan Script',cursive;font-weight:400;color:var(--gold)}
 
-.navacts{display:flex;gap:9px;align-items:center}.navbtn.ghost{background:#ffffff10;color:#fff;border:1px solid #ffffff3a;box-shadow:none}.navbtn.ghost:hover{border-color:var(--gold);color:var(--gold2)}.navbtn svg,.install-chip svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.only-m{display:none}
-.install-chip{margin-top:18px;display:inline-flex;align-items:center;gap:9px;padding:10px 16px;border-radius:999px;border:1px dashed #f6c53688;background:#f6c53612;color:var(--gold2);font:700 13px 'DM Sans',sans-serif;cursor:pointer;transition:.2s}.install-chip:hover{background:#f6c53622;transform:translateY(-2px)}.install-chip[hidden]{display:none}
-.ask{background:linear-gradient(160deg,#071736,#0b1f47 55%,#06122c)}.askgrid{display:grid;grid-template-columns:1fr 1.05fr;gap:52px;align-items:center}.askcopy h2{font-size:clamp(31px,4vw,46px);letter-spacing:-.04em;margin:16px 0}.askcopy>p{color:var(--muted)}.alt{font-size:14px}.alt a{color:var(--gold);font-weight:700}
-.askform,.askdone{padding:28px;border-radius:24px;border:1px solid #f6c53640;background:linear-gradient(150deg,#122f5e,#0a1b3c);box-shadow:0 25px 60px #0007,inset 0 1px 0 #ffffff14}.askform[hidden]{display:none}.askform label{display:block;font-size:12px;font-weight:700;color:#dbe4f5;margin-bottom:13px;letter-spacing:.02em}.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.askform input,.askform textarea{display:block;width:100%;margin-top:6px;padding:12px 14px;border-radius:13px;border:1px solid #ffffff26;background:#06122cb3;color:#fff;font:15px 'DM Sans',sans-serif;outline:none;transition:.2s;resize:vertical}.askform input::placeholder,.askform textarea::placeholder{color:#8090ad}.askform input:focus,.askform textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px #f6c53630}
-.askform .btn{width:100%;border:0;cursor:pointer;font-size:15px;padding:15px;font-family:'DM Sans',sans-serif}.askform .btn[disabled]{opacity:.6;cursor:wait}.hp{position:absolute!important;left:-9999px}.formmsg{min-height:20px;margin:10px 0 0;font-size:13px;color:#ffb4a8}.fine{color:#8fa0bf;font-size:11px}
-.askdone{text-align:center}.askdone[hidden]{display:none}.okico{width:64px;height:64px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;font-size:30px;font-weight:900;color:#09152f;background:linear-gradient(135deg,#ffe68d,#efb91e);box-shadow:0 0 0 8px #f6c53622}.askdone h3{font-size:24px;margin-bottom:8px}.askdone p{color:var(--muted)}
-.pwa{position:fixed;left:22px;bottom:22px;z-index:60;width:min(410px,calc(100% - 32px));padding:20px;border-radius:24px;background:linear-gradient(150deg,#143060,#06122c);border:1px solid #f6c53666;box-shadow:0 30px 70px #000a,0 0 0 1px #ffffff0d inset,0 0 40px #f6c5361f;backdrop-filter:blur(18px);animation:pwaIn .55s cubic-bezier(.2,.9,.25,1.15) both}.pwa[hidden]{display:none}@keyframes pwaIn{from{opacity:0;transform:translateY(40px) scale(.96)}to{opacity:1;transform:none}}
-.pwa-x{position:absolute;top:10px;right:12px;width:30px;height:30px;border-radius:50%;border:0;background:#ffffff12;color:#cfd9ec;font-size:20px;line-height:1;cursor:pointer}.pwa-top{display:flex;gap:14px;align-items:center;padding-right:24px}.pwa-top img{border-radius:16px;box-shadow:0 8px 22px #0008,0 0 0 1px #f6c53655}.pwa-top b{display:block;font:800 18px Manrope}.pwa-top span{display:block;color:#c3cfe6;font-size:13px;line-height:1.45;margin-top:3px}
-.pwa-perks{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}.pwa-perks span{padding:5px 10px;border-radius:20px;background:#f6c53614;border:1px solid #f6c5362e;color:var(--gold2);font-size:11px}.pwa-ios ol{margin:0 0 14px;padding-left:20px;color:#e1e9f7;font-size:13px}.pwa-ios li{margin:6px 0}.pwa-ios svg{width:17px;height:17px;vertical-align:-3px;fill:none;stroke:#5fa8ff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.plus{color:#5fa8ff;font-weight:800}
-.pwa-btns{display:flex;gap:9px}.pwa-btns .btn{flex:1;border:0;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px}.pwa-btns .outline{border:1px solid #ffffff40}
-.links a,.navbtn{white-space:nowrap}[hidden]{display:none!important}section[id]{scroll-margin-top:70px}
-@media(max-width:1040px){.links{display:none}.menubtn{display:block}.navacts{margin-left:auto}.links.mobile{display:flex;position:absolute;top:76px;left:0;right:0;flex-direction:column;gap:4px;padding:12px 21px 18px;background:rgba(4,14,36,.97);border-bottom:1px solid var(--line);font-size:16px}.links.mobile a{padding:9px 0}.only-m{display:block}}
-@media(max-width:850px){.askgrid{grid-template-columns:1fr;gap:30px}}
-@media(max-width:600px){.links.mobile{top:68px}.navacts .navbtn:not(.ghost){display:none}.navbtn.ghost{padding:9px 14px;font-size:12px}.row2{grid-template-columns:1fr;gap:0}.askform,.askdone{padding:20px}.pwa{left:12px;right:12px;bottom:12px;width:auto}body.pwa-on .wa{bottom:auto;top:84px;width:48px;height:48px}}
+/* Botones */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:14px 26px;border-radius:999px;font:700 17px 'Roboto Condensed',sans-serif;border:0;cursor:pointer;transition:transform .2s,box-shadow .2s,background .2s;white-space:nowrap}
+.btn svg{width:20px;height:20px;flex:none}
+.btn:hover{transform:translateY(-2px)}
+.btn-gold{background:linear-gradient(180deg,#ffd84d,#f2b70f);color:#0b1640;box-shadow:0 10px 28px rgba(247,197,49,.35),inset 0 1px 0 rgba(255,255,255,.5)}
+.btn-gold:hover{box-shadow:0 14px 34px rgba(247,197,49,.5)}
+.btn-line{border:2px solid rgba(255,255,255,.85);color:#fff;background:rgba(8,20,54,.35)}
+.btn-line:hover{background:rgba(255,255,255,.1)}
+.btn-wa{background:linear-gradient(180deg,#2fd36b,#16a34a);color:#fff;font-size:22px;padding:16px 34px;box-shadow:0 12px 30px rgba(34,197,94,.4),inset 0 1px 0 rgba(255,255,255,.35);border:2px solid rgba(255,255,255,.3)}
+.btn-sm{padding:10px 18px;font-size:15px}
+
+/* Encabezado */
+header{position:sticky;top:0;z-index:40;background:linear-gradient(180deg,rgba(6,14,40,.96),rgba(8,20,54,.9));backdrop-filter:blur(14px);border-bottom:1px solid rgba(120,160,255,.14)}
+nav{height:78px;display:flex;align-items:center;gap:22px}
+.brand img{height:58px;width:auto}
+.links{display:flex;gap:30px;margin:0 auto;font-size:16px;font-weight:500}
+.links a{position:relative;padding:6px 0;color:#e6ecff;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.links a:hover,.links a.on{color:var(--gold)}
+.links a.on:after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:2px;border-radius:2px;background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.links svg{width:17px;height:17px}
+.navacts{display:flex;gap:10px;align-items:center}
+.navacts .btn{padding:10px 18px;font-size:15px}
+.ghost{background:rgba(255,255,255,.07);color:#fff;border:1px solid rgba(255,255,255,.3)}.ghost:hover{border-color:var(--gold);color:var(--gold2)}
+.menubtn{display:none;background:none;border:0;color:#fff;font-size:28px;cursor:pointer;padding:4px 6px}
+.only-m{display:none!important}
+
+/* Portada */
+.hero{position:relative;overflow:hidden;min-height:620px;display:flex;align-items:center;background:radial-gradient(ellipse at 75% 40%,#2a4cc0 0%,#10257a 35%,#081436 70%)}
+.hero-img{position:absolute;right:0;top:0;bottom:0;width:min(62%,900px);background:url(/inicio/img/hero.webp) center 20%/cover no-repeat;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 26%);mask-image:linear-gradient(90deg,transparent 0,#000 26%)}
+.hero:before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(8,20,54,.92) 0,rgba(8,20,54,.7) 34%,rgba(8,20,54,.15) 62%,transparent 80%);pointer-events:none}.hero:after{content:"";position:absolute;inset:auto 0 0 0;height:120px;background:linear-gradient(0deg,var(--bg),transparent);pointer-events:none}
+.hero .wrap{position:relative;z-index:2}
+.hero-copy{max-width:600px;padding:60px 0 90px}
+.hero h1{font-size:clamp(64px,9vw,118px);letter-spacing:-.01em;line-height:.95;display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;text-shadow:0 6px 30px rgba(0,0,0,.35)}
+.hero h1 .script{font-size:1.02em;letter-spacing:0;text-shadow:0 0 30px rgba(247,197,49,.35)}
+.hero h2{font-size:clamp(30px,3.6vw,42px);margin:18px 0 16px;letter-spacing:-.01em}
+.hero p{font-size:20px;color:#e2e9fb;max-width:540px;margin:0;line-height:1.45}
+.actions{display:flex;gap:16px;flex-wrap:wrap;margin-top:30px}
+.install-chip{margin-top:20px;display:inline-flex;align-items:center;gap:9px;padding:9px 16px;border-radius:999px;border:1px dashed rgba(247,197,49,.6);background:rgba(247,197,49,.1);color:var(--gold2);font:700 15px 'Roboto Condensed',sans-serif;cursor:pointer;transition:.2s}
+.install-chip:hover{background:rgba(247,197,49,.2)}.install-chip svg{width:17px;height:17px}
+
+/* Títulos de sección */
+.stitle{display:flex;align-items:center;gap:22px;justify-content:center;margin:0 0 30px;font-size:clamp(30px,3.4vw,40px)}
+.stitle:before,.stitle:after{content:"";flex:1;max-width:330px;height:2px;background:linear-gradient(90deg,transparent,var(--gold))}
+.stitle:after{background:linear-gradient(90deg,var(--gold),transparent)}
+.ssub{text-align:center;color:var(--muted);max-width:680px;margin:-14px auto 34px;font-size:18px}
+
+/* Funciones */
+.funcs{padding:30px 0 60px}
+.fgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.fcard{padding:24px 14px 20px;text-align:center;border-radius:16px;border:1px solid var(--line);background:linear-gradient(180deg,var(--card),var(--card2));box-shadow:0 14px 34px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.06);transition:.25s}
+.fcard:hover{transform:translateY(-6px);border-color:rgba(247,197,49,.55);box-shadow:0 18px 40px rgba(0,0,0,.4),0 0 26px rgba(80,130,255,.25)}
+.fcard svg{display:block;width:52px;height:52px;margin:0 auto 14px;filter:drop-shadow(0 0 12px currentColor)}
+.fcard h3{font-size:19px;font-weight:700;margin-bottom:8px}
+.fcard p{margin:0;color:var(--muted);font-size:15px;line-height:1.35}
+.c-blue{color:#4f8dff}.c-green{color:#5be37b}.c-purple{color:#b38bff}.c-orange{color:#ff9a3d}.c-pink{color:#ff6fa8}.c-cyan{color:#39d0ff}
+
+/* Experiencia */
+.exp{position:relative;padding:70px 0;background:linear-gradient(180deg,rgba(14,34,98,.55),rgba(8,20,54,.2)),radial-gradient(ellipse at 80% 50%,#1c3a9e 0%,transparent 60%);border-block:1px solid rgba(120,160,255,.12)}
+.expgrid{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;align-items:center}
+.exp h2{font-size:clamp(32px,3.6vw,44px);margin-bottom:16px}
+.exp p{color:#dce4fa;font-size:19px;margin:0 0 20px}
+.checks{list-style:none;padding:0;margin:0 0 28px;display:grid;gap:10px}
+.checks li{display:flex;align-items:center;gap:12px;font-size:19px}
+.checks li:before{content:"✓";flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#2f7bff;color:#fff;font-weight:900;font-size:14px;box-shadow:0 0 12px rgba(47,123,255,.6)}
+.devices{border-radius:22px;-webkit-mask-image:radial-gradient(ellipse 70% 75% at 50% 50%,#000 72%,transparent 100%);mask-image:radial-gradient(ellipse 70% 75% at 50% 50%,#000 72%,transparent 100%)}
+
+/* Pantallas */
+.screens{padding:70px 0}
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.scard{border-radius:18px;border:1px solid var(--line);background:linear-gradient(180deg,var(--card),var(--card2));overflow:hidden;box-shadow:0 14px 34px rgba(0,0,0,.3);transition:.25s}
+.scard:hover{transform:translateY(-5px);border-color:rgba(247,197,49,.5)}
+.scard .mock{height:190px;padding:16px;position:relative;overflow:hidden}
+.scard .txt{padding:16px 18px 20px}
+.scard h3{font-size:20px;font-weight:700;margin-bottom:6px}
+.scard p{margin:0;color:var(--muted);font-size:15px;line-height:1.4}
+.m-list{background:#f3f6ff;color:#1b2a55}
+.m-list .row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;background:#fff;margin-bottom:7px;box-shadow:0 2px 6px rgba(20,40,100,.08);font-weight:700;font-size:14px}
+.m-list .row i{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#6d5dfc,#3b82f6);flex:none}
+.m-list .row em{margin-left:auto;font-style:normal;font-size:12px;color:#b07d00;background:#fff3cc;border-radius:6px;padding:1px 7px}
+.m-proj{background:radial-gradient(ellipse at 50% 30%,#3a2a6e,#0b0f2a 75%);display:grid;place-items:center;text-align:center}
+.m-proj b{font-size:22px;line-height:1.25;text-shadow:0 2px 10px rgba(0,0,0,.6)}
+.m-proj small{position:absolute;bottom:12px;left:0;right:0;font-size:11px;color:#c9c3ff;letter-spacing:.2em}
+.m-chords{background:#0b1230;font-family:Consolas,monospace;font-size:14px;line-height:1.25}
+.m-chords .c{color:var(--gold);font-weight:700;white-space:pre}.m-chords .l{color:#fff;white-space:pre;margin-bottom:8px}
+.m-chords .tag{display:inline-block;font:700 11px 'Roboto Condensed',sans-serif;background:#2f7bff;border-radius:6px;padding:2px 8px;margin-bottom:10px;letter-spacing:.1em}
+.m-culto{background:linear-gradient(160deg,#16307f,#0b1a4a)}
+.m-culto .day{font-size:12px;letter-spacing:.18em;color:var(--gold2);font-weight:700}
+.m-culto .ttl{font-size:20px;font-weight:800;margin:2px 0 10px}
+.m-culto .it{display:flex;gap:10px;align-items:center;font-size:14px;padding:6px 0;border-top:1px solid rgba(255,255,255,.1)}
+.m-culto .it span{width:22px;height:22px;border-radius:50%;background:var(--gold);color:#0b1640;display:grid;place-items:center;font-weight:800;font-size:12px;flex:none}
+.m-culto .it em{margin-left:auto;font-style:normal;color:var(--gold2);font-weight:700}
+
+/* Por qué elegir */
+.why{padding:64px 0}
+.whygrid{display:grid;grid-template-columns:1.25fr 1fr;gap:26px;align-items:center}
+.why h2{font-size:clamp(30px,3.2vw,38px);margin-bottom:22px;color:var(--gold)}
+.wtiles{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.wtile{padding:20px 10px;text-align:center;border-radius:14px;border:1px solid var(--line);background:linear-gradient(180deg,var(--card),var(--card2));font-weight:700;font-size:16px;line-height:1.2;transition:.25s}
+.wtile:hover{transform:translateY(-4px);border-color:rgba(247,197,49,.5)}
+.wtile svg{display:block;width:42px;height:42px;margin:0 auto 12px;color:var(--gold);filter:drop-shadow(0 0 10px rgba(247,197,49,.45))}
+.quote{display:flex;gap:18px;align-items:center;padding:24px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(135deg,#132d78,#0b1a4a);box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.quote blockquote{margin:0;font-size:20px;font-style:italic;line-height:1.4}
+.quote cite{display:block;margin-top:12px;font-style:normal;color:var(--gold);font-weight:700}
+.quote cite small{display:block;color:var(--muted);font-weight:400}
+.quote .qlogo{flex:none;width:120px;height:120px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#1d3c9c,#0a1844);border:2px solid rgba(247,197,49,.6);box-shadow:0 0 30px rgba(247,197,49,.25)}
+.quote .qlogo img{width:96px}
+
+/* Planes */
+.plans{padding:70px 0;background:linear-gradient(180deg,transparent,rgba(14,34,98,.45),transparent)}
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.plan{position:relative;padding:26px 22px;border-radius:18px;border:1px solid var(--line);background:linear-gradient(180deg,var(--card),var(--card2));text-align:center;transition:.25s}
+.plan:hover{transform:translateY(-5px)}
+.plan.best{border:2px solid var(--gold);box-shadow:0 0 0 4px rgba(247,197,49,.12),0 20px 46px rgba(0,0,0,.4)}
+.plan .badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:linear-gradient(180deg,#ffd84d,#f2b70f);color:#0b1640;font-weight:800;font-size:13px;padding:4px 14px;border-radius:999px;white-space:nowrap}
+.plan h3{font-size:34px;color:var(--gold)}
+.plan h3 small{display:block;font-size:17px;color:#fff;font-weight:500;margin-top:4px}
+.plan ul{list-style:none;padding:0;margin:18px 0 22px;text-align:left;font-size:16px;color:#dce4fa}
+.plan li{padding:6px 0;border-top:1px solid rgba(255,255,255,.08)}.plan li:before{content:"✓ ";color:var(--gold);font-weight:900}
+.plan .btn{width:100%}
+.pnote{text-align:center;color:var(--muted);margin-top:20px;font-size:16px}
+
+/* Solicitar información */
+.ask{padding:70px 0}
+.askgrid{display:grid;grid-template-columns:1fr 1.05fr;gap:48px;align-items:center}
+.ask h2{font-size:clamp(32px,3.6vw,44px);margin:10px 0 14px}
+.eyebrow{color:var(--gold2);font-weight:700;letter-spacing:.2em;font-size:14px;text-transform:uppercase}
+.ask p{color:#dce4fa;font-size:18px}
+.alt{font-size:17px}.alt a{color:var(--gold);font-weight:700}
+.askform,.askdone{padding:28px;border-radius:22px;border:1px solid rgba(247,197,49,.35);background:linear-gradient(150deg,#14327f,#0a1a4a);box-shadow:0 25px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.08)}
+.askform label{display:block;font-size:15px;font-weight:700;color:#dbe4f5;margin-bottom:13px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.askform input,.askform textarea{display:block;width:100%;margin-top:6px;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(6,14,40,.7);color:#fff;font:17px 'Roboto Condensed',sans-serif;outline:none;transition:.2s;resize:vertical}
+.askform input::placeholder,.askform textarea::placeholder{color:#8392b6}
+.askform input:focus,.askform textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(247,197,49,.25)}
+.askform .btn{width:100%;margin-top:4px}.askform .btn[disabled]{opacity:.6;cursor:wait}
+.hp{position:absolute!important;left:-9999px}
+.formmsg{min-height:22px;margin:10px 0 0;font-size:15px;color:#ffb4a8}.fine{color:#93a3c8;font-size:13px}
+.askdone{text-align:center}.okico{width:68px;height:68px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;font-size:32px;font-weight:900;color:#0b1640;background:linear-gradient(180deg,#ffd84d,#f2b70f);box-shadow:0 0 0 8px rgba(247,197,49,.15)}
+.askdone h3{font-size:28px;margin-bottom:8px}.askdone p{color:var(--muted)}
+
+/* Banda final */
+.cta{position:relative;overflow:hidden;background:linear-gradient(90deg,#1a1206 0%,#2a1a07 18%,#0c1a4c 42%,#0a1744 100%);border-block:1px solid rgba(247,197,49,.25)}
+.ctagrid{display:grid;grid-template-columns:.9fr 1.3fr .9fr;align-items:center;gap:20px;min-height:250px}
+.cta .bible{align-self:end;-webkit-mask-image:linear-gradient(90deg,#000 70%,transparent);mask-image:linear-gradient(90deg,#000 70%,transparent)}
+.cta .mid{text-align:center;padding:30px 0}
+.cta h2{font-size:clamp(26px,2.8vw,34px);line-height:1.15}
+.cta .mid p{margin:10px 0 20px;font-size:20px;color:#e2e9fb}
+.cta .logo-big{text-align:center}
+.cta .logo-big img{width:min(290px,100%);margin:auto}
+.cta .logo-big .script{display:block;color:#fff;font-size:26px;margin-top:6px;opacity:.95}
+
+/* Pie */
+footer{background:#050d27;padding:22px 0;font-size:15px;color:#c3cde6}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:18px 30px;flex-wrap:wrap;padding-right:70px}
+.foot .fl{display:flex;gap:26px;flex-wrap:wrap}
+.foot a{display:inline-flex;align-items:center;gap:8px}.foot a:hover{color:var(--gold)}
+.foot svg{width:19px;height:19px}
+
+/* WhatsApp flotante */
+.wa{position:fixed;right:22px;bottom:22px;z-index:50;width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:#22c55e;color:#fff;border:3px solid #fff;box-shadow:0 10px 30px rgba(0,0,0,.5);transition:.2s}
+.wa:hover{transform:scale(1.08)}.wa svg{width:32px;height:32px;fill:currentColor}
+
+/* Instalar la app */
+.pwa{position:fixed;left:22px;bottom:22px;z-index:60;width:min(410px,calc(100% - 32px));padding:20px;border-radius:22px;background:linear-gradient(150deg,#16348a,#081436);border:1px solid rgba(247,197,49,.5);box-shadow:0 30px 70px rgba(0,0,0,.6),0 0 40px rgba(247,197,49,.15);animation:pwaIn .55s cubic-bezier(.2,.9,.25,1.15) both}
+@keyframes pwaIn{from{opacity:0;transform:translateY(40px) scale(.96)}to{opacity:1;transform:none}}
+.pwa-x{position:absolute;top:10px;right:12px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.1);color:#dbe3f5;font-size:20px;line-height:1;cursor:pointer}
+.pwa-top{display:flex;gap:14px;align-items:center;padding-right:24px}
+.pwa-top img{border-radius:16px;box-shadow:0 8px 22px rgba(0,0,0,.5),0 0 0 1px rgba(247,197,49,.4)}
+.pwa-top b{display:block;font-size:21px}.pwa-top span{display:block;color:#c8d3ee;font-size:15px;line-height:1.35;margin-top:3px}
+.pwa-perks{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.pwa-perks span{padding:4px 10px;border-radius:20px;background:rgba(247,197,49,.1);border:1px solid rgba(247,197,49,.25);color:var(--gold2);font-size:13px}
+.pwa-ios ol{margin:0 0 14px;padding-left:20px;color:#e6edfb;font-size:15px}.pwa-ios li{margin:6px 0}
+.pwa-ios svg{width:17px;height:17px;vertical-align:-3px;fill:none;stroke:#5fa8ff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.plus{color:#5fa8ff;font-weight:800}
+.pwa-btns{display:flex;gap:9px}.pwa-btns .btn{flex:1;padding:12px;font-size:16px}
+.pwa-btns .btn-line{border-width:1px}
+
+/* Íconos de línea */
+.ic{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* Adaptación */
+@media(max-width:1100px){
+  .links{display:none}.menubtn{display:block}.navacts{margin-left:auto}
+  .links.mobile{display:flex;position:absolute;top:78px;left:0;right:0;flex-direction:column;gap:2px;padding:12px 22px 18px;background:rgba(6,14,40,.98);border-bottom:1px solid var(--line);font-size:18px;margin:0}
+  .links.mobile a{padding:9px 0}.links.mobile a.on:after{display:none}.only-m{display:flex!important}
+  .fgrid{grid-template-columns:repeat(3,1fr)}.sgrid,.pgrid{grid-template-columns:repeat(2,1fr)}
+  .whygrid{grid-template-columns:1fr}.wtiles{grid-template-columns:repeat(5,1fr)}
+}
+@media(max-width:860px){
+  .hero{display:block;min-height:0}.hero:before{display:none}
+  .hero-img{position:relative;width:100%;height:clamp(260px,62vw,460px);background-position:42% 18%;-webkit-mask-image:linear-gradient(180deg,#000 62%,transparent 100%);mask-image:linear-gradient(180deg,#000 62%,transparent 100%)}
+  .hero-copy{padding:0 0 56px;margin-top:-70px}
+  .expgrid,.askgrid{grid-template-columns:1fr}.devices{order:-1}
+  .ctagrid{grid-template-columns:1fr;text-align:center;padding:30px 0 0}.cta .bible{display:none}.cta .mid{padding:0}.cta .logo-big{padding-bottom:30px}
+  .wtiles{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:600px){
+  body{font-size:16px}.wrap{width:calc(100% - 28px)}
+  nav{height:68px;gap:12px}.brand img{height:46px}.links.mobile{top:68px}
+  .navacts .btn-gold{display:none}.navacts .btn{padding:8px 14px;font-size:14px}
+  .hero h1{gap:10px}.hero p{font-size:18px}.actions .btn{flex:1 1 100%}
+  .fgrid{grid-template-columns:1fr 1fr;gap:10px}.fcard{padding:18px 10px}.fcard svg{width:42px;height:42px}.fcard h3{font-size:17px}.fcard p{font-size:14px}
+  .stitle{font-size:27px;gap:12px;flex-wrap:wrap}.stitle:before,.stitle:after{max-width:28px}
+  .sgrid,.pgrid{grid-template-columns:1fr}.wtiles{grid-template-columns:1fr 1fr}
+  .quote{flex-direction:column;text-align:center}.quote .qlogo{order:-1}
+  .row2{grid-template-columns:1fr;gap:0}.askform,.askdone{padding:20px}
+  .btn-wa{font-size:19px;padding:14px 22px}
+  .foot{display:block;padding-right:0;text-align:center}.foot .fl{justify-content:center;margin-top:10px}
+  .pwa{left:12px;right:12px;bottom:12px;width:auto}
+  body.pwa-on .wa{bottom:auto;top:84px;width:50px;height:50px}
+}
 </style>
 </head>
 <body>
+
 <header><div class="wrap"><nav>
-<a class="brand" href="#inicio"><span class="logo">♫</span><span>SION<em>Music</em></span></a>
-<div class="links"><a href="#inicio">Inicio</a><a href="#funciones">Funciones</a><a href="#experiencia">Experiencia</a><a href="#iglesias">Para iglesias</a><a href="#solicitar">Contacto</a><a href="/#/" class="only-m">Acceso al sistema</a></div>
-<div class="navacts"><a class="navbtn ghost" href="/#/" title="Ingresar al sistema"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>Acceso</a><a class="navbtn" href="#solicitar">Solicitar información</a></div>
-<button class="menubtn" id="menubtn" aria-label="Menú" aria-expanded="false">☰</button>
+  <a class="brand" href="#inicio" aria-label="SION Music"><img src="/inicio/img/logo.webp" alt="SION Music" width="153" height="58"></a>
+  <div class="links" id="links">
+    <a href="#inicio" class="on"><svg class="ic" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>Inicio</a>
+    <a href="#funciones">Funciones</a>
+    <a href="#beneficios">Beneficios</a>
+    <a href="#pantallas">Pantallas</a>
+    <a href="#planes">Planes</a>
+    <a href="#solicitar">Contacto</a>
+    <a href="/#/" class="only-m">Acceso al sistema</a>
+  </div>
+  <div class="navacts">
+    <a class="btn ghost" href="/#/" title="Ingresar al sistema"><svg class="ic" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>Acceso</a>
+    <a class="btn btn-gold" href="#solicitar"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Probar Ahora</a>
+  </div>
+  <button class="menubtn" id="menubtn" aria-label="Menú" aria-expanded="false">☰</button>
 </nav></div></header>
+
 <main>
-<section class="hero" id="inicio"><div class="wrap"><div class="hero-copy">
-<span class="eyebrow">Tecnología al servicio de la música</span>
-<h1>SION <span class="shine">Music</span><br>La música de tu iglesia, <span class="shine">en un solo lugar.</span></h1>
-<p>Una plataforma digital para organizar canciones, letras, acordes, partituras y repertorios. Simplificá la preparación de tus cultos y llevá la música de tu congregación a otro nivel.</p>
-<div class="actions"><a class="btn goldbtn" href="#funciones">✦ Conocer todas las funciones</a><a class="btn outline" href="https://wa.me/595994854167?text=Hola%2C%20quisiera%20una%20demostraci%C3%B3n%20de%20SION%20Music" target="_blank">▶ Ver demostración</a></div>
-<button class="install-chip" data-install hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg>Instalar la app en este dispositivo</button>
-<div class="trust"><span>Organización musical</span><span>Diseño moderno</span><span>Para iglesias y ministerios</span></div>
-</div></div></section>
+<section class="hero" id="inicio">
+  <div class="hero-img" role="img" aria-label="Alabanza en vivo con cantante, guitarrista y una cruz iluminada"></div>
+  <div class="wrap"><div class="hero-copy">
+    <h1>SION <span class="script">Music</span></h1>
+    <h2>Toda la música de tu iglesia,<br><span class="gold">en un solo lugar.</span></h2>
+    <p>Un sistema digital diseñado para organizar canciones, letras, acordes, partituras y repertorios. Simplificá la preparación de tus cultos y llevá la música de tu congregación a otro nivel.</p>
+    <div class="actions">
+      <a class="btn btn-gold" href="#funciones"><svg class="ic" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2.1-.1-2.9a2.2 2.2 0 0 0-2.9-.1zM12 15l-3-3a22 22 0 0 1 2-3.9A12.9 12.9 0 0 1 22 2c0 2.7-.8 7.5-6 11a22 22 0 0 1-4 2z"/></svg>Conocer todas las funciones</a>
+      <a class="btn btn-line" href="https://wa.me/595994854167?text=Hola%2C%20quisiera%20una%20demostraci%C3%B3n%20de%20SION%20Music" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Ver Demo</a>
+    </div>
+    <button class="install-chip" data-install hidden><svg class="ic" viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg>Instalar la app en este dispositivo</button>
+  </div></div>
+</section>
 
-<section id="funciones"><div class="wrap"><div class="head"><span class="eyebrow">Todo lo que necesitás</span><h2>Herramientas para cada momento de <span class="shine">adoración.</span></h2><p>Una experiencia pensada para que músicos, cantantes y responsables del ministerio tengan su material organizado y a mano.</p></div>
-<div class="features">
-<article class="feature"><div class="ico">♫</div><h3>Biblioteca musical digital</h3><p>Centralizá las canciones de tu congregación en una biblioteca ordenada y fácil de consultar.</p></article>
-<article class="feature"><div class="ico">🎸</div><h3>Letras y acordes</h3><p>Consultá las letras con sus acordes en una presentación clara para músicos y cantantes.</p></article>
-<article class="feature"><div class="ico">♬</div><h3>Partituras musicales</h3><p>Accedé al material de partituras y referencias para preparar las canciones.</p></article>
-<article class="feature"><div class="ico">▣</div><h3>Proyección para iglesias</h3><p>Prepará el contenido musical para presentaciones y reuniones de la congregación.</p></article>
-<article class="feature"><div class="ico">☷</div><h3>Grupos y repertorios</h3><p>Organizá canciones por grupos y prepará listas para cultos, ensayos y eventos.</p></article>
-<article class="feature"><div class="ico">▤</div><h3>Acceso multidispositivo</h3><p>Una experiencia web adaptable para teléfonos, tablets y computadoras.</p></article>
-</div></div></section>
-
-<section class="story" id="experiencia"><div class="wrap split">
-<div class="visual"><img src="/inicio/img/foto-2.webp" alt="Presentación visual de SION Music en dispositivos"><div class="floatnote"><b>Una experiencia moderna</b><small>Tu música organizada y siempre a mano</small></div></div>
-<div class="copy"><span class="eyebrow">Prepará cada encuentro</span><h2>Menos tiempo buscando. <span class="shine">Más tiempo compartiendo.</span></h2><p>SION Music te ayuda a ordenar el material musical de tu iglesia y preparar cada encuentro con mayor facilidad.</p>
-<ul class="ticks"><li>Biblioteca de canciones centralizada.</li><li>Letras y acordes fáciles de consultar.</li><li>Organización por grupos y repertorios.</li><li>Diseño adaptable a diferentes pantallas.</li><li>Una interfaz clara para el uso cotidiano.</li></ul>
-<a class="btn goldbtn" href="https://wa.me/595994854167?text=Quiero%20conocer%20SION%20Music" target="_blank">Quiero conocer SION Music →</a></div>
+<section class="funcs" id="funciones"><div class="wrap">
+  <h2 class="stitle">Funciones <span class="gold">&nbsp;Destacadas</span></h2>
+  <div class="fgrid">
+    <article class="fcard"><svg class="c-blue" viewBox="0 0 24 24" fill="currentColor"><path d="M9 18V6l12-2v12" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><h3>Biblioteca Musical Digital</h3><p>Organizá tus canciones de forma centralizada.</p></article>
+    <article class="fcard"><svg class="c-green ic" viewBox="0 0 24 24"><path d="M19 3l2 2-6.5 6.5M15.5 9.5l-3 3"/><path d="M10.5 10.5c-2-1-4.2-.3-5.2 1.5-.6 1-.3 2.2-1.6 3.1-1.4 1-1.3 3.1.2 4.6s3.6 1.6 4.6.2c.9-1.3 2.1-1 3.1-1.6 1.8-1 2.5-3.2 1.5-5.2z" fill="currentColor" fill-opacity=".25"/><circle cx="9" cy="15" r="1.3" fill="currentColor"/></svg><h3>Letras y Acordes</h3><p>Consultá las letras y acordes en su posición.</p></article>
+    <article class="fcard"><svg class="c-purple ic" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2" fill="currentColor" fill-opacity=".2"/><path d="M8 8h8M8 11h8M8 14h5M8 17h3"/></svg><h3>Partituras Musicales</h3><p>Accedé a partituras organizadas.</p></article>
+    <article class="fcard"><svg class="c-orange ic" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="2" fill="currentColor" fill-opacity=".2"/><path d="M8 21h8M12 17v4M8 13l3-3 2 2 3-4"/></svg><h3>Proyección para Iglesias</h3><p>Presentá las canciones en grande, por HDMI o Chromecast.</p></article>
+    <article class="fcard"><svg class="c-pink" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="7" r="3.2"/><circle cx="5" cy="9" r="2.4"/><circle cx="19" cy="9" r="2.4"/><path d="M6.5 20a5.5 5.5 0 0 1 11 0z"/><path d="M1 19a4 4 0 0 1 5.5-3.7A7 7 0 0 0 5 19zM23 19a4 4 0 0 0-5.5-3.7A7 7 0 0 1 19 19z"/></svg><h3>Grupos y Repertorios</h3><p>Organizá por grupos y prepará repertorios.</p></article>
+    <article class="fcard"><svg class="c-cyan ic" viewBox="0 0 24 24"><rect x="2" y="4" width="15" height="11" rx="1.5" fill="currentColor" fill-opacity=".2"/><path d="M6 19h7M9.5 15v4"/><rect x="16" y="9" width="6" height="11" rx="1.5" fill="currentColor" fill-opacity=".35"/></svg><h3>Acceso en Todos tus Dispositivos</h3><p>PC, tablet y celular.</p></article>
+  </div>
 </div></section>
 
-<section><div class="wrap"><div class="head"><span class="eyebrow">Una plataforma para tu día a día</span><h2>Tu música, desde el dispositivo que <span class="shine">preferís.</span></h2><p>Consultá el contenido musical desde distintos equipos y prepará tus repertorios donde estés.</p></div>
-<div class="devices"><img class="deviceimg" src="/inicio/img/foto-3.webp" alt="Vista de contenido musical y partituras"><div class="devicecard"><h3>Todo tu equipo, conectado a la música</h3><p>Una experiencia diseñada para acompañar el trabajo de músicos, cantantes y equipos de servicio de la iglesia.</p><div class="chips"><span>Biblioteca</span><span>Canciones</span><span>Acordes</span><span>Partituras</span><span>Repertorios</span><span>Grupos</span></div></div></div>
+<section class="exp" id="experiencia"><div class="wrap expgrid">
+  <div>
+    <h2>Una Experiencia<br>Moderna e Intuitiva</h2>
+    <p>Interfaz moderna, rápida y fácil de usar, para que te enfoques en lo más importante: adorar a Dios.</p>
+    <ul class="checks"><li>Diseño adaptable (PWA)</li><li>Acceso offline</li><li>Búsqueda avanzada</li><li>Organización por grupos y cultos</li></ul>
+    <a class="btn btn-gold btn-sm" href="#pantallas"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 15l5-4 4 3 3-2 6 4"/><circle cx="16" cy="9" r="1.5"/></svg>Ver Capturas de Pantallas</a>
+  </div>
+  <img class="devices" src="/inicio/img/dispositivos.webp" alt="SION Music en computadora, tablet y celular" width="1183" height="541" loading="lazy">
 </div></section>
 
-<section class="story" id="iglesias"><div class="wrap"><div class="head"><span class="eyebrow">Para toda la comunidad</span><h2>Creado pensando en quienes <span class="shine">hacen música.</span></h2><p>Una herramienta para acompañar las distintas necesidades musicales de tu congregación.</p></div>
-<div class="audience">
-<article class="aud"><img src="/inicio/img/foto-4.webp" alt="Música de adoración"><div><h3>Iglesias y congregaciones</h3><p>Un espacio común para el material musical.</p></div></article>
-<article class="aud"><img src="/inicio/img/foto-1.webp" alt="Cantante en escenario"><div><h3>Ministerios de alabanza</h3><p>Organizá canciones y repertorios.</p></div></article>
-<article class="aud"><img src="/inicio/img/foto-2.webp" alt="Músicos y equipos"><div><h3>Músicos y cantantes</h3><p>Letras, acordes y referencias.</p></div></article>
-<article class="aud"><img src="/inicio/img/foto-5.webp" alt="Biblia abierta"><div><h3>Equipos de servicio</h3><p>Prepará cada actividad con orden.</p></div></article>
-</div></div></section>
+<section class="screens" id="pantallas"><div class="wrap">
+  <h2 class="stitle">Así se ve <span class="gold">&nbsp;SION Music</span></h2>
+  <p class="ssub">Todo lo que tu equipo de alabanza necesita, desde el ensayo hasta el culto.</p>
+  <div class="sgrid">
+    <article class="scard"><div class="mock m-list"><div class="row"><i></i>Grande es Tu Amor<em>G</em></div><div class="row"><i></i>Cristo Vive<em>D</em></div><div class="row"><i></i>Tu Gracia es Mayor<em>A</em></div><div class="row"><i></i>Yo Creo en Ti<em>E</em></div></div>
+      <div class="txt"><h3>Cancionero de la iglesia</h3><p>Todas las canciones de todos los grupos, con las veces que ya se tocaron.</p></div></article>
+    <article class="scard"><div class="mock m-culto"><div class="day">DOMINGO · 19:00</div><div class="ttl">Culto de adoración</div><div class="it"><span>1</span>Grande es Tu Amor<em>G</em></div><div class="it"><span>2</span>Cristo Vive<em>D</em></div><div class="it"><span>3</span>Tu Gracia es Mayor<em>A</em></div></div>
+      <div class="txt"><h3>Repertorio del culto</h3><p>Armá el orden con arrastrar y soltar, cada canción en su tono.</p></div></article>
+    <article class="scard"><div class="mock m-proj"><b>Grande es Tu amor<br>Y Tu fidelidad</b><small>EN EL PROYECTOR</small></div>
+      <div class="txt"><h3>Proyección</h3><p>Letra en grande para la congregación, por cable o Chromecast.</p></div></article>
+    <article class="scard"><div class="mock m-chords"><span class="tag">VISTA DE MÚSICOS · EN VIVO</span><div class="c">G         D/F#</div><div class="l">Grande es Tu amor</div><div class="c">Em        C</div><div class="l">Y Tu fidelidad</div></div>
+      <div class="txt"><h3>Músicos con acordes</h3><p>Cada músico sigue en su tablet la sección que se proyecta.</p></div></article>
+  </div>
+</div></section>
+
+<section class="why" id="beneficios"><div class="wrap whygrid">
+  <div>
+    <h2>¿Por qué elegir SION Music?</h2>
+    <div class="wtiles">
+      <div class="wtile"><svg class="ic" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.3-2 5-2 5s3.7-.5 5-2c.7-.8.7-2.1-.1-2.9a2.2 2.2 0 0 0-2.9-.1zM12 15l-3-3a22 22 0 0 1 2-3.9A12.9 12.9 0 0 1 22 2c0 2.7-.8 7.5-6 11a22 22 0 0 1-4 2z"/></svg>Simple<br>y Poderoso</div>
+      <div class="wtile"><svg class="ic" viewBox="0 0 24 24"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 1 0 6 18.3"/><path d="M12 12v7m0 0-3-3m3 3 3-3"/></svg>100% en la Nube<br>y Offline</div>
+      <div class="wtile"><svg class="ic" viewBox="0 0 24 24"><rect x="2" y="4" width="14" height="10" rx="1.5"/><path d="M5 18h8M9 14v4"/><rect x="16" y="8" width="6" height="12" rx="1.5"/></svg>Funciona en todos tus dispositivos</div>
+      <div class="wtile"><svg class="ic" viewBox="0 0 24 24"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="2" y="14" width="5" height="7" rx="2"/><rect x="17" y="14" width="5" height="7" rx="2"/><path d="M20 21a4 4 0 0 1-4 2h-3"/></svg>Soporte Personalizado</div>
+      <div class="wtile"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2v5M10 4h4M5 21V11l7-4 7 4v10"/><path d="M10 21v-5h4v5M3 21h18"/></svg>Ideal para Iglesias y Ministerios</div>
+    </div>
+  </div>
+  <div class="quote">
+    <div><blockquote>“Que cada canción esté lista y en su lugar, para que el equipo se enfoque en lo más importante: adorar a Dios con excelencia en cada servicio.”</blockquote>
+      <cite>Equipo SION Music<small>CNID · Centro Nacional de Información Digital</small></cite></div>
+    <div class="qlogo"><img src="/icons/icon-192.png" alt="" width="96" height="96" loading="lazy"></div>
+  </div>
+</div></section>
+
+<section class="plans" id="planes"><div class="wrap">
+  <h2 class="stitle">Planes <span class="gold">&nbsp;para tu iglesia</span></h2>
+  <p class="ssub">Todas las funciones incluidas en cada plan. Elegí el tiempo que mejor le queda a tu congregación.</p>
+  <div class="pgrid">
+    <div class="plan"><h3>1 mes<small>Para empezar</small></h3><ul><li>Todas las funciones</li><li>Usuarios para todo el equipo</li><li>Proyección y vista de músicos</li></ul><a class="btn btn-line" href="#solicitar" data-plan="1 mes">Consultar</a></div>
+    <div class="plan"><h3>3 meses<small>Un trimestre</small></h3><ul><li>Todas las funciones</li><li>Usuarios para todo el equipo</li><li>Acompañamiento inicial</li></ul><a class="btn btn-line" href="#solicitar" data-plan="3 meses">Consultar</a></div>
+    <div class="plan"><h3>6 meses<small>Un semestre</small></h3><ul><li>Todas las funciones</li><li>Usuarios para todo el equipo</li><li>Soporte personalizado</li></ul><a class="btn btn-line" href="#solicitar" data-plan="6 meses">Consultar</a></div>
+    <div class="plan best"><span class="badge">Recomendado</span><h3>1 año<small>Todo el año</small></h3><ul><li>Todas las funciones</li><li>Usuarios para todo el equipo</li><li>Soporte personalizado</li></ul><a class="btn btn-gold" href="#solicitar" data-plan="1 año">Consultar</a></div>
+  </div>
+  <p class="pnote">Consultá el precio para tu iglesia: te respondemos por WhatsApp o correo.</p>
+</div></section>
 
 <section class="ask" id="solicitar"><div class="wrap askgrid">
-<div class="askcopy"><span class="eyebrow">Solicitar información</span><h2>Contanos de tu iglesia y <span class="shine">te contactamos.</span></h2>
-<p>Dejanos tus datos y te escribimos para mostrarte SION Music, resolver tus dudas y ayudarte a ponerlo en marcha en tu congregación.</p>
-<ul class="ticks"><li>Demostración sin compromiso.</li><li>Te ayudamos a cargar tus primeras canciones.</li><li>Acompañamiento para el equipo de alabanza.</li></ul>
-<p class="alt">¿Preferís hablar ahora? <a href="https://wa.me/595994854167?text=Hola%2C%20quiero%20solicitar%20informaci%C3%B3n%20sobre%20SION%20Music" target="_blank" rel="noopener">Escribinos por WhatsApp ↗</a></p></div>
-<div class="askbox"><form class="askform" id="askform" novalidate>
-<div class="row2"><label>Tu nombre *<input name="name" autocomplete="name" required maxlength="120" placeholder="Nombre y apellido"></label><label>Iglesia o ministerio<input name="church" maxlength="160" placeholder="Nombre de la iglesia"></label></div>
-<div class="row2"><label>WhatsApp<input name="phone" type="tel" autocomplete="tel" maxlength="40" placeholder="0981 123 456"></label><label>Correo<input name="email" type="email" autocomplete="email" maxlength="160" placeholder="tu@correo.com"></label></div>
-<label>Ciudad<input name="city" autocomplete="address-level2" maxlength="120" placeholder="Ciudad, país"></label>
-<label>¿Qué te gustaría saber?<textarea name="message" rows="3" maxlength="2000" placeholder="Contanos cuántos músicos son, qué usan hoy, o lo que quieras consultar…"></textarea></label>
-<label class="hp" aria-hidden="true">Sitio web<input name="website" tabindex="-1" autocomplete="off"></label>
-<button class="btn goldbtn" type="submit">Enviar solicitud →</button>
-<p class="formmsg" id="formmsg" role="status"></p>
-<small class="fine">Dejanos al menos un WhatsApp o un correo. Usamos tus datos solo para responderte.</small>
-</form>
-<div class="askdone" id="askdone" hidden><div class="okico">✓</div><h3>¡Gracias! Recibimos tu solicitud.</h3><p>Te vamos a contactar muy pronto. Si querés, podés escribirnos ahora mismo.</p><a class="btn goldbtn" href="https://wa.me/595994854167?text=Hola%2C%20acabo%20de%20enviar%20una%20solicitud%20de%20informaci%C3%B3n%20sobre%20SION%20Music" target="_blank" rel="noopener">☏ Seguir por WhatsApp</a></div></div>
+  <div>
+    <span class="eyebrow">Solicitar información</span>
+    <h2>Contanos de tu iglesia y <span class="gold">te contactamos.</span></h2>
+    <p>Dejanos tus datos y te escribimos para mostrarte SION Music, resolver tus dudas y ayudarte a ponerlo en marcha en tu congregación.</p>
+    <ul class="checks"><li>Demostración sin compromiso</li><li>Te ayudamos a cargar tus primeras canciones</li><li>Acompañamiento para el equipo de alabanza</li></ul>
+    <p class="alt">¿Preferís hablar ahora? <a href="https://wa.me/595994854167?text=Hola%2C%20quiero%20solicitar%20informaci%C3%B3n%20sobre%20SION%20Music" target="_blank" rel="noopener">Escribinos por WhatsApp ↗</a></p>
+  </div>
+  <div>
+    <form class="askform" id="askform" novalidate>
+      <div class="row2"><label>Tu nombre *<input name="name" autocomplete="name" required maxlength="120" placeholder="Nombre y apellido"></label><label>Iglesia o ministerio<input name="church" maxlength="160" placeholder="Nombre de la iglesia"></label></div>
+      <div class="row2"><label>WhatsApp<input name="phone" type="tel" autocomplete="tel" maxlength="40" placeholder="0981 123 456"></label><label>Correo<input name="email" type="email" autocomplete="email" maxlength="160" placeholder="tu@correo.com"></label></div>
+      <label>Ciudad<input name="city" autocomplete="address-level2" maxlength="120" placeholder="Ciudad, país"></label>
+      <label>¿Qué te gustaría saber?<textarea name="message" rows="3" maxlength="2000" placeholder="Contanos cuántos músicos son, qué usan hoy, o lo que quieras consultar…"></textarea></label>
+      <label class="hp" aria-hidden="true">Sitio web<input name="website" tabindex="-1" autocomplete="off"></label>
+      <button class="btn btn-gold" type="submit">Enviar solicitud →</button>
+      <p class="formmsg" id="formmsg" role="status"></p>
+      <small class="fine">Dejanos al menos un WhatsApp o un correo. Usamos tus datos solo para responderte.</small>
+    </form>
+    <div class="askdone" id="askdone" hidden><div class="okico">✓</div><h3>¡Gracias! Recibimos tu solicitud.</h3><p>Te vamos a contactar muy pronto. Si querés, podés escribirnos ahora mismo.</p><a class="btn btn-wa btn-sm" href="https://wa.me/595994854167?text=Hola%2C%20acabo%20de%20enviar%20una%20solicitud%20de%20informaci%C3%B3n%20sobre%20SION%20Music" target="_blank" rel="noopener">Seguir por WhatsApp</a></div>
+  </div>
 </div></section>
 
-<section class="cta" id="contacto"><div class="wrap"><span class="eyebrow">Conocé SION Music</span><h2>Llevá tu ministerio de música al <span class="shine">siguiente nivel.</span></h2><p>Solicitá información, pedí una demostración o consultá cómo implementar SION Music en tu iglesia.</p><div class="actions"><a class="btn goldbtn" href="https://wa.me/595994854167?text=Hola%2C%20quiero%20solicitar%20informaci%C3%B3n%20sobre%20SION%20Music" target="_blank">☏ Contactar por WhatsApp</a><a class="btn outline" href="/#/">Ingresar al sistema →</a></div></div></section>
+<section class="cta" id="contacto"><div class="wrap ctagrid">
+  <img class="bible" src="/inicio/img/biblia.webp" alt="Biblia abierta" width="592" height="400" loading="lazy">
+  <div class="mid">
+    <h2>¡Llevá tu ministerio de música<br><span class="gold">al siguiente nivel con SION Music!</span></h2>
+    <p>Solicitá una demostración o soporte ahora mismo.</p>
+    <a class="btn btn-wa" href="https://wa.me/595994854167?text=Hola%2C%20quiero%20solicitar%20informaci%C3%B3n%20sobre%20SION%20Music" target="_blank" rel="noopener"><svg viewBox="0 0 32 32" fill="currentColor"><path d="M16 .8A15 15 0 0 0 3.1 23.4L1 31l7.8-2 1.1.5A15.1 15.1 0 1 0 16 .8zm0 27.5c-2.2 0-4.3-.6-6.1-1.8l-.4-.2-4.6 1.2 1.2-4.5-.3-.5A12.4 12.4 0 1 1 16 28.3zm6.8-9.3c-.4-.2-2.2-1.1-2.6-1.2-.3-.1-.6-.2-.8.2-.3.4-1 1.2-1.2 1.4-.2.3-.4.3-.8.1-.4-.2-1.6-.6-3.1-1.9-1.1-1-1.9-2.2-2.1-2.6-.2-.4 0-.6.2-.8l.6-.7c.2-.2.3-.4.4-.7.1-.2 0-.5 0-.7-.1-.2-.8-2-1.1-2.7-.3-.7-.6-.6-.8-.6h-.7c-.2 0-.7.1-1 .5-.4.4-1.3 1.3-1.3 3.1s1.3 3.5 1.5 3.7c.2.2 2.6 4 6.3 5.6.9.4 1.6.6 2.1.7.9.3 1.7.2 2.3.1.7-.1 2.2-.9 2.5-1.8.3-.9.3-1.6.2-1.8-.1-.1-.4-.2-.8-.4z"/></svg>Contactar por WhatsApp</a>
+  </div>
+  <div class="logo-big"><img src="/inicio/img/logo-grande.webp" alt="SION Music" width="547" height="228" loading="lazy"><span class="script">Adoración sin límites…</span></div>
+</div></section>
 </main>
-<footer><div class="wrap foot"><div><strong>SION MUSIC</strong><br>La música de tu iglesia, en un solo lugar.</div><div class="copy">Copyright © 2011-2026 CNID · Nro. Reg. 17789<br>Todos los derechos reservados</div><div><a href="https://wa.me/595994854167" target="_blank">Soporte y consultas por WhatsApp</a></div></div></footer>
+
+<footer><div class="wrap foot">
+  <div>SION Music · Copyright © 2011-2026 CNID - Centro Nacional de Información Digital · Nro. Reg. 17789 · Todos los derechos reservados</div>
+  <div class="fl">
+    <a href="/inicio"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>sion.cd.com.py</a>
+    <a href="mailto:info@cd.com.py"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>info@cd.com.py</a>
+  </div>
+</div></footer>
+
 <aside class="pwa" id="pwa" hidden aria-label="Instalar SION Music">
-<button class="pwa-x" id="pwa-x" aria-label="Cerrar">×</button>
-<div class="pwa-top"><img src="/icons/icon-192.png" alt="" width="58" height="58"><div><b>Instalá SION Music</b><span>Como una app: se abre desde tu pantalla de inicio, rápida y a pantalla completa.</span></div></div>
-<div class="pwa-perks"><span>⚡ Abre al instante</span><span>📶 Funciona con mala señal</span><span>🔒 Sin tiendas ni descargas</span></div>
-<div class="pwa-ios" id="pwa-ios" hidden><ol><li>Tocá <b>Compartir</b> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4M5 11v9h14v-9"/></svg> en Safari.</li><li>Elegí <b>Agregar a inicio</b> <span class="plus">＋</span>.</li><li>Tocá <b>Agregar</b>. ¡Listo!</li></ol></div>
-<div class="pwa-btns"><button class="btn goldbtn" id="pwa-go">Instalar app</button><button class="btn outline" id="pwa-later">Ahora no</button></div>
+  <button class="pwa-x" id="pwa-x" aria-label="Cerrar">×</button>
+  <div class="pwa-top"><img src="/icons/icon-192.png" alt="" width="58" height="58"><div><b>Instalá SION Music</b><span>Como una app: se abre desde tu pantalla de inicio, rápida y a pantalla completa.</span></div></div>
+  <div class="pwa-perks"><span>⚡ Abre al instante</span><span>📶 Funciona con mala señal</span><span>🔒 Sin tiendas ni descargas</span></div>
+  <div class="pwa-ios" id="pwa-ios" hidden><ol><li>Tocá <b>Compartir</b> <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4M5 11v9h14v-9"/></svg> en Safari.</li><li>Elegí <b>Agregar a inicio</b> <span class="plus">＋</span>.</li><li>Tocá <b>Agregar</b>. ¡Listo!</li></ol></div>
+  <div class="pwa-btns"><button class="btn btn-gold" id="pwa-go">Instalar app</button><button class="btn btn-line" id="pwa-later">Ahora no</button></div>
 </aside>
-<a class="wa" href="https://wa.me/595994854167?text=Hola%2C%20quisiera%20informaci%C3%B3n%20sobre%20SION%20Music" target="_blank" aria-label="WhatsApp">
-<svg viewBox="0 0 32 32"><path d="M16 .8A15 15 0 0 0 3.1 23.4L1 31l7.8-2 1.1.5A15.1 15.1 0 1 0 16 .8zm0 27.5c-2.2 0-4.3-.6-6.1-1.8l-.4-.2-4.6 1.2 1.2-4.5-.3-.5A12.4 12.4 0 1 1 16 28.3zm6.8-9.3c-.4-.2-2.2-1.1-2.6-1.2-.3-.1-.6-.2-.8.2-.3.4-1 1.2-1.2 1.4-.2.3-.4.3-.8.1-.4-.2-1.6-.6-3.1-1.9-1.1-1-1.9-2.2-2.1-2.6-.2-.4 0-.6.2-.8l.6-.7c.2-.2.3-.4.4-.7.1-.2 0-.5 0-.7-.1-.2-.8-2-1.1-2.7-.3-.7-.6-.6-.8-.6h-.7c-.2 0-.7.1-1 .5-.4.4-1.3 1.3-1.3 3.1s1.3 3.5 1.5 3.7c.2.2 2.6 4 6.3 5.6.9.4 1.6.6 2.1.7.9.3 1.7.2 2.3.1.7-.1 2.2-.9 2.5-1.8.3-.9.3-1.6.2-1.8-.1-.1-.4-.2-.8-.4z"/></svg></a>
-</body></html>
+
+<a class="wa" href="https://wa.me/595994854167?text=Hola%2C%20quisiera%20informaci%C3%B3n%20sobre%20SION%20Music" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 32 32"><path d="M16 .8A15 15 0 0 0 3.1 23.4L1 31l7.8-2 1.1.5A15.1 15.1 0 1 0 16 .8zm0 27.5c-2.2 0-4.3-.6-6.1-1.8l-.4-.2-4.6 1.2 1.2-4.5-.3-.5A12.4 12.4 0 1 1 16 28.3zm6.8-9.3c-.4-.2-2.2-1.1-2.6-1.2-.3-.1-.6-.2-.8.2-.3.4-1 1.2-1.2 1.4-.2.3-.4.3-.8.1-.4-.2-1.6-.6-3.1-1.9-1.1-1-1.9-2.2-2.1-2.6-.2-.4 0-.6.2-.8l.6-.7c.2-.2.3-.4.4-.7.1-.2 0-.5 0-.7-.1-.2-.8-2-1.1-2.7-.3-.7-.6-.6-.8-.6h-.7c-.2 0-.7.1-1 .5-.4.4-1.3 1.3-1.3 3.1s1.3 3.5 1.5 3.7c.2.2 2.6 4 6.3 5.6.9.4 1.6.6 2.1.7.9.3 1.7.2 2.3.1.7-.1 2.2-.9 2.5-1.8.3-.9.3-1.6.2-1.8-.1-.1-.4-.2-.8-.4z"/></svg></a>
+</body>
+</html>

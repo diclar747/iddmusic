@@ -10,6 +10,23 @@
     links.addEventListener('click', function(e){ if (e.target.closest('a')) { links.classList.remove('mobile'); menu.setAttribute('aria-expanded', 'false'); } });
   }
 
+  /* ---------- Menú: marca la sección visible ---------- */
+  var navLinks = links ? links.querySelectorAll('a[href^="#"]') : [];
+  if ('IntersectionObserver' in window && navLinks.length) {
+    var mark = function(id){ navLinks.forEach(function(a){ a.classList.toggle('on', a.getAttribute('href') === '#' + id); }); };
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting) mark(e.target.id); }); }, { rootMargin: '-45% 0px -50% 0px' });
+    navLinks.forEach(function(a){ var s = document.querySelector(a.getAttribute('href')); if (s) io.observe(s); });
+  }
+
+  /* ---------- Planes: completa el mensaje del formulario ---------- */
+  document.querySelectorAll('[data-plan]').forEach(function(b){
+    b.addEventListener('click', function(){
+      var f = $('askform');
+      if (f && !f.message.value.trim()) f.message.value = 'Me interesa el plan de ' + b.getAttribute('data-plan') + '. ¿Cuál es el precio para nuestra iglesia?';
+      setTimeout(function(){ f && f.name.focus({ preventScroll: true }); }, 600);
+    });
+  });
+
   /* ---------- Solicitar información ---------- */
   var form = $('askform'), msg = $('formmsg'), done = $('askdone');
   if (form) form.addEventListener('submit', function(e){
