@@ -56,6 +56,9 @@
 .logo-preview{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 50% 38%,var(--navy-3),var(--navy-dark) 75%);box-shadow:0 0 0 3px var(--gold);overflow:hidden}
 .logo-preview img{width:70%;height:70%;object-fit:contain}
 .brand-mark img.custom{width:78%;height:78%;object-fit:contain;filter:none}
+.brand-mark.fill{background:none}
+.brand-mark img.fill{width:100%;height:100%;object-fit:cover;border-radius:50%;filter:none}
+.logo-preview.fill img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .app-sub{display:block;color:#a9b8cc;font-size:10.5px;letter-spacing:.5px;margin-top:2px}
 .app-sub b{color:var(--gold-2);font-weight:700;letter-spacing:1px}
 

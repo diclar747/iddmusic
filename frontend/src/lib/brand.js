@@ -44,7 +44,7 @@ export function applyTheme(church){
   const mode = effectiveMode(lastChurch);
   r.dataset.mode = mode;
   document.querySelector('meta[name=theme-color]')?.setAttribute('content', p.dark);
-  if (church) try { localStorage.setItem(BRAND_KEY, JSON.stringify({ name: church.name, branch: church.branch, logo_src: church.logo_src, theme: church.theme, mode: church.mode })); } catch { /* */ }
+  if (church) try { localStorage.setItem(BRAND_KEY, JSON.stringify({ name: church.name, branch: church.branch, logo_src: church.logo_src, logo_fit: church.logo_fit, theme: church.theme, mode: church.mode })); } catch { /* */ }
 }
 export const cachedBrand = () => { try { return JSON.parse(localStorage.getItem(BRAND_KEY) || 'null'); } catch { return null; } };
 export const forgetBrand = () => localStorage.removeItem(BRAND_KEY);

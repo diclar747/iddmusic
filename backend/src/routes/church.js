@@ -11,7 +11,7 @@ export const church = Router();
 export const notifications = Router();
 
 const DEFAULTS = { slogan: 'Un lugar de adoración y presencia de Dios', address: '', city: '', maps_url: '', phone: '', email: '', pastor: '', pastor_phone: '',
-  leader: '', leader_phone: '', schedule: '', website: '', logo: null, logo_url: '', cover: 'c-0', cover_image: null, theme: 'azul-dorado', mode: 'light' };
+  leader: '', leader_phone: '', schedule: '', website: '', logo: null, logo_url: '', logo_fit: 'icon', cover: 'c-0', cover_image: null, theme: 'azul-dorado', mode: 'light' };
 const FIELDS = { slogan: 160, address: 200, city: 120, maps_url: 500, email: 160, pastor: 120, leader: 120, schedule: 600, website: 300, cover: 40, theme: 40 };
 const PHONES = ['phone', 'pastor_phone', 'leader_phone'];
 const MODES = ['light', 'dark', 'auto'];
@@ -61,6 +61,7 @@ church.put('/', async (req, res) => {
   for (const [k, max] of Object.entries(FIELDS)) if (b[k] !== undefined) patch[k] = clean(b[k], max) || '';
   for (const k of PHONES) if (b[k] !== undefined) patch[k] = normPhone(b[k]) || '';
   if (b.mode !== undefined) patch.mode = MODES.includes(b.mode) ? b.mode : 'light';
+  if (b.logo_fit !== undefined) patch.logo_fit = b.logo_fit === 'fill' ? 'fill' : 'icon';
   if (b.name !== undefined || b.branch !== undefined) {
     const name = clean(b.name, 160);
     if (b.name !== undefined && !name) throw bad('El nombre de la iglesia es obligatorio');

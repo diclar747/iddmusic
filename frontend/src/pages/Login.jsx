@@ -23,7 +23,7 @@ export default function Login(){
     <div className="login-shade" />
     <div className="login-hero">
       <img className="login-logo" src="/icons/sion-logo.png" alt="SION Music" />
-      {last?.name && <div className="login-church"><BrandMark size={34} src={last.logo_src} /><span><b>{last.name}</b>{last.branch && <small>{last.branch}</small>}</span></div>}
+      {last?.name && <div className="login-church"><BrandMark size={34} src={last.logo_src} fill={last.logo_fit === 'fill'} /><span><b>{last.name}</b>{last.branch && <small>{last.branch}</small>}</span></div>}
       <p className="sub">Cancionero, proyección y alabanza para tu iglesia</p>
       <p className="slogan">{APP_TAGLINE}</p>
     </div>

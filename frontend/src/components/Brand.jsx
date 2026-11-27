@@ -4,7 +4,7 @@ import { useInstall } from '../lib/pwa.js';
 import { SION_MARK } from '../lib/brand.js';
 
 /** Logo dentro de un círculo con aro del color de acento: el de la iglesia (src) o el de SION Music. */
-export const BrandMark = ({ size = 42, src }) => <span className="brand-mark" style={{ width: size, height: size }}><img src={src || SION_MARK} alt="" className={src && !src.startsWith('/icons/') ? 'custom' : ''} /></span>;
+export const BrandMark = ({ size = 42, src, fill = false }) => <span className={`brand-mark ${fill && src ? 'fill' : ''}`} style={{ width: size, height: size }}><img src={src || SION_MARK} alt="" className={fill && src ? 'fill' : src && !src.startsWith('/icons/') ? 'custom' : ''} /></span>;
 
 /** Botón "Instalar la app" (Android/PC) o instrucciones para iPhone/iPad. */
 export function InstallButton({ className = '' }){

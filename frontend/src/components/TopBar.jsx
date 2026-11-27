@@ -22,11 +22,12 @@ export function useChurch(){
   return c;
 }
 export const churchLogo = c => c?.logo_src || '';
+export const churchFill = c => !!c?.logo_src && c?.logo_fit === 'fill';
 export const churchCover = c => c?.cover === 'photo' && c?.cover_src ? `url(${c.cover_src})` : themeById(c?.cover || 'c-0').bg;
 
 /** Logo de la iglesia (o el de SION Music si todavía no cargó uno). */
 export function ChurchAvatar({ church, size = 38 }){
-  return <BrandMark size={size} src={churchLogo(church)} />;
+  return <BrandMark size={size} src={churchLogo(church)} fill={churchFill(church)} />;
 }
 
 /** Modo claro / oscuro / automático (preferencia de cada usuario). */

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { MapPin, Phone, MessageCircle, Mail, Globe, Clock, Pencil, Save, X, Upload, Trash2, Crown, Guitar, Church as ChurchIcon, Navigation, Palette, Sun, Moon, MonitorSmartphone, Image as ImageIcon, Check } from 'lucide-react';
 import { api } from '../api.js';
 import { Field, Busy, useToast, Spinner } from '../ui.jsx';
-import { useChurch, setChurch, churchLogo, churchCover } from '../components/TopBar.jsx';
+import { useChurch, setChurch, churchLogo, churchFill, churchCover } from '../components/TopBar.jsx';
 import { BrandMark } from '../components/Brand.jsx';
 import { waLink, fmtPhone } from '../lib/whatsapp.js';
 import { prepareImage, themeById } from '../lib/themes.js';
@@ -56,7 +56,7 @@ export default function Church(){
     <section className="ch-hero" style={{ backgroundImage: churchCover(church) }}>
       <div className="hero-shade" />
       <div className="ch-hero-body">
-        <BrandMark size={92} src={logo} />
+        <BrandMark size={92} src={logo} fill={churchFill(church)} />
         <div><span className="eyebrow">Nuestra iglesia</span><h1>{church.name}</h1>{church.branch && <p>{church.branch}</p>}{church.slogan && <em>{church.slogan}</em>}</div>
       </div>
       {church.can_edit && !edit && <div className="ch-hero-actions"><button className="btn primary sm" onClick={() => setEdit(true)}><Pencil size={15} /> Editar datos</button></div>}
@@ -67,11 +67,12 @@ export default function Church(){
 
       <h3 className="mt">Logo</h3>
       <div className="logo-edit">
-        <span className="logo-preview"><img src={logo || SION_MARK} alt="" /></span>
+        <span className={`logo-preview ${churchFill(church) ? 'fill' : ''}`}><img src={logo || SION_MARK} alt="" /></span>
         <div className="actions" style={{ margin: 0 }}>
           <button className="btn" onClick={() => logoRef.current?.click()} disabled={!!busy}><Upload size={15} /> {busy === 'logo' ? 'Subiendo…' : logo ? 'Cambiar logo' : 'Subir logo'}</button>
           {logo && <button className="btn" onClick={() => removeImage('logo')}><Trash2 size={15} /> Quitar</button>}
         </div>
+        {logo && <label className="pp-check" style={{ width: '100%' }}><input type="checkbox" checked={church.logo_fit === 'fill'} onChange={e => patch({ logo_fit: e.target.checked ? 'fill' : 'icon' }, e.target.checked ? 'El logo ocupa todo el círculo' : 'El logo va dentro del círculo')} /> Mi logo ya es redondo: que ocupe todo el círculo</label>}
         <small className="muted">PNG con fondo transparente queda mejor. Se ve arriba, en el menú, en la pantalla de espera del proyector y al instalar la app.</small>
         <input ref={logoRef} type="file" hidden accept="image/png,image/jpeg,image/webp" onChange={e => { upload('logo', e.target.files[0]); e.target.value = ''; }} />
       </div>

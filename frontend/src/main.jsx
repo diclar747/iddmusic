@@ -24,7 +24,7 @@ import Musicians from './pages/Musicians.jsx';
 import { isCastReceiver } from './lib/cast.js';
 import { hideSplash } from './lib/pwa.js';
 import { BrandMark, InstallButton } from './components/Brand.jsx';
-import TopBar, { NotificationBell, ModeButton, useChurch, churchLogo, resetChurch } from './components/TopBar.jsx';
+import TopBar, { NotificationBell, ModeButton, useChurch, churchLogo, churchFill, resetChurch } from './components/TopBar.jsx';
 import Church from './pages/Church.jsx';
 import Admin from './pages/Admin.jsx';
 import { applyTheme, cachedBrand, APP_NAME } from './lib/brand.js';
@@ -36,7 +36,7 @@ import { applyTheme, cachedBrand, APP_NAME } from './lib/brand.js';
   const sp = document.getElementById('splash');
   if (b && sp && session.token) {
     const img = sp.querySelector('img');
-    if (b.logo_src && img) { img.setAttribute('src', b.logo_src); img.classList.add('church'); }
+    if (b.logo_src && img) { img.setAttribute('src', b.logo_src); img.classList.add('church'); if (b.logo_fit === 'fill') img.classList.add('fill'); }
     const h = sp.querySelector('h1'); if (h) h.textContent = b.name || APP_NAME;
     const p = sp.querySelector('p'); if (p) p.textContent = b.branch || '';
   }
@@ -104,7 +104,7 @@ function App(){
   const title = NAV.find(([p]) => p !== '/' && active(p))?.[1] || (active('/profile') ? 'Mi perfil' : active('/iglesia') ? 'Mi iglesia' : active('/admin') ? 'Panel de SION' : active('/events') ? 'Evento' : APP_NAME);
   return <div className={`layout ${collapsed ? "collapsed" : ""}`}>
     <aside className="sidebar">
-      <a className="brand" href="#/"><BrandMark src={churchLogo(church)} /><span><b className="brand-church">{church?.name || APP_NAME}</b><small>{church?.branch}</small><small className="app-sub">con <b>SION</b> Music</small></span></a>
+      <a className="brand" href="#/"><BrandMark src={churchLogo(church)} fill={churchFill(church)} /><span><b className="brand-church">{church?.name || APP_NAME}</b><small>{church?.branch}</small><small className="app-sub">con <b>SION</b> Music</small></span></a>
       <nav>{NAV.map(([p, label, Icon]) => <a key={p} href={href(p)} className={active(p) ? 'active' : ''} title={label}><Icon size={18} /><span>{label}</span></a>)}
         <a href="#/iglesia" className={active('/iglesia') ? 'active' : ''} title="Mi iglesia"><ChurchIcon size={18} /><span>Mi iglesia</span></a>
         {user.roles?.includes('platform_admin') && <a href="#/admin" className={active('/admin') ? 'active' : ''} title="Panel de SION"><ShieldCheck size={18} /><span>Panel de SION</span></a>}</nav>
@@ -117,7 +117,7 @@ function App(){
 
     {/* Teléfono: barra superior */}
     <header className="m-top">
-      <a href="#/" className="m-brand"><BrandMark size={34} src={churchLogo(church)} /><span>{route.path === '/' ? (church?.name || APP_NAME) : title}</span></a>
+      <a href="#/" className="m-brand"><BrandMark size={34} src={churchLogo(church)} fill={churchFill(church)} /><span>{route.path === '/' ? (church?.name || APP_NAME) : title}</span></a>
       <ModeButton dark />
       <a href="#/present/free" className="m-icon" title="Proyectar"><MonitorPlay size={20} /></a>
       <NotificationBell dark />
@@ -135,7 +135,7 @@ function App(){
       <button className={more ? 'on' : ''} onClick={() => setMore(m => !m)}>{more ? <X size={21} /> : <Menu size={21} />}<span>Más</span></button>
     </nav>
     {more && <div className="m-sheet" onClick={() => setMore(false)}><div onClick={e => e.stopPropagation()}>
-      <div className="m-sheet-user"><BrandMark size={44} src={churchLogo(church)} /><span><b>{user.fullName}</b><small>{church?.name || user.email}</small></span></div>
+      <div className="m-sheet-user"><BrandMark size={44} src={churchLogo(church)} fill={churchFill(church)} /><span><b>{user.fullName}</b><small>{church?.name || user.email}</small></span></div>
       {NAV.filter(([p]) => !TABS.some(t => t[0] === p)).map(([p, label, Icon]) => <a key={p} href={href(p)}><Icon size={20} /> {label}</a>)}
       <a href="#/iglesia"><ChurchIcon size={20} /> Mi iglesia y apariencia</a>
       {user.roles?.includes('platform_admin') && <a href="#/admin"><ShieldCheck size={20} /> Panel de SION</a>}
