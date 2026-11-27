@@ -192,3 +192,14 @@ input,select,textarea,button{font-family:inherit}
 .sb-pager{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-top:4px;font-size:13px;color:var(--muted)}
 .ev-sb-title{font-size:13px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:4px 0 0}
 .ev-add .sb-item .ev-ok{font-size:11.5px}
+
+/* Super admin: solicitudes de información */
+.requests{margin-top:18px}
+.req-row{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:14px 16px;border:1px solid var(--line);border-radius:16px;background:var(--card);margin-bottom:10px;border-left:4px solid var(--gold-2,#e0b13a)}
+.req-row.off{border-left-color:var(--line);opacity:.72}
+.req-row .cr-main b{font-size:15.5px}.req-row .cr-main b span{color:var(--muted);font-weight:600}
+.req-row .cr-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.req-msg{margin:8px 0 0;padding:9px 12px;border-radius:12px;background:var(--soft,rgba(13,29,51,.05));font-size:13.5px;white-space:pre-wrap}
+.req-row .cr-acts{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+@media(max-width:700px){.req-row{grid-template-columns:1fr}.req-row .cr-acts{justify-content:flex-start}}
+.login-more{display:block;text-align:center;margin-top:10px;font-size:13px;font-weight:700;color:var(--gold-2,#c99a1e)}.login-more:hover{text-decoration:underline}

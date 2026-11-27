@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Plus, Power, CalendarPlus, Trash2, KeyRound, MessageCircle, Copy, Search, Users, Music2, Church as ChurchIcon, CalendarClock, Pencil } from 'lucide-react';
+import { ShieldCheck, Plus, Power, CalendarPlus, Trash2, KeyRound, MessageCircle, Copy, Search, Users, Music2, Church as ChurchIcon, CalendarClock, Pencil, Inbox, Check, RotateCcw, Mail, MapPin } from 'lucide-react';
 import { api } from '../api.js';
 import { useApi, Spinner, ErrorBox, Modal, Field, Busy, useToast, Empty } from '../ui.jsx';
 import { BrandMark } from '../components/Brand.jsx';
@@ -18,7 +18,7 @@ function statusOf(c){
   if (d !== null && d <= 7) return ['warn2', `Vence en ${d} día${d === 1 ? '' : 's'}`];
   return ['ok', 'Activa'];
 }
-const accessText = (church, a) => `¡Bienvenidos a ${APP_NAME}! 🎵\n\nIglesia: ${church}\nIngresá en: ${location.origin}\nUsuario: ${a.email}\nContraseña: ${a.password}\n\nDespués podés cambiarla en "Mi perfil". Desde "Mi iglesia" cargás el logo, los colores y los datos de la iglesia.`;
+const accessText = (church, a) => `¡Bienvenidos a ${APP_NAME}! 🎵\n\nIglesia: ${church}\nIngresá en: ${location.origin}/#/\nUsuario: ${a.email}\nContraseña: ${a.password}\n\nDespués podés cambiarla en "Mi perfil". Desde "Mi iglesia" cargás el logo, los colores y los datos de la iglesia.`;
 
 /** Panel del administrador de SION Music: todas las iglesias, planes y accesos. */
 export default function Admin({ user }){
@@ -85,7 +85,9 @@ export default function Admin({ user }){
       </div>; })}
     </section>
 
-    {creating && <CreateChurch onClose={() => setCreating(false)} onCreated={r => { setCreating(false); reload(); setAccess({ church: r.church.name, admin: r.admin }); }} />}
+    <Requests onCreate={r => setCreating({ name: r.church || '', admin_name: r.name || '', admin_phone: r.phone || '', admin_email: r.email || '', notes: [r.city, r.message].filter(Boolean).join(' · ').slice(0, 400) })} />
+
+    {creating && <CreateChurch initial={creating === true ? null : creating} onClose={() => setCreating(false)} onCreated={r => { setCreating(false); reload(); setAccess({ church: r.church.name, admin: r.admin }); }} />}
     {editing && <EditChurch church={editing} onClose={() => setEditing(null)} onSaved={() => { setEditing(null); reload(); toast('Iglesia actualizada'); }} />}
     {deleting && <DeleteChurch church={deleting} onClose={() => setDeleting(null)} onDeleted={() => { setDeleting(null); reload(); toast('Iglesia eliminada'); }} />}
     {access && <Modal title="Acceso del administrador" onClose={() => setAccess(null)}>
@@ -99,9 +101,51 @@ export default function Admin({ user }){
   </>;
 }
 
-function CreateChurch({ onClose, onCreated }){
+/** Solicitudes de información que llegan desde la página pública. */
+function Requests({ onCreate }){
   const toast = useToast();
-  const [f, setF] = useState({ name: '', branch: '', months: 1, admin_name: '', admin_phone: '', admin_email: '', admin_password: '', notes: '' });
+  const { data, loading, error, reload } = useApi('/platform/requests');
+  const [all, setAll] = useState(false);
+  async function act(r, body){
+    try { body ? await api(`/platform/requests/${r.id}`, { method: 'PATCH', body }) : await api(`/platform/requests/${r.id}`, { method: 'DELETE' }); reload(); }
+    catch (e) { toast(e.message, 'error'); }
+  }
+  const items = (data?.items || []).filter(r => all || r.status === 'new');
+  const when = d => new Date(d).toLocaleString('es-PY', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+  const reply = r => `¡Hola ${r.name.split(' ')[0]}! Te escribimos de ${APP_NAME} por la solicitud de información que nos dejaste${r.church ? ` para ${r.church}` : ''}. 🎵`;
+  return <section className="panel requests">
+    <div className="panel-head"><h2><Inbox size={18} /> Solicitudes de información {data?.pending > 0 && <span className="pill warn2">{data.pending} nuevas</span>}</h2>
+      <label className="sb-check"><input type="checkbox" checked={all} onChange={e => setAll(e.target.checked)} /> Ver también las atendidas</label></div>
+    <p className="muted small">Llegan desde el formulario “Solicitar información” de la página pública (sion.cd.com.py/inicio).</p>
+    {loading && <Spinner />}<ErrorBox error={error} />
+    {data && !items.length && <Empty icon={Inbox} title={all ? 'Todavía no llegaron solicitudes' : 'No hay solicitudes pendientes'}>Cuando alguien complete el formulario, aparece acá.</Empty>}
+    {items.map(r => <div key={r.id} className={`req-row ${r.status === 'done' ? 'off' : ''}`}>
+      <div className="cr-main">
+        <b>{r.name}{r.church && <> · <span>{r.church}</span></>}</b>
+        <div className="cr-meta">
+          {r.status === 'new' ? <span className="pill warn2">Nueva</span> : <span className="pill ok">Atendida</span>}
+          <span className="pill soft"><CalendarClock size={12} /> {when(r.created_at)}</span>
+          {r.city && <span className="pill soft"><MapPin size={12} /> {r.city}</span>}
+          {r.phone && <span className="pill soft"><MessageCircle size={12} /> {fmtPhone(r.phone)}</span>}
+          {r.email && <span className="pill soft"><Mail size={12} /> {r.email}</span>}
+        </div>
+        {r.message && <p className="req-msg">{r.message}</p>}
+      </div>
+      <div className="cr-acts">
+        {r.phone && <a className="btn sm wa" href={waLink(r.phone, reply(r))} target="_blank" rel="noreferrer"><MessageCircle size={14} /> Responder</a>}
+        {r.email && <a className="btn sm" href={`mailto:${r.email}?subject=${encodeURIComponent(APP_NAME)}&body=${encodeURIComponent(reply(r))}`} title="Responder por correo"><Mail size={14} /></a>}
+        <button className="btn sm" onClick={() => onCreate(r)} title="Crear la iglesia con estos datos"><Plus size={14} /> Crear iglesia</button>
+        {r.status === 'new' ? <button className="btn sm primary" onClick={() => act(r, { status: 'done' })}><Check size={14} /> Atendida</button>
+          : <button className="btn sm" onClick={() => act(r, { status: 'new' })} title="Volver a pendiente"><RotateCcw size={14} /></button>}
+        <button className="btn sm danger" onClick={() => confirm(`¿Borrar la solicitud de ${r.name}?`) && act(r)} title="Borrar"><Trash2 size={14} /></button>
+      </div>
+    </div>)}
+  </section>;
+}
+
+function CreateChurch({ initial, onClose, onCreated }){
+  const toast = useToast();
+  const [f, setF] = useState({ name: '', branch: '', months: 1, admin_name: '', admin_phone: '', admin_email: '', admin_password: '', notes: '', ...(initial || {}) });
   const [busy, setBusy] = useState(false);
   const set = k => e => setF({ ...f, [k]: e.target.value });
   async function save(e){

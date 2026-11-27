@@ -129,4 +129,21 @@ r.delete('/churches/:id', async (req, res) => {
   res.json({ ok: true });
 });
 
+/* ---------- Solicitudes de información (landing) ---------- */
+r.get('/requests', async (_req, res) => {
+  const q = await db.query('SELECT * FROM info_requests ORDER BY (status = $1) DESC, created_at DESC LIMIT 300', ['new']);
+  res.json({ items: q.rows, pending: q.rows.filter(x => x.status === 'new').length });
+});
+r.patch('/requests/:id', async (req, res) => {
+  if (!isUuid(req.params.id) || !['new', 'done'].includes(req.body?.status)) throw bad('Dato inválido');
+  const q = await db.query('UPDATE info_requests SET status=$2 WHERE id=$1 RETURNING *', [req.params.id, req.body.status]);
+  if (!q.rowCount) throw notFound('Solicitud no encontrada');
+  res.json(q.rows[0]);
+});
+r.delete('/requests/:id', async (req, res) => {
+  if (!isUuid(req.params.id)) throw notFound('Solicitud no encontrada');
+  await db.query('DELETE FROM info_requests WHERE id=$1', [req.params.id]);
+  res.json({ ok: true });
+});
+
 export default r;

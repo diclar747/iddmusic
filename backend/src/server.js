@@ -20,6 +20,7 @@ import bibleRoutes from './routes/bible.js';
 import liveRoutes from './routes/live.js';
 import { church as churchRoutes, notifications as notificationRoutes } from './routes/church.js';
 import platformRoutes from './routes/platform.js';
+import publicRoutes from './routes/public.js';
 
 // Al arrancar: aplica migraciones pendientes y, si no se configuró JWT_SECRET, usa uno generado y guardado en la base.
 try {
@@ -44,6 +45,21 @@ try {
     console.log(`   Contraseña: ${process.env.ADMIN_PASSWORD ? '(la de ADMIN_PASSWORD)' : password}`);
     console.log(' Guardala y cambiala desde "Mi perfil".');
     console.log('==================================================');
+  }
+  // Super administrador de SION desde las variables del panel (ADMIN_EMAIL + ADMIN_PASSWORD): lo crea o le pone esa contraseña.
+  // Después de ingresar conviene borrar ADMIN_PASSWORD del panel.
+  else if (process.env.ADMIN_EMAIL && process.env.ADMIN_PASSWORD) {
+    const email = process.env.ADMIN_EMAIL.trim().toLowerCase();
+    if (process.env.ADMIN_PASSWORD.length < 10) console.warn('ADMIN_PASSWORD: debe tener al menos 10 caracteres; no se aplicó.');
+    else {
+      const bcrypt = (await import('bcryptjs')).default;
+      const hash = await bcrypt.hash(process.env.ADMIN_PASSWORD, 12);
+      const old = await db.query('SELECT id FROM users WHERE lower(email)=$1', [email]);
+      const id = old.rows[0]?.id || (await db.query("INSERT INTO users(full_name,email,password_hash,status) VALUES($1,$2,$3,'active') RETURNING id", [process.env.ADMIN_NAME || 'Administración SION', email, hash])).rows[0].id;
+      if (old.rowCount) await db.query("UPDATE users SET password_hash=$2, status='active', updated_at=now() WHERE id=$1", [id, hash]);
+      await db.query("INSERT INTO user_roles(user_id,role_id) SELECT $1,id FROM roles WHERE code = 'platform_admin' ON CONFLICT DO NOTHING", [id]);
+      console.log(`Super administrador de SION listo: ${email} (contraseña: la de ADMIN_PASSWORD). Ya podés borrar ADMIN_PASSWORD del panel.`);
+    }
   }
 } catch (e) {
   console.error('No se pudo preparar la base de datos:', e.message, '\nRevisá DATABASE_URL (postgresql://usuario:clave@host:5432/base).');
@@ -103,12 +119,16 @@ app.use('/api/live', liveRoutes);
 app.use('/api/church', churchRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/platform', platformRoutes);
+app.use('/api/public', publicRoutes);
 app.use('/api', (_req, res) => res.status(404).json({ error: 'Ruta no encontrada' }));
 
 // Web compilada (frontend/dist): la sirve la misma API cuando corre como un único proceso Node (panel de hosting).
 const webDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../frontend/dist');
 if (fs.existsSync(path.join(webDir, 'index.html'))) {
   app.use('/assets', express.static(path.join(webDir, 'assets'), { immutable: true, maxAge: '1y' }));
+  // Página pública (landing): sion.cd.com.py/inicio. La app redirige ahí a quien entra sin sesión.
+  const landing = path.join(webDir, 'inicio', 'index.html');
+  app.get(['/inicio', '/inicio/'], (_req, res) => fs.existsSync(landing) ? res.set('Cache-Control', 'no-cache').sendFile(landing) : res.redirect('/#/'));
   app.use(express.static(webDir, { index: false, maxAge: 0 }));
   app.use((req, res, next) => (req.method === 'GET' || req.method === 'HEAD') && req.accepts('html') ? res.set('Cache-Control', 'no-cache').sendFile(path.join(webDir, 'index.html')) : next());
 }

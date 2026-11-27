@@ -96,7 +96,7 @@ function Members({ group, leader, user, reload }){
     if (v === null) return;
     try { await api(`/groups/${group.id}/members/${m.id}`, { method: 'PATCH', body: { phone: v } }); toast('WhatsApp actualizado'); reload(); } catch (e) { toast(e.message, 'error'); }
   }
-  const accessText = c => `¡Hola ${c.full_name?.split(' ')[0] || ''}! Te sumé al grupo "${group.name}" en SION Music 🎵\n\nIngresá en: ${location.origin}\nCorreo: ${c.email}${c.temp_password ? `\nContraseña: ${c.temp_password}\n\nDespués podés cambiarla en "Mi perfil".` : '\n(Usá tu contraseña de siempre.)'}\n\nTip: abrilo en el teléfono y tocá "Instalar la app".`;
+  const accessText = c => `¡Hola ${c.full_name?.split(' ')[0] || ''}! Te sumé al grupo "${group.name}" en SION Music 🎵\n\nIngresá en: ${location.origin}/#/\nCorreo: ${c.email}${c.temp_password ? `\nContraseña: ${c.temp_password}\n\nDespués podés cambiarla en "Mi perfil".` : '\n(Usá tu contraseña de siempre.)'}\n\nTip: abrilo en el teléfono y tocá "Instalar la app".`;
   return <section className="panel">
     <div className="panel-head"><h2>Integrantes</h2>{leader && <button className="btn primary sm" onClick={() => setAdding(true)}><UserPlus size={15} /> Agregar integrante</button>}</div>
     <p className="muted small">Todos los integrantes pueden cargar, editar e importar canciones y armar los repertorios. Los líderes además administran integrantes y el grupo.</p>

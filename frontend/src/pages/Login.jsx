@@ -35,6 +35,7 @@ export default function Login(){
       <Busy busy={busy} type="submit">Ingresar <LogIn size={17} /></Busy>
       <InstallButton className="light" />
       <small className="muted">Acceso para iglesias registradas en SION Music. Tu usuario te lo da el administrador de tu iglesia.</small>
+      <a className="login-more" href="/inicio">¿Tu iglesia todavía no usa SION Music? Conocelo acá →</a>
     </form>
   </div>;
 }

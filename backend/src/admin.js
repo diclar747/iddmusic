@@ -25,7 +25,7 @@ try {
     let id = old.rows[0]?.id;
     if (id) await c.query("UPDATE users SET password_hash=$2, full_name=$3, status='active', updated_at=now() WHERE id=$1", [id, hash, fullName]);
     else id = (await c.query("INSERT INTO users(full_name,email,password_hash,status) VALUES($1,$2,$3,'active') RETURNING id", [fullName, email, hash])).rows[0].id;
-    await c.query("INSERT INTO user_roles(user_id,role_id) SELECT $1,id FROM roles WHERE code IN ('super_admin','worship_director') ON CONFLICT DO NOTHING", [id]);
+    await c.query("INSERT INTO user_roles(user_id,role_id) SELECT $1,id FROM roles WHERE code = 'platform_admin' ON CONFLICT DO NOTHING", [id]);
     return !old.rows.length;
   });
   console.log(`\n${created ? 'Administrador creado' : 'Administrador actualizado'}`);

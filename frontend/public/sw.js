@@ -3,7 +3,7 @@
 // - /assets/ (archivos con hash): caché permanente.
 // - Íconos e imágenes públicas: caché y se actualizan en segundo plano.
 // - /api/: nunca se guarda (datos siempre frescos y privados).
-const VERSION = 'sion-v6';
+const VERSION = 'sion-v7';
 const SHELL = ['/', '/manifest.webmanifest', '/icons/icon-192.png', '/icons/icon-512.png', '/icons/sion-logo.png', '/icons/sion-mark.png'];
 
 self.addEventListener('install', e => {
@@ -18,7 +18,7 @@ self.addEventListener('fetch', e => {
   const url = new URL(req.url);
   if (url.origin !== location.origin || url.pathname.startsWith('/api/')) return;
   if (req.mode === 'navigate') {
-    e.respondWith(fetch(req).then(res => { const copy = res.clone(); caches.open(VERSION).then(c => c.put('/', copy)); return res; })
+    e.respondWith(fetch(req).then(res => { if (url.pathname === '/' && res.ok) { const copy = res.clone(); caches.open(VERSION).then(c => c.put('/', copy)); } return res; })
       .catch(() => caches.match('/')));
     return;
   }

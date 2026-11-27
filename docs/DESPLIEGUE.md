@@ -79,6 +79,14 @@ docker compose exec api npm run admin -- --email admin@cd.com.py --name "Adminis
 Muestra **una sola vez** la contraseña generada. Para elegirla vos: agregar `--password "TuClaveSegura"`.
 Si ya existe, le cambia la contraseña (sirve para recuperar el acceso).
 
+**Super administrador de SION (panel de hosting, sin consola):** en *Variables de entorno* agregar
+`ADMIN_EMAIL` (tu correo) y `ADMIN_PASSWORD` (mínimo 10 caracteres) y reiniciar el sitio. Al arrancar crea ese usuario
+(o le pone esa contraseña) con el rol de super administrador; en *Registros* aparece “Super administrador de SION listo”.
+Después de ingresar, **borrar `ADMIN_PASSWORD`** del panel. El menú muestra **Panel de SION**: iglesias, planes
+(1, 3, 6 o 12 meses o una fecha), activar/desactivar, eliminar, accesos y solicitudes de información de la landing.
+
+Landing pública: **/inicio** (quien entra sin sesión a la raíz va ahí; **Acceso** lleva al ingreso `/#/`).
+
 Después, desde la web: **Mis grupos → crear grupo → Integrantes → agregar** a cada músico (se les crea su usuario
 con contraseña temporal) o compartir el usuario general.
 
