@@ -42,10 +42,6 @@
     <em>Alabando a Dios con todo nuestro corazón</em>
     <div class="bar"></div>
   </div>
-  <script>
-    // La ventana del proyector y la pantalla del TV no muestran la pantalla de inicio.
-    if (/^#\/(screen|musicos)/.test(location.hash) && (/^#\/screen/.test(location.hash) || /cast=1|tv=1/.test(location.href))) document.getElementById('splash').remove();
-  </script>
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>

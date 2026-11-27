@@ -29,6 +29,8 @@ export function useInstall(){
 export function hideSplash(){
   const el = document.getElementById('splash');
   if (!el) return;
+  // La ventana del proyector y la pantalla del TV no muestran la pantalla de inicio.
+  if (/^#/screen/.test(location.hash) || (/^#/musicos/.test(location.hash) && /cast=1|tv=1/.test(location.href))) { el.remove(); return; }
   const wait = Math.max(0, 900 - performance.now());
   setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 600); }, wait);
 }
