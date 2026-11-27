@@ -114,6 +114,9 @@ function App(){
   const toggleNav = () => setCollapsed(c => { localStorage.setItem('idd_nav_collapsed', c ? '0' : '1'); return !c; });
   useEffect(() => { window.scrollTo(0, 0); setMore(false); }, [route.path]);
   useEffect(() => { hideSplash(); }, []);
+  // El super administrador de SION sin iglesia propia entra directo a su panel.
+  const platformOnly = !!user?.roles?.includes('platform_admin') && !user?.church_id;
+  useEffect(() => { if (platformOnly && route.path === '/') location.replace('#/admin'); }, [platformOnly, route.path]);
   if (route.parts[0] === 'screen') return <ScreenWindow />;
   if (route.parts[0] === 'musicos' && isCastReceiver()) return <Musicians tv />;
   if (!user) return <Login />;
