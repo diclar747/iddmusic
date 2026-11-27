@@ -1,8 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import db from '../db.js';
-import { auth, churchBlock, forgetUser } from '../middleware/auth.js';
+import { auth, churchBlock, forgetUser, signToken } from '../middleware/auth.js';
 import { bad, normPhone } from '../lib/http.js';
 
 const r = Router();
@@ -20,7 +19,7 @@ r.post('/login', async (req, res) => {
   const block = churchBlock(user);
   if (block) return res.status(403).json({ error: block, code: 'church_inactive' });
   forgetUser(user.id);
-  const token = jwt.sign({ id: user.id, email: user.email, fullName: user.full_name, roles: user.roles }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || '8h' });
+  const token = signToken(user);
   res.json({ token, user: publicUser(user) });
 });
 

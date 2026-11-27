@@ -6,6 +6,7 @@
 //   musicCast  → #/musicos  letra CON acordes para los músicos
 // Las conexiones viven a nivel de la aplicación: siguen activas al cambiar de canción o de evento.
 import { session } from '../api.js';
+import { report } from './report.js';
 
 const MAX_MSG = 48 * 1024; // Chrome limita el tamaño de cada mensaje: los grandes (imágenes) se mandan en partes.
 export const castSupported = () => typeof window !== 'undefined' && typeof window.PresentationRequest === 'function' && window.isSecureContext;
@@ -39,7 +40,8 @@ function createCaster(route, idKey, { isDefault = false } = {}){
       if (c.state === 'closed') conn = null;
       emit();
     };
-    c.onconnect = sync; c.onclose = sync; c.onterminate = sync;
+    c.onconnect = sync; c.onterminate = sync;
+    c.onclose = e => { if (e?.reason === 'error') report('cast', `Se cortó la transmisión (${route}): ${e.message || 'error'}`); sync(); };
     sync();
   }
   async function watchAvailability(){
@@ -63,6 +65,8 @@ function createCaster(route, idKey, { isDefault = false } = {}){
     if (saved) request.reconnect(saved).then(attach).catch(() => localStorage.removeItem(idKey));
     return request;
   }
+  // La sesión se renueva sola: el TV recibe el token nuevo.
+  if (typeof window !== 'undefined') window.addEventListener('idd-token', () => rawSend({ type: 'auth', token: session.token }));
   return {
     /** Suscribe a cambios de estado; devuelve la función para desuscribir. */
     onState(fn){ ensure(); listeners.add(fn); fn({ ...state }); return () => listeners.delete(fn); },
@@ -76,6 +80,7 @@ function createCaster(route, idKey, { isDefault = false } = {}){
         state.error = e.name === 'NotAllowedError' || e.name === 'AbortError' ? ''
           : e.name === 'NotFoundError' ? 'No se encontró ningún dispositivo. Verificá que el Chromecast/TV esté encendido y en la misma red Wi-Fi que esta computadora.'
           : `No se pudo conectar: ${e.message}`;
+        if (state.error) report('cast', `No se pudo iniciar (${route}): ${e.name} ${e.message}`);
         emit();
       }
     },

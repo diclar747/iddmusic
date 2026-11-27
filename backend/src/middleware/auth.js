@@ -29,6 +29,10 @@ export function churchBlock(u){
   return null;
 }
 
+// La sesión dura 30 días y se renueva sola mientras se use (no se corta en medio de un culto).
+const TTL_SESSION = process.env.JWT_EXPIRES_IN || '30d';
+export const signToken = u => jwt.sign({ id: u.id, email: u.email, fullName: u.fullName ?? u.full_name, roles: u.roles }, process.env.JWT_SECRET, { expiresIn: TTL_SESSION });
+
 export async function auth(req, res, next){
   const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
   if (!token) return res.status(401).json({ error: 'Autenticación requerida' });
@@ -41,6 +45,8 @@ export async function auth(req, res, next){
     req.user = { id: u.id, email: u.email, fullName: u.full_name, roles: u.roles, church_id: u.church_id };
     const block = churchBlock(u);
     if (block) return res.status(403).json({ error: block, code: 'church_inactive' });
+    // Pasada la mitad de su duración, la respuesta trae un token nuevo (la app lo guarda sola).
+    if (payload.iat && payload.exp && Date.now() / 1000 > (payload.iat + payload.exp) / 2) res.set('X-Refresh-Token', signToken(req.user));
     next();
   } catch (e) { next(e); }
 }

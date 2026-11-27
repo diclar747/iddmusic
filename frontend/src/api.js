@@ -22,8 +22,11 @@ export async function api(path, { method = 'GET', body, form, signal } = {}){
     if (e.name === 'AbortError') throw e;
     throw new ApiError(0, 'No se pudo conectar con el servidor. ¿Está levantada la API?');
   }
+  const fresh = res.headers.get('X-Refresh-Token');
+  if (fresh && session.token) { localStorage.setItem(TOKEN_KEY, fresh); window.dispatchEvent(new Event('idd-token')); }
   const data = res.status === 204 ? null : await res.json().catch(() => null);
-  if (res.status === 401 && path !== '/auth/login') { session.clear(); throw new ApiError(401, 'Tu sesión venció. Ingresá de nuevo.'); }
+  // En el TV (Chromecast) la sesión la manda el presentador: un 401 ahí no debe borrarla.
+  if (res.status === 401 && path !== '/auth/login') { if (!/cast=1/.test(location.search)) session.clear(); throw new ApiError(401, 'Tu sesión venció. Ingresá de nuevo.'); }
   if (res.status === 403 && data?.code === 'church_inactive' && path !== '/auth/login') window.dispatchEvent(new CustomEvent('sion-blocked', { detail: data.error }));
   if (!res.ok) throw new ApiError(res.status, data?.error || `Error ${res.status}`);
   return data;

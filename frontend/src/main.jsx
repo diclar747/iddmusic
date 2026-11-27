@@ -33,6 +33,21 @@ import TopBar, { NotificationBell, ModeButton, useChurch, churchLogo, churchFill
 import Church from './pages/Church.jsx';
 import Admin from './pages/Admin.jsx';
 import { applyTheme, cachedBrand, APP_NAME } from './lib/brand.js';
+import { report, installErrorReporting } from './lib/report.js';
+
+installErrorReporting();
+
+/** Si algo falla al dibujar, en vez de quedar la pantalla en blanco muestra un aviso para volver a cargar. */
+class ErrorBoundary extends React.Component {
+  constructor(p){ super(p); this.state = { error: null }; }
+  static getDerivedStateFromError(error){ return { error }; }
+  componentDidCatch(error, info){ report('pantalla', error?.message || String(error), { stack: (error?.stack || '') + ' | ' + (info?.componentStack || '').slice(0, 400) }); }
+  render(){
+    if (!this.state.error) return this.props.children;
+    return <div className="blocked"><div><BrandMark size={84} /><h1>{APP_NAME}</h1><p>Algo falló en esta pantalla. Ya quedó registrado para revisarlo.</p>
+      <button className="btn" onClick={() => location.reload()}>Volver a cargar</button></div></div>;
+  }
+}
 
 // Antes de dibujar: colores y logo de la última iglesia usada (la pantalla de inicio sale con su marca).
 (() => {
@@ -152,5 +167,5 @@ function App(){
   </div>;
 }
 
-createRoot(document.getElementById('root')).render(<ToastProvider><App /></ToastProvider>);
+createRoot(document.getElementById('root')).render(<ErrorBoundary><ToastProvider><App /></ToastProvider></ErrorBoundary>);
 if ('serviceWorker' in navigator && import.meta.env.PROD) navigator.serviceWorker.register('/sw.js').catch(() => {});

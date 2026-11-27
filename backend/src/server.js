@@ -84,6 +84,13 @@ app.get('/api/health', async (_req, res) => {
   try { await db.query('SELECT 1'); res.json({ status: 'ok', database: 'connected', ai_enabled: !!process.env.NIRO_API_KEY }); }
   catch { res.status(503).json({ status: 'error', database: 'disconnected' }); }
 });
+// Errores del navegador (pantalla en blanco, transmisión que se corta…): quedan en los registros del sitio.
+app.post('/api/client-log', rateLimit({ windowMs: 60 * 1000, limit: 30, standardHeaders: false, legacyHeaders: false }), (req, res) => {
+  const b = req.body || {};
+  const t = (v, n = 400) => String(v ?? '').replace(/\s+/g, ' ').slice(0, n);
+  console.warn(`[navegador] ${t(b.kind, 30)} · ${t(b.message)} · ${t(b.where, 120)} · ${t(b.ua, 160)}${b.stack ? ' · ' + t(b.stack, 900) : ''}`);
+  res.status(204).end();
+});
 app.use('/api/auth', authRoutes);
 app.use('/api/songs', songRoutes);
 app.use('/api/groups', groupRoutes);
