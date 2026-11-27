@@ -46,7 +46,16 @@ export function SongFields({ value, onChange, chart, onChart }){
   </>;
 }
 
-export default function SongEdit({ id, groupId }){
+/** Si la canción se creó desde un culto, se suma a su repertorio y se vuelve al culto. */
+export async function finishForEvent(eventId, song, toast){
+  if (!eventId) return false;
+  try { await api(`/events/${eventId}/items`, { method: 'POST', body: { song_id: song.id, performance_key: song.original_key || null } }); toast?.(`"${song.title}" agregada al repertorio`); }
+  catch (e) { toast?.(e.message, 'error'); }
+  navigate(`/events/${eventId}`);
+  return true;
+}
+
+export default function SongEdit({ id, groupId, eventId }){
   const toast = useToast();
   const existing = useApi(id ? `/songs/${id}` : null);
   const groups = useApi(id ? null : '/groups');
@@ -65,6 +74,7 @@ export default function SongEdit({ id, groupId }){
       const body = { title: meta.title, author: meta.author, original_key: meta.original_key, tempo_bpm: meta.tempo_bpm === '' ? null : meta.tempo_bpm, time_signature: meta.time_signature, category: meta.category, notes: meta.notes, lyrics_sections: sections };
       const s = id ? await api(`/songs/${id}`, { method: 'PATCH', body }) : await api('/songs', { method: 'POST', body: { ...body, group_id: meta.group_id } });
       toast('Canción guardada');
+      if (!id && await finishForEvent(eventId, { ...s, title: s.title || meta.title }, toast)) return;
       navigate(`/songs/${s.id}`);
     } catch (err) { toast(err.message, 'error'); } finally { setBusy(false); }
   }

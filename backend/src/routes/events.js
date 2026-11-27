@@ -91,8 +91,26 @@ r.post('/:id/items', async (req, res) => {
   const ev = await loadEvent(req.user, req.params.id);
   const b = req.body || {};
   if (!isUuid(b.song_id)) throw bad('Elegí una canción');
-  const s = await db.query('SELECT title FROM songs WHERE id=$1 AND group_id=$2', [b.song_id, ev.group_id]);
-  if (!s.rowCount) throw bad('La canción no pertenece a este grupo');
+  // La canción puede ser del grupo o de otro grupo de la misma iglesia: en ese caso se copia al grupo del evento,
+  // así todos los integrantes del grupo la pueden ver, editar y proyectar.
+  const src = await db.query(`SELECT s.*, g.church_id FROM songs s JOIN groups g ON g.id=s.group_id
+    WHERE s.id=$1 AND g.church_id=(SELECT church_id FROM groups WHERE id=$2)`, [b.song_id, ev.group_id]);
+  if (!src.rowCount) throw bad('Esa canción no está en el cancionero de tu iglesia');
+  let song = src.rows[0];
+  if (song.group_id !== ev.group_id) {
+    const dup = await db.query('SELECT id, title FROM songs WHERE group_id=$1 AND lower(title)=lower($2) AND status<>\'archived\' LIMIT 1', [ev.group_id, song.title]);
+    if (dup.rowCount) song = { ...song, id: dup.rows[0].id };
+    else {
+      const c = await db.query(`INSERT INTO songs(group_id,title,author,category,original_key,tempo_bpm,time_signature,notes,lyrics_sections,status,source,created_by,updated_by)
+        VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$12) RETURNING id`,
+        [ev.group_id, song.title, song.author, song.category, song.original_key, song.tempo_bpm, song.time_signature, song.notes,
+          JSON.stringify(song.lyrics_sections || []), song.status === 'archived' ? 'published' : song.status, song.source || 'manual', req.user.id]);
+      song = { ...song, id: c.rows[0].id };
+    }
+  }
+  if ((await db.query('SELECT 1 FROM setlist_items WHERE setlist_id=$1 AND song_id=$2', [ev.id, song.id])).rowCount) throw bad('Esa canción ya está en el repertorio');
+  b.song_id = song.id;
+  const s = { rows: [{ title: song.title }] };
   const q = await db.query(`INSERT INTO setlist_items(setlist_id,song_id,position,performance_key,notes,assigned_to)
     VALUES($1,$2,(SELECT coalesce(max(position),0)+1 FROM setlist_items WHERE setlist_id=$1),$3,$4,$5) RETURNING *`,
     [ev.id, b.song_id, clean(b.performance_key, 12), clean(b.notes, 1000), isUuid(b.assigned_to) ? b.assigned_to : null]);

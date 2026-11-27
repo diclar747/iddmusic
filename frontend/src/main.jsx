@@ -69,10 +69,10 @@ function Page({ route, user }){
   if (a === 'groups' && !b) return <Groups />;
   if (a === 'groups') return <GroupDetail id={b} tab={c || 'songs'} user={user} />;
   if (a === 'songs' && !b) return <Songs initialQ={route.query.q || ''} />;
-  if (a === 'songs' && b === 'new') return <SongEdit groupId={route.query.group} />;
+  if (a === 'songs' && b === 'new') return <SongEdit groupId={route.query.group} eventId={route.query.event} />;
   if (a === 'songs' && c === 'edit') return <SongEdit id={b} />;
   if (a === 'songs') return <SongView id={b} query={route.query} />;
-  if (a === 'import') return <ImportAI groupId={route.query.group} />;
+  if (a === 'import') return <ImportAI groupId={route.query.group} eventId={route.query.event} />;
   if (a === 'agenda') return <Agenda />;
   if (a === 'events') return <EventView id={b} user={user} />;
   if (a === 'profile') return <Profile user={user} section={b} />;

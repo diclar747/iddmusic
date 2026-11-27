@@ -3,7 +3,7 @@ import { Sparkles, Upload, FileText, X, Save, RotateCcw, AlertTriangle, CheckCir
 import { api } from '../api.js';
 import { navigate } from '../router.js';
 import { useApi, Field, Busy, useToast, ErrorBox } from '../ui.jsx';
-import { SongFields } from './SongEdit.jsx';
+import { SongFields, finishForEvent } from './SongEdit.jsx';
 import { parseChart } from '../lib/chart.js';
 import { SONG_TEXT_ACCEPT, isSongText, readTextFile, songFromText } from '../lib/files.js';
 import LaCuerdaPanel from '../components/LaCuerdaPanel.jsx';
@@ -45,7 +45,7 @@ async function pdfToImages(file){
   return { pages, total: doc.numPages };
 }
 
-export default function ImportAI({ groupId }){
+export default function ImportAI({ groupId, eventId }){
   const toast = useToast();
   const groups = useApi('/groups');
   const status = useApi('/import/status');
@@ -153,6 +153,7 @@ export default function ImportAI({ groupId }){
         await api(`/songs/${song.id}/files`, { method: 'POST', form }).catch(err => toast('La canción se guardó, pero no se pudo adjuntar el original: ' + err.message, 'error'));
       }
       toast('Canción guardada en el grupo');
+      if (await finishForEvent(eventId, song, toast)) return;
       navigate(`/songs/${song.id}`);
     } catch (err) { toast(err.message, 'error'); } finally { setSaving(false); }
   }
